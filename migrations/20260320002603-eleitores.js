@@ -14,7 +14,7 @@ module.exports = {
       data_nascimento: Sequelize.DATEONLY,
       cpf: { type: Sequelize.STRING, unique:true },
       email: { type: Sequelize.STRING, allowNull: false, unique:true },
-      senha: {type: Sequelize.STRING, allowNull: false},
+      senha: {type: Sequelize.STRING},
       titulo: Sequelize.STRING,
       rua: Sequelize.STRING,
       bairro: Sequelize.STRING,

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <title>Sistema de Votaçao</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
@@ -17,7 +17,7 @@
       Participe da construção de um processo eleitoral mais organizado e eficiente!
     </p>
     <div class="imagem">
-  <img src="img/Tribunal_Superior_Eleitoral.png" alt="Justiça Eleitoral">
+  <img src="images/Tribunal_Superior_Eleitoral.png" alt="Justiça Eleitoral">
 </div>
 
     <div class="info">
@@ -30,16 +30,18 @@
   </div>
 
   <div class="right">
-    <form>
-      <input type="Nome" placeholder="Nome" required>
-      <input type="CPF" placeholder="CPF" required>
-      <input type="dataNasc" placeholder="Data de Nascimento" required>
-      <input type="Titulo" placeholder="Titulo" required>
-      <input type="Rua" placeholder="Rua" required>
-      <input type="NumeroCasa" placeholder="Número da Casa" required>
-      <input type="Bairro" placeholder="Bairo" required>
-      <input type="Cidade" placeholder="Cidade" required>
-      <input type="Estado" placeholder="Estado" required>
+    <form method="POST">
+      <input type="text" name="nome" placeholder="Nome" required>
+      <input type="text" name="sobrenome" placeholder="Sobrenome" required>
+      <input type="email" name="email" placeholder="Email" required>
+      <input type="text" name="cpf" placeholder="CPF" required>
+      <input type="date" name="dataNasc" placeholder="Data de Nascimento" required>
+      <input type="text" name="titulo" placeholder="Título" required>
+      <input type="text" name="rua" placeholder="Rua" required>
+      <input type="text" name="numeroCasa" placeholder="Número da Casa" required>
+      <input type="text" name="bairro" placeholder="Bairro" required>
+      <input type="text" name="cidade" placeholder="Cidade" required>
+      <input type="text" name="estado" placeholder="Estado" required>
 
       <button type="submit" class="btn">Cadastre agora</button>
     </form>

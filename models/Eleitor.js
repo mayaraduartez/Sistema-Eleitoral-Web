@@ -45,7 +45,6 @@ UF: {
     },
     senha: {
       type: DataTypes.STRING,
-      allowNull: false,
     },
   },
   {

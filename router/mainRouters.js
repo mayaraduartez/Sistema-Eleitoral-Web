@@ -8,5 +8,8 @@ const mainController = require("../controllers/mainController");
 
 router.get("/cadastroEleitores", mainController.abreCadastroEleitores);
 
+router.post("/cadastroEleitores", mainController.salvaCadastroEleitores);
+
+
 
 module.exports = router;
