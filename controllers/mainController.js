@@ -1,4 +1,5 @@
 const Eleitor = require("../models/Eleitor");
+const Solicitacao = require("../models/Solicitacao");
 
 async function abreCadastroEleitores(req, res){
     res.render("cadastroEleitoral.ejs");
@@ -101,6 +102,43 @@ async function visualizarPerfil(req, res) {
     }
 }
 
+//função de solicitação de atualização de dados
+
+async function abreSolicitacao(req, res) {
+    try {
+        // Redireciona o navegador para a rota especificada
+        return res.redirect("/solicitarAtualizacao");
+    } catch (error) {
+        console.error("Erro ao redirecionar solicitação:", error);
+        return res.status(500).send("Erro interno ao redirecionar.");
+    }
+}
+
+
+async function solicitarAtualizacao(req, res) {
+    try {
+        const { nome, email, mensagem } = req.body;
+
+        // Validar campos
+        if (!nome || !email || !mensagem) {
+            return res.status(400).send("Todos os campos são obrigatórios.");
+        }
+
+        // Criar solicitação sem vincular ao eleitor
+        await Solicitacao.create({
+            nome: nome,
+            email: email,
+            mensagem: mensagem,
+            status: 'pendente'
+        });
+
+        return res.redirect('/sucesso');
+    } catch (error) {
+        console.error("Erro ao enviar solicitação:", error);
+        return res.status(500).send("Erro ao enviar solicitação.");
+    }
+}
+
 module.exports = {
     abreCadastroEleitores,
     salvaCadastroEleitores,
@@ -108,5 +146,7 @@ module.exports = {
     excluirEleitor,
     inativarEleitor,
     ativarEleitor,
-    visualizarPerfil 
+    visualizarPerfil,
+    abreSolicitacao,
+    solicitarAtualizacao
 };

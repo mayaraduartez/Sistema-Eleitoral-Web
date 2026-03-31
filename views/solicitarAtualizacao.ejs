@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Solicitar Atualização de Dados</title>
+</head>
+<body>
+    <div class="container-eleitor">
+        <div class="cabecalho">
+            <div class="subtitle">
+                <h1>Solicitação de Atualização de Dados</h1>
+                <p>Preencha o formulário abaixo para solicitar a atualização dos seus dados cadastrais.</p>
+             <div class="imagem">
+            <img src="images/Tribunal_Superior_Eleitoral.png" alt="Justiça Eleitoral">
+            </div>
+        </div>
+            <div class="right">
+            <form action="/enviarAtualizacao" method="POST">
+                 
+                 <input type="text" name="nome" placeholder="Nome" required>
+            <input type="email" name="email" placeholder="Email" required>
+            <textarea type="text" name="mensagem" placeholder="Mensagem (descreva o que precisa alterar):" rows="5" required></textarea><br><br>
+        
+        
+            <button type="submit" class="btn">Enviar Solicitação</button>
+    </form>
+    </div>
+</body>
+</html>
