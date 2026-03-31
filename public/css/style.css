@@ -1,125 +1,126 @@
 body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #1E4FA1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
-  
-  /* Container principal */
-  .container {
-    width: 900px;
-    background: #fff;
-    border-radius: 12px;
-    display: flex;
-    padding: 40px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-  }
-  
-  /* Lado esquerdo */
-  .left {
-    flex: 1;
-    padding-right: 30px;
-  }
-  
-  .left h1 {
-    font-size: 32px;
-    margin: 10px 0;
-    color: #1c1c1c;
-  }
-  
-  .left p {
-    color: #666;
-    margin-bottom: 30px;
-  }
-  
-  .subtitle {
-    font-size: 12px;
-    color: #999;
-    text-transform: uppercase;
-  }
-  
-  /* Contato */
-  .info p {
-    margin: 10px 0;
-    color: #333;
-  }
-  
-  /* Lado direito */
-  .right {
-    flex: 1;
-    background: #f9fafb;
-    padding: 25px;
-    border-radius: 12px;
-  }
-  
-  /* Inputs */
-  .right input,
-  .right select,
-  .right textarea {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    font-size: 14px;
-  }
-  
-  .right textarea {
-    resize: none;
-    height: 80px;
-  }
-  
-  /* Botão */
-  .btn {
-    width: 100%;
-    padding: 12px;
-    background: #007bff;
-    border: none;
-    border-radius: 25px;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    transition: 0.3s;
-  }
-  .info a {
-    text-decoration: none;
-  }
-  
-  .fa-instagram {
-    font-size: 28px;
-    color: #E1306C;
-    margin-top: 10px;
-    display: inline-block;
-    transition: 0.3s;
-  }
-  
-  .fa-instagram:hover {
-    transform: scale(1.2);
-  }
-  
-  .btn:hover {
-    background: #0056b3;
-  }
-  
-  .imagem {
-    margin: 20px 0;
-  }
-  
-  .imagem img {
-    width: 100%;
-    max-width: 250px;
-    border-radius: 10px;
-  }
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #1E4FA1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* Container principal */
+.container {
+  width: 900px;
+  background: #fff;
+  border-radius: 12px;
+  display: flex;
+  padding: 40px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Lado esquerdo */
+.left {
+  flex: 1;
+  padding-right: 30px;
+}
+
+.left h1 {
+  font-size: 32px;
+  margin: 10px 0;
+  color: #1c1c1c;
+}
+
+.left p {
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.subtitle {
+  font-size: 12px;
+  color: #999;
+  text-transform: uppercase;
+}
+
+/* Contato */
+.info p {
+  margin: 10px 0;
+  color: #333;
+}
+
+/* Lado direito */
+.right {
+  flex: 1;
+  background: #f9fafb;
+  padding: 25px;
+  border-radius: 12px;
+}
+
+/* Inputs */
+.right input,
+.right select,
+.right textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.right textarea {
+  resize: none;
+  height: 80px;
+}
+
+/* Botão */
+.btn {
+  width: 100%;
+  padding: 12px;
+  background: #007bff;
+  border: none;
+  border-radius: 25px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.info a {
+  text-decoration: none;
+}
+
+.fa-instagram {
+  font-size: 28px;
+  color: #E1306C;
+  margin-top: 10px;
+  display: inline-block;
+  transition: 0.3s;
+}
+
+.fa-instagram:hover {
+  transform: scale(1.2);
+}
+
+.btn:hover {
+  background: #0056b3;
+}
+
+.imagem {
+  margin: 20px 0;
+}
+
+.imagem img {
+  width: 100%;
+  max-width: 250px;
+  border-radius: 10px;
+}
 
 
 
 
 
 /*Gerenciar Eleitores*/
-.tabela{
+.tabela {
   border: 1;
   width: 100%;
 }
@@ -130,39 +131,47 @@ body {
   background: #fff;
   border-radius: 12px;
   padding: 40px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
-.container-eleitor h1{
+.container-eleitor h1 {
   text-align: center;
   color: #1c1c1c;
 }
 
-.container-eleitor p{
+.container-eleitor p {
   font-size: 15px;
 }
 
 .cabecalho {
-  background: none; 
-  color: #333; 
+  background: none;
+  color: #333;
   padding: 20px;
   border-radius: 10px;
-  text-align: left; 
+  text-align: left;
 }
 
 .tabela-eleitores {
   background: white;
   padding: 20px;
-  border-radius: 10px;
+  border-radius: 12px;
+  max-width: 1000px;
+  margin: 30px auto;
+  overflow-x: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-.tabela{
+.tabela {
   width: 100%;
   border-collapse: collapse;
 }
 
+.tabela td {
+  vertical-align: middle;
+}
 
-.tabela-eleitores th{
+
+.tabela-eleitores th {
   background: #1e3a8a;
   color: white;
   padding: 10px;
@@ -174,7 +183,9 @@ body {
 }
 
 
-.botao-inativar, .botao-excluir{
+.botao-inativar,
+.botao-excluir {
+  height: 35px;
   background: #2563eb;
   color: white;
   width: 40%;
@@ -188,12 +199,12 @@ body {
 }
 
 .botao-inativar {
-  background: #2563eb; 
+  background: #2563eb;
 }
 
 
 .botao-excluir {
-  background: #dc2626; 
+  background: #dc2626;
 }
 
 .botao-inativar:hover {
@@ -206,16 +217,18 @@ body {
 
 .tabela th,
 .tabela td {
-  text-align: center;      
+  text-align: center;
   vertical-align: middle;
 }
 
-.acoes{
+.acoes {
+  height: 97px;
   display: flex;
   gap: 7px;
   justify-content: center;
+  align-items: center;
 }
 
-.col-acoes{
+.col-acoes {
   width: 170px;
 }
