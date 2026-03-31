@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/css/style.css">
   <title>Gerenciar Eleitores</title>
 </head>
+
 <body>
   <div class="container-eleitor">
     <div class="cabecalho">
@@ -31,48 +33,69 @@
           <tr>
             <th>Nome</th>
             <th>CPF</th>
+            <th>Data de Nascimento</th>
+            <th>Email</th>
+            <th>Título</th>
+            <th>Endereço</th>
             <th>Status</th>
             <th class="col-acoes">Ações</th>
           </tr>
         </thead>
 
-         <tbody>
-        <% eleitores.forEach(eleitor => { %>
-          <tr>
-            <td><%= eleitor.nome %> <%= eleitor.sobrenome %></td>
-            <td><%= eleitor.cpf %></td>
-            <td>
-              <%= eleitor.status === 'ativo' ? 'Ativo' : 'Inativo' %>
-            </td>
-            <td class="acoes">
+        <tbody>
+          <% eleitores.forEach(eleitor=> { %>
+            <tr>
+              <td>
+                <%= eleitor.nome %>
+                  <%= eleitor.sobrenome %>
+              </td>
+              <td>
+                <%= eleitor.cpf %>
+              </td>
+              <td>
+                <%= eleitor.data_nascimento %>
+              </td>
+              <td>
+                <%= eleitor.email %>
+              </td>
+              <td>
+                <%= eleitor.titulo %>
+              </td>
+              <td>
+                <%= eleitor.rua %>,
+                  <%= eleitor.nro_endereco %> -
+                    <%= eleitor.bairro %>,
+                      <%= eleitor.cidade %>
+              </td>
+              <td>
+                <%= eleitor.status==='ativo' ? 'Ativo' : 'Inativo' %>
+              </td>
+              <td class="acoes">
 
-              <!-- Botões Inativar e Excluir -->
-              <form 
-                action="/eleitor/<%= eleitor.status === 'ativo' ? 'inativar' : 'ativar' %>/<%= eleitor.id %>" 
-                method="POST"
-              >
-                <button class="botao-inativar"
-                  type="submit" 
-                  class="btn <%= eleitor.status === 'ativo' ? 'btn-danger' : 'btn-success' %>"
-                >
-                  <%= eleitor.status === 'ativo' ? 'Inativar' : 'Ativar' %>
-                </button>
-              </form>
-              <form action="/eleitor/excluir/<%= eleitor.id %>" method="POST" onsubmit="return confirmarExclusao()">
-                <button class="botao-excluir" type="submit">Excluir</button>
-              </form>
+                <!-- Botões Inativar e Excluir -->
+                <form action="/eleitor/<%= eleitor.status === 'ativo' ? 'inativar' : 'ativar' %>/<%= eleitor.id %>"
+                  method="POST">
+                  <button class="botao-inativar" type="submit"
+                    class="btn <%= eleitor.status === 'ativo' ? 'btn-danger' : 'btn-success' %>">
+                    <%= eleitor.status==='ativo' ? 'Inativar' : 'Ativar' %>
+                  </button>
+                </form>
+                <form action="/eleitor/excluir/<%= eleitor.id %>" method="POST" onsubmit="return confirmarExclusao()">
+                  <button class="botao-excluir" type="submit">Excluir</button>
+                </form>
 
-            </>
-          </tr>
-        <% }) %>
-      </tbody>
+                </>
+            </tr>
+            <% }) %>
+        </tbody>
       </table>
     </div>
   </div>
 </body>
 <script>
-function confirmarExclusao() {
+  function confirmarExclusao() {
     return confirm("Tem certeza que deseja excluir este eleitor?");
-}
+  }
 </script>
+
 </html>

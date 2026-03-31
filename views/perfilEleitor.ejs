@@ -84,28 +84,27 @@
       <img src="/images/Tribunal_Superior_Eleitoral.png" alt="TSE" class="logo-tse-p">
     </div>
 
-    <div class="secao-linha">Dados Detalhados</div>
-
-    <div class="grid-dados-p">
-      <div>
-        <p><strong>Nome:</strong><br><%= eleitor.nome %></p>
-        <p><strong>CPF:</strong><br><%= eleitor.cpf %></p>
-        <p><strong>Situação:</strong><br>
-          <span class="status-cor"><%= eleitor.status === 'ativo' ? 'Ativo' : 'Inativo' %></span>
-        </p>
-      </div>
-      <div>
-        <p><strong>Título:</strong><br><%= eleitor.titulo %></p>
-        <p><strong>Cidade/UF:</strong><br><%= eleitor.cidade %> / <%= eleitor.UF %></p>
-        <p><strong>E-mail:</strong><br><%= eleitor.email %></p>
-      </div>
-    </div>
-
-    <div style="margin-top: 30px; display: flex; justify-content: center;">
-      <button onclick="window.location.href='/gerenciarEleitor'" 
-              style="background-color: #666; color: white; border: none; padding: 10px 50px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 13px;">
-        Voltar para Lista
-      </button>
+        <div class="tabela-eleitores">
+            <h2>Dados Cadastrais</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div>
+                    <p><strong>Nome:</strong> <%= eleitor.nome %></p>
+                    <p><strong>Sobrenome:</strong> <%= eleitor.sobrenome %></p>
+                    <p><strong>CPF:</strong> <%= eleitor.cpf %></p>
+                </div>
+                <div>
+                    <p><strong>Título:</strong> <%= eleitor.titulo %></p>
+                    <p><strong>Situação:</strong> <%= eleitor.status %></p>
+                    <p><strong>Cidade:</strong> <%= eleitor.cidade %>/<%= eleitor.UF %></p>
+                </div>
+            </div>
+            <div class="acoes" style="margin-top: 20px;">
+                <button onclick="window.location.href='/gerenciarEleitor'" class="botao-inativar" style="background: #666; width: auto; cursor: pointer;">
+    Voltar
+</button>
+            </div>
+        </div>
+        
     </div>
 
   </div>

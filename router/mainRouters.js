@@ -17,4 +17,8 @@ router.post("/eleitor/excluir/:id", mainController.excluirEleitor);
 router.post("/eleitor/inativar/:id", mainController.inativarEleitor);
 router.post("/eleitor/ativar/:id", mainController.ativarEleitor);
 
+//Solicitar atualização de dados
+router.get("/solicitarAtualizacao", mainController.abreSolicitacao);
+router.post("/enviarAtualizacao", mainController.solicitarAtualizacao);
+
 module.exports = router;
