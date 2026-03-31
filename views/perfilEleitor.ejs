@@ -1,45 +1,114 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/style.css">
-    <title>Meu Perfil - Justiça Eleitoral</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/style.css">
+  <title>Perfil do Eleitor - TSE</title>
+  <style>
+    /* AJUSTE PARA CARD COMPACTO (ALTURA E LARGURA REDUZIDAS) */
+    body {
+      background-color: #1E4FA1 !important;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+    }
+
+    /* Card bem compacto: Largura 550px e Padding menor */
+    .container-perfil-final {
+      background-color: white;
+      width: 90%;
+      max-width: 900px; 
+      border-radius: 30px; 
+      padding: 30px 40px; /* Diminuí o padding superior e inferior */
+      box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+      margin: 10px;
+    }
+
+    .cabecalho-perfil {
+      text-align: center;
+      margin-bottom: 15px; /* Menos espaço aqui */
+    }
+
+    .cabecalho-perfil h1 {
+      text-transform: uppercase;
+      font-weight: bold;
+      font-size: 22px;
+      margin-bottom: 2px;
+    }
+
+    .logo-tse-p {
+      max-width: 180px; /* Logo um pouco menor para economizar altura */
+      margin: 10px 0;
+    }
+
+    .grid-dados-p {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      text-align: left;
+    }
+
+    .secao-linha {
+      border-bottom: 1px solid #eee;
+      padding-bottom: 5px;
+      margin-bottom: 15px;
+      color: #1E4FA1;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .status-cor {
+      font-weight: bold;
+      color: <%= eleitor.status === 'ativo' ? '#2563eb' : '#dc2626' %>;
+    }
+
+    p {
+      margin: 8px 0; /* Diminuí a margem entre os parágrafos de dados */
+      font-size: 14px;
+    }
+  </style>
 </head>
 <body>
-    <div class="container-eleitor">
-        <div class="cabecalho">
-            <div class="subtitle">
-                <h1>Perfil do Eleitor</h1>
-                <p>Consulte aqui suas informações cadastradas.</p>
-            </div>
-            <div class="imagem">
-                <img src="/images/Tribunal_Superior_Eleitoral.png" alt="Justiça Eleitoral" style="max-width: 180px;">
-            </div>
-        </div>
 
-        <div class="tabela-eleitores">
-            <h2>Dados Cadastrais</h2>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                <div>
-                    <p><strong>Nome:</strong> <%= eleitor.nome %></p>
-                    <p><strong>Sobrenome:</strong> <%= eleitor.sobrenome %></p>
-                    <p><strong>CPF:</strong> <%= eleitor.cpf %></p>
-                </div>
-                <div>
-                    <p><strong>Título:</strong> <%= eleitor.titulo %></p>
-                    <p><strong>Situação:</strong> <%= eleitor.status %></p>
-                    <p><strong>Cidade:</strong> <%= eleitor.cidade %>/<%= eleitor.UF %></p>
-                </div>
-            </div>
-            <div class="acoes" style="margin-top: 20px;">
-                <button onclick="window.location.href='/gerenciarEleitor'" class="botao-inativar" style="background: #666; width: auto; cursor: pointer;">
-    Voltar
-</button>
-            </div>
-        </div>
-        
+  <div class="container-perfil-final">
+    
+    <div class="cabecalho-perfil">
+      <h1>Perfil do Eleitor</h1>
+      <p style="color: #888; font-size: 11px; text-transform: uppercase; margin: 0;">Dados Oficiais</p>
+      
+      <img src="/images/Tribunal_Superior_Eleitoral.png" alt="TSE" class="logo-tse-p">
     </div>
+
+    <div class="secao-linha">Dados Detalhados</div>
+
+    <div class="grid-dados-p">
+      <div>
+        <p><strong>Nome:</strong><br><%= eleitor.nome %></p>
+        <p><strong>CPF:</strong><br><%= eleitor.cpf %></p>
+        <p><strong>Situação:</strong><br>
+          <span class="status-cor"><%= eleitor.status === 'ativo' ? 'Ativo' : 'Inativo' %></span>
+        </p>
+      </div>
+      <div>
+        <p><strong>Título:</strong><br><%= eleitor.titulo %></p>
+        <p><strong>Cidade/UF:</strong><br><%= eleitor.cidade %> / <%= eleitor.UF %></p>
+        <p><strong>E-mail:</strong><br><%= eleitor.email %></p>
+      </div>
+    </div>
+
+    <div style="margin-top: 30px; display: flex; justify-content: center;">
+      <button onclick="window.location.href='/gerenciarEleitor'" 
+              style="background-color: #666; color: white; border: none; padding: 10px 50px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 13px;">
+        Voltar para Lista
+      </button>
+    </div>
+
+  </div>
+
 </body>
 </html>
-

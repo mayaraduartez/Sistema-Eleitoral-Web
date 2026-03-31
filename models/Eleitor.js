@@ -47,10 +47,10 @@ UF: {
       type: DataTypes.STRING,
     },
     status: {
-      type: DataTypes.ENUM("ativo", "inativo"),
-      allowNull: false,
-      defaultValue: "ativo",
-    },
+    type: DataTypes.STRING,
+    allowNull: true,
+    defaultValue: 'ativo'
+}
   },
   {
     timestamps: false,
