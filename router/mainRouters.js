@@ -5,16 +5,16 @@ const router = express.Router();
 const upload = require("../config/upload");
 const mainController = require("../controllers/mainController");
 
-
+// Rotas de Cadastro
 router.get("/cadastroEleitores", mainController.abreCadastroEleitores);
-
 router.post("/cadastroEleitores", mainController.salvaCadastroEleitores);
 
-
+router.get("/perfil/:id", mainController.visualizarPerfil);
 
 // Excluir ou inativar o eleitor
 router.get("/gerenciarEleitor", mainController.tela_gerenciar_eleitor);
 router.post("/eleitor/excluir/:id", mainController.excluirEleitor);
 router.post("/eleitor/inativar/:id", mainController.inativarEleitor);
 router.post("/eleitor/ativar/:id", mainController.ativarEleitor);
+
 module.exports = router;

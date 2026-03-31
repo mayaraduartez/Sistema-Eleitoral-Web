@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Meu Perfil - Justiça Eleitoral</title>
+</head>
+<body>
+    <div class="container-eleitor">
+        <div class="cabecalho">
+            <div class="subtitle">
+                <h1>Perfil do Eleitor</h1>
+                <p>Consulte aqui suas informações cadastradas.</p>
+            </div>
+            <div class="imagem">
+                <img src="/images/Tribunal_Superior_Eleitoral.png" alt="Justiça Eleitoral" style="max-width: 180px;">
+            </div>
+        </div>
+
+        <div class="tabela-eleitores">
+            <h2>Dados Cadastrais</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div>
+                    <p><strong>Nome:</strong> <%= eleitor.nome %></p>
+                    <p><strong>Sobrenome:</strong> <%= eleitor.sobrenome %></p>
+                    <p><strong>CPF:</strong> <%= eleitor.cpf %></p>
+                </div>
+                <div>
+                    <p><strong>Título:</strong> <%= eleitor.titulo %></p>
+                    <p><strong>Situação:</strong> <%= eleitor.status %></p>
+                    <p><strong>Cidade:</strong> <%= eleitor.cidade %>/<%= eleitor.UF %></p>
+                </div>
+            </div>
+            <div class="acoes" style="margin-top: 20px;">
+                <button onclick="window.location.href='/gerenciarEleitor'" class="botao-inativar" style="background: #666; width: auto; cursor: pointer;">
+    Voltar
+</button>
+            </div>
+        </div>
+        
+    </div>
+</body>
+</html>
