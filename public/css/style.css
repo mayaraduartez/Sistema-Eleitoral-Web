@@ -113,3 +113,109 @@ body {
     max-width: 250px;
     border-radius: 10px;
   }
+
+
+
+
+
+/*Gerenciar Eleitores*/
+.tabela{
+  border: 1;
+  width: 100%;
+}
+
+
+.container-eleitor {
+  width: 900px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 40px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.container-eleitor h1{
+  text-align: center;
+  color: #1c1c1c;
+}
+
+.container-eleitor p{
+  font-size: 15px;
+}
+
+.cabecalho {
+  background: none; 
+  color: #333; 
+  padding: 20px;
+  border-radius: 10px;
+  text-align: left; 
+}
+
+.tabela-eleitores {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.tabela{
+  width: 100%;
+  border-collapse: collapse;
+}
+
+
+.tabela-eleitores th{
+  background: #1e3a8a;
+  color: white;
+  padding: 10px;
+}
+
+.tabela-eleitores td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+
+.botao-inativar, .botao-excluir{
+  background: #2563eb;
+  color: white;
+  width: 40%;
+  border: none;
+  padding: 7px 17px;
+  margin: 2px;
+  border-radius: 5px;
+  cursor: pointer;
+  justify-content: center;
+  min-width: 90px;
+}
+
+.botao-inativar {
+  background: #2563eb; 
+}
+
+
+.botao-excluir {
+  background: #dc2626; 
+}
+
+.botao-inativar:hover {
+  background: #1d4ed8;
+}
+
+.botao-excluir:hover {
+  background: #b91c1c;
+}
+
+.tabela th,
+.tabela td {
+  text-align: center;      
+  vertical-align: middle;
+}
+
+.acoes{
+  display: flex;
+  gap: 7px;
+  justify-content: center;
+}
+
+.col-acoes{
+  width: 170px;
+}

@@ -46,11 +46,16 @@ UF: {
     senha: {
       type: DataTypes.STRING,
     },
+    status: {
+      type: DataTypes.ENUM("ativo", "inativo"),
+      allowNull: false,
+      defaultValue: "ativo",
+    },
   },
   {
     timestamps: false,
     tableName: "eleitores",
-  }
+  },
 );
 
 module.exports = Eleitor;

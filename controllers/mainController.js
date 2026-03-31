@@ -28,7 +28,73 @@ async function salvaCadastroEleitores(req, res) {
     }
 }
 
+//Função que renderiza a tela de exclusão ou inativação do servidor
+async function tela_gerenciar_eleitor(req,res) {
+    try{
+        const eleitores= await Eleitor.findAll();
+
+        return res.render('gerenciarEleitor',{eleitores});
+    }catch(error){
+        console.error(error);
+        return res.status(500).send('Erro ao carregar a página');
+    }
+}
+
+//Função de excluir eleitor
+async function excluirEleitor(req, res) {
+    try{
+        const{ id } = req.params;
+
+        await Eleitor.destroy({
+            where: { id }
+        });
+
+        return res.redirect('/gerenciarEleitor');
+    }catch(error){
+        console.error(error);
+        return res.status(500).send('Erro ao excluir eleitor');
+    }
+}
+
+//Função de inativar eleitor
+
+async function inativarEleitor(req, res) {
+    try{
+        const { id } = req.params;
+        
+        await Eleitor.update(
+            { status : "inativo" },
+            { where: { id } }
+        );
+
+        return res.redirect("/gerenciarEleitor");
+    }catch(error){
+        console.error(error);
+        return res.status(500).send("Erro ao inativar eleitor");
+    }
+}
+
+async function ativarEleitor(req, res) {
+    try{
+        const{ id } = req.params;
+
+        await Eleitor.update(
+            { status: "ativo" },
+            { where : { id }}
+        );
+        return res.redirect("/gerenciarEleitor");
+    }catch(error){
+        console.error(error);
+        return res.status(500).send("Erro ao ativar eleitor.")
+    }
+}
+
+
 module.exports ={
     abreCadastroEleitores,
-    salvaCadastroEleitores
+    salvaCadastroEleitores,
+    tela_gerenciar_eleitor,
+    excluirEleitor,
+    inativarEleitor,
+    ativarEleitor
 }

@@ -21,6 +21,11 @@ module.exports = {
       cidade: Sequelize.STRING,
       nro_endereco: Sequelize.STRING,
       UF: Sequelize.STRING,
+      status: {
+        type: Sequelize.ENUM("ativo", "inativo"),
+        allowNull:false,
+        defaultValue: "ativo",
+      }
     });
   },
 

@@ -12,4 +12,9 @@ router.post("/cadastroEleitores", mainController.salvaCadastroEleitores);
 
 
 
+// Excluir ou inativar o eleitor
+router.get("/gerenciarEleitor", mainController.tela_gerenciar_eleitor);
+router.post("/eleitor/excluir/:id", mainController.excluirEleitor);
+router.post("/eleitor/inativar/:id", mainController.inativarEleitor);
+router.post("/eleitor/ativar/:id", mainController.ativarEleitor);
 module.exports = router;
