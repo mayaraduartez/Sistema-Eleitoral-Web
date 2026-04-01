@@ -1,31 +1,78 @@
 const Eleitor = require("../models/Eleitor");
 const Solicitacao = require("../models/Solicitacao");
+const { Op } = require("sequelize");
 
 async function abreCadastroEleitores(req, res){
-    res.render("cadastroEleitoral.ejs");
+    const mensagem = '';
+    res.render("cadastroEleitoral.ejs", { mensagem });
 }
 
 async function salvaCadastroEleitores(req, res) {
     const { nome, sobrenome, email, cpf, dataNasc, titulo, rua, numeroCasa, bairro, cidade, estado } = req.body;
 
     try {
-        await Eleitor.create({
-            nome: nome,
-            sobrenome: sobrenome,
-            email: email,
-            cpf: cpf,
+        const eleitorExistente = await Eleitor.findOne({
+            where: {
+                [require("sequelize").Op.or]: [
+                    { email: email },
+                    { cpf: cpf }
+                ]
+            }
+        });
+
+        if (eleitorExistente) {
+            let mensagem = "";
+
+            if (eleitorExistente.email === email && eleitorExistente.cpf === cpf) {
+                mensagem = "CPF e e-mail já estão cadastrados.";
+            } else if (eleitorExistente.email === email) {
+                mensagem = "Este e-mail já está cadastrado.";
+            } else if (eleitorExistente.cpf === cpf) {
+                mensagem = "Este CPF já está cadastrado.";
+            }
+
+            return res.render("cadastroEleitoral.ejs", { mensagem });
+        }
+
+        const eleitor = await Eleitor.create({
+            nome,
+            sobrenome,
+            email,
+            cpf,
             data_nascimento: dataNasc,
-            titulo: titulo,
-            rua: rua,
+            titulo,
+            rua,
             nro_endereco: numeroCasa,
-            bairro: bairro,
-            cidade: cidade,
+            bairro,
+            cidade,
             UF: estado
         });
-        res.redirect('/sucesso'); 
+
+        console.log(eleitor.id);
+
+        const mensagem = "Cadastro realizado com sucesso!";
+        return res.render("cadastroEleitoral.ejs", { mensagem });
+
     } catch (error) {
         console.error("Erro ao salvar eleitor:", error);
-        res.status(500).send("Erro ao salvar eleitor");
+
+        if (error.name === "SequelizeUniqueConstraintError") {
+            let mensagem = "CPF ou e-mail já cadastrado.";
+
+            const campos = error.errors.map(e => e.path);
+
+            if (campos.includes("cpf") && campos.includes("email")) {
+                mensagem = "CPF e e-mail já estão cadastrados.";
+            } else if (campos.includes("cpf")) {
+                mensagem = "Este CPF já está cadastrado.";
+            } else if (campos.includes("email")) {
+                mensagem = "Este e-mail já está cadastrado.";
+            }
+
+            return res.render("cadastroEleitoral.ejs", { mensagem });
+        }
+
+        return res.status(500).send("Erro ao salvar eleitor");
     }
 }
 
@@ -139,6 +186,116 @@ async function solicitarAtualizacao(req, res) {
     }
 }
 
+async function abreAtualizacao(req, res) {
+    try {
+        //const id = req.session.eleitorId;
+        const id = 14; // Substitua pelo ID do eleitor logado, por exemplo, req.session.eleitorId
+
+        if (!id) {
+            return res.status(401).send("Usuário não autenticado.");
+        }
+
+        const eleitor = await Eleitor.findByPk(id);
+
+        if (!eleitor) {
+            return res.status(404).send("Eleitor não encontrado.");
+        }
+
+        res.render("atualizarDados.ejs", { eleitor });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Erro ao carregar os dados.");
+    }
+}
+
+async function atualizaDados(req, res) {
+    try {
+        // const id = req.session.eleitorId;
+        const id = 14;
+
+        if (!id) {
+            return res.status(401).send("Usuário não autenticado.");
+        }
+
+        const eleitor = await Eleitor.findByPk(id);
+
+        if (!eleitor) {
+            return res.status(404).send("Eleitor não encontrado.");
+        }
+
+        const eleitorExistente = await Eleitor.findOne({
+            where: {
+                [Op.and]: [
+                    {
+                        [Op.or]: [
+                            { email: req.body.email },
+                            { cpf: req.body.cpf }
+                        ]
+                    },
+                    {
+                        id: { [Op.ne]: id }
+                    }
+                ]
+            }
+        });
+
+        if (eleitorExistente) {
+            let mensagem = "";
+
+            if (eleitorExistente.email === req.body.email && eleitorExistente.cpf === req.body.cpf) {
+                mensagem = "CPF e e-mail já estão cadastrados para outro eleitor.";
+            } else if (eleitorExistente.email === req.body.email) {
+                mensagem = "Este e-mail já está cadastrado para outro eleitor.";
+            } else {
+                mensagem = "Este CPF já está cadastrado para outro eleitor.";
+            }
+
+            return res.render("atualizarDados.ejs", {
+                eleitor: {
+                    ...req.body,
+                    dataNasc: req.body.dataNasc
+                },
+                mensagem
+            });
+        }
+
+        await eleitor.update({
+            nome: req.body.nome,
+            sobrenome: req.body.sobrenome,
+            email: req.body.email,
+            cpf: req.body.cpf,
+            data_nascimento: req.body.dataNasc,
+            titulo: req.body.titulo,
+            rua: req.body.rua,
+            nro_endereco: req.body.numeroCasa,
+            bairro: req.body.bairro,
+            cidade: req.body.cidade,
+            UF: req.body.estado
+        });
+
+        return res.render("atualizarDados.ejs", {
+            eleitor,
+            mensagem: "Dados atualizados com sucesso!"
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        if (error.name === "SequelizeUniqueConstraintError") {
+            return res.render("atualizarDados.ejs", {
+                eleitor: {
+                    ...req.body,
+                    dataNasc: req.body.dataNasc
+                },
+                mensagem: "CPF ou e-mail já cadastrado."
+            });
+        }
+
+        return res.status(500).send("Erro ao atualizar os dados.");
+    }
+}
+
+
 module.exports = {
     abreCadastroEleitores,
     salvaCadastroEleitores,
@@ -148,5 +305,8 @@ module.exports = {
     ativarEleitor,
     visualizarPerfil,
     abreSolicitacao,
-    solicitarAtualizacao
+    solicitarAtualizacao,
+    abreAtualizacao,
+    atualizaDados
 };
+

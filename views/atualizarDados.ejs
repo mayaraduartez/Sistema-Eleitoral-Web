@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <title>Sistema de Votação</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="left">
+            <span class="subtitle">ATUALIZAÇÃO DE DADOS</span>
+            <h1>Atualize seus <br> Dados <br> Eleitorais</h1>
+            <p>
+                Mantenha suas informações sempre atualizadas no sistema eleitoral!
+            </p>
+
+            <div class="imagem">
+                <img src="/images/Tribunal_Superior_Eleitoral.png" alt="Justiça Eleitoral">
+            </div>
+
+            <div class="info">
+                <p>Siga a conta da Justiça eleitoral nas redes sociais:</p>
+                <br>
+                <a href="https://www.instagram.com/tsejusbr/" target="_blank">
+                    <i class="fa-brands fa-instagram"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="right">
+            <form method="POST">
+                <input type="text" name="nome" placeholder="Nome" value="<%= eleitor.nome || '' %>" required>
+                <input type="text" name="sobrenome" placeholder="Sobrenome" value="<%= eleitor.sobrenome || '' %>"
+                    required>
+                <input type="email" name="email" placeholder="Email" value="<%= eleitor.email || '' %>" required>
+                <input type="text" name="cpf" placeholder="CPF" value="<%= eleitor.cpf || '' %>" required>
+                <input type="date" name="dataNasc" value="<%= eleitor.data_nascimento || '' %>" required>
+                <input type="text" name="titulo" placeholder="Título" value="<%= eleitor.titulo || '' %>" required>
+                <input type="text" name="rua" placeholder="Rua" value="<%= eleitor.rua || '' %>" required>
+                <input type="text" name="numeroCasa" placeholder="Número da Casa"
+                    value="<%= eleitor.nro_endereco || '' %>" required>
+                <input type="text" name="bairro" placeholder="Bairro" value="<%= eleitor.bairro || '' %>" required>
+                <input type="text" name="cidade" placeholder="Cidade" value="<%= eleitor.cidade || '' %>" required>
+                <input type="text" name="estado" placeholder="Estado" value="<%= eleitor.UF || '' %>" required>
+
+                <button type="submit" class="btn">Atualizar dados</button>
+                <div class="mensagem">
+                    <% if (typeof mensagem !=='undefined' && mensagem) { %>
+                        <p>
+                            <%= mensagem %>
+                        </p>
+                        <% } %>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

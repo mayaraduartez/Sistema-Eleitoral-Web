@@ -44,8 +44,15 @@
       <input type="text" name="estado" placeholder="Estado" required>
 
       <button type="submit" class="btn">Cadastre agora</button>
+      <div class="mensagem">
+      <% if (typeof mensagem !== 'undefined' && mensagem) { %>
+        <p><%= mensagem %></p>
+      <% } %>
+    </div>
+
     </form>
   </div>
+  
 
 </div>
 

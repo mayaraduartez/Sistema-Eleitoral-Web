@@ -21,4 +21,8 @@ router.post("/eleitor/ativar/:id", mainController.ativarEleitor);
 router.get("/solicitarAtualizacao", mainController.abreSolicitacao);
 router.post("/enviarAtualizacao", mainController.solicitarAtualizacao);
 
+//Atualizar os dados do eleitor
+router.get("/atualizarDados", mainController.abreAtualizacao);
+router.post("/atualizarDados", mainController.atualizaDados);
+
 module.exports = router;
