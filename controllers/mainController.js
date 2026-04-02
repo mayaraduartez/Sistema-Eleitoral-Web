@@ -1,5 +1,6 @@
 const Eleitor = require("../models/Eleitor");
 const Solicitacao = require("../models/Solicitacao");
+const Partido = require("../models/Partido");
 const { Op } = require("sequelize");
 
 async function abreCadastroEleitores(req, res){
@@ -295,6 +296,73 @@ async function atualizaDados(req, res) {
     }
 }
 
+async function abreCadastroPartido(req, res){
+    const mensagem = '';
+    res.render("cadastroPartido.ejs", { mensagem });
+}
+
+async function salvaCadastroPartido(req, res) {
+    const { nomePartido, sigla, ideologia, numero} = req.body;
+
+    try {
+        const partidoExistente = await Partido.findOne({
+            where: {
+                [require("sequelize").Op.or]: [
+                    { nomePartido: nomePartido },
+                    { numero: numero }
+                ]
+            }
+        });
+
+        if (partidoExistente) {
+            let mensagem = "";
+
+            if (partidoExistente.nomePartido === nomePartido && partidoExistente.numero === numero) {
+                mensagem = "Numero partidario e Nome partidario já estão cadastrados.";
+            } else if (partidoExistente.nomePartido === nomePartido) {
+                mensagem = "Este nome já está cadastrado.";
+            } else if (partidoExistente.numero === numero) {
+                mensagem = "Este número já está cadastrado.";
+            }
+
+            return res.render("cadastroPartido.ejs", { mensagem });
+        }
+
+        const partido = await Partido.create({
+            nomePartido,
+            sigla,
+            ideologia,
+            numero            
+        });
+
+        console.log(partido.id);
+
+        const mensagem = "Cadastro realizado com sucesso!";
+        return res.render("cadastroPartido.ejs", { mensagem });
+
+    } catch (error) {
+        console.error("Erro ao salvar partido:", error);
+
+        if (error.name === "SequelizeUniqueConstraintError") {
+            let mensagem = "nome ou número já cadastrado.";
+
+            const campos = error.errors.map(e => e.path);
+
+            if (campos.includes("nomePartido") && campos.includes("numero")) {
+                mensagem = "Nome ou numero já estão cadastrados.";
+            } else if (campos.includes("nomePartido")) {
+                mensagem = "Este nome já está cadastrado.";
+            } else if (campos.includes("numero")) {
+                mensagem = "Este numero já está cadastrado.";
+            }
+
+            return res.render("cadastroPartido.ejs", { mensagem });
+        }
+
+        return res.status(500).send("Erro ao salvar partido");
+    }
+}
+
 
 module.exports = {
     abreCadastroEleitores,
@@ -307,6 +375,8 @@ module.exports = {
     abreSolicitacao,
     solicitarAtualizacao,
     abreAtualizacao,
-    atualizaDados
+    atualizaDados,
+    abreCadastroPartido,
+    salvaCadastroPartido
 };
 
