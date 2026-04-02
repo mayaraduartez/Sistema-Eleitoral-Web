@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <title>Sistema de Votaçao</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="left">
+            <span class="subtitle">CADASTRO DO PARTIDO</span>
+            <h1>Faça o <br> Cadastro <br> Do Partido</h1>
+            <p>
+                Participe da construção de um processo eleitoral mais organizado e eficiente!
+            </p>
+            <div class="imagem">
+                <img src="images/Tribunal_Superior_Eleitoral.png" alt="Justiça Eleitoral">
+            </div>
+
+            <div class="info">
+                <p> Siga a conta da Justiça eleitoral nas redes socias;
+                    <br></br>
+                    <a href="https://www.instagram.com/tsejusbr/" target="_blank">
+                        <i class="fa-brands fa-instagram"></i>
+                    </a>
+            </div>
+        </div>
+
+        <div class="right">
+            <form method="POST">
+                <input type="text" name="nomePartido" placeholder="Nome" required>
+                <input type="text" name="sigla" placeholder="Sigla do partido" required>
+                <input type="text" name="ideologia" placeholder="Ideologia" required>
+                <input type="text" name="numero" placeholder="Numero do partido" required>
+
+
+                <button type="submit" class="btn">Cadastre agora</button>
+                <div class="mensagem">
+                    <% if (typeof mensagem !=='undefined' && mensagem) { %>
+                        <p>
+                            <%= mensagem %>
+                        </p>
+                        <% } %>
+                </div>
+
+            </form>
+        </div>
+
+
+    </div>
+
+</body>
+
+</html>
