@@ -22,8 +22,8 @@ router.get("/solicitarAtualizacao", mainController.abreSolicitacao);
 router.post("/enviarAtualizacao", mainController.solicitarAtualizacao);
 
 //Atualizar os dados do eleitor
-router.get("/atualizarDados", mainController.abreAtualizacao);
-router.post("/atualizarDados", mainController.atualizaDados);
+router.get("/atualizarDados/:id", mainController.abreAtualizacao);
+router.post("/atualizarDados/:id", mainController.atualizaDados);
 
 //Rota do cadastro de partido
 router.get("/cadastroPartido", mainController.abreCadastroPartido);

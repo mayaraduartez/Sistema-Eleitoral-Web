@@ -22,9 +22,16 @@
             <input type="email" name="email" placeholder="Email" required>
             <textarea type="text" name="mensagem" placeholder="Mensagem (descreva o que precisa alterar):" rows="5" required></textarea><br><br>
         
-        
             <button type="submit" class="btn">Enviar Solicitação</button>
-    </form>
+   
+            <div class="mensagem">
+                    <% if (typeof mensagem !=='undefined' && mensagem) { %>
+                        <p>
+                            <%= mensagem %>
+                        </p>
+                        <% } %>
+                </div>
+        </form>
     </div>
 </body>
 </html>

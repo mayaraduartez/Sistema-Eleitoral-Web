@@ -150,12 +150,13 @@ async function visualizarPerfil(req, res) {
     }
 }
 
-//função de solicitação de atualização de dados
+//função de solicitação de atualização de dados do eleitor
 
 async function abreSolicitacao(req, res) {
     try {
-        // Redireciona o navegador para a rota especificada
-        return res.redirect("/solicitarAtualizacao");
+        // Renderiza a mesma tela
+          res.render("solicitarAtualizacao.ejs");
+          
     } catch (error) {
         console.error("Erro ao redirecionar solicitação:", error);
         return res.status(500).send("Erro interno ao redirecionar.");
@@ -176,21 +177,26 @@ async function solicitarAtualizacao(req, res) {
         await Solicitacao.create({
             nome: nome,
             email: email,
-            mensagem: mensagem,
-            status: 'pendente'
+            mensagem: mensagem
+            
         });
 
-        return res.redirect('/sucesso');
+         return res.render("solicitarAtualizacao.ejs", {
+            
+            mensagem: "Solicitação enviada com sucesso!"
+        });
     } catch (error) {
         console.error("Erro ao enviar solicitação:", error);
         return res.status(500).send("Erro ao enviar solicitação.");
     }
 }
 
+
 async function abreAtualizacao(req, res) {
     try {
         //const id = req.session.eleitorId;
-        const id = 14; // Substitua pelo ID do eleitor logado, por exemplo, req.session.eleitorId
+        //const id = 14; // Substitua pelo ID do eleitor logado, por exemplo, req.session.eleitorId
+          const id = req.params.id; 
 
         if (!id) {
             return res.status(401).send("Usuário não autenticado.");
@@ -212,7 +218,8 @@ async function abreAtualizacao(req, res) {
 async function atualizaDados(req, res) {
     try {
         // const id = req.session.eleitorId;
-        const id = 14;
+        //const id = 14;
+          const id = req.params.id; 
 
         if (!id) {
             return res.status(401).send("Usuário não autenticado.");
