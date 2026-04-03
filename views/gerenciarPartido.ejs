@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Gerenciar Partido</title>
+</head>
+
+<body>
+    <div class="container-eleitor">
+        <div class="cabecalho">
+            <div class="subtitle">
+                <h1>Gerenciar Partidos</h1>
+                <p>Gerencie os partidos cadastrados no sistema de forma segura e eficiente.</p>
+            </div>
+
+            <div class="imagem">
+                <img src="images/Tribunal_Superior_Eleitoral.png" alt="Justiça Eleitoral">
+            </div>
+
+            <div class="info">
+                <p>Consulte dados oficiais da Justiça Eleitoral</p>
+            </div>
+        </div>
+
+        <div class="tabela-eleitores">
+            <h2>Lista dos Partidos</h2>
+            <div style="margin-bottom: 1rem;">
+                <a href="/cadastroPartido" class="btn"
+                    style="text-decoration:none; padding:8px 12px; background:#28a745; color:#fff; border-radius:4px;">
+                    + Cadastrar novo partido
+                </a>
+            </div>
+            <table class="tabela">
+                <thead>
+                    <tr>
+                        <th>Nome do Partido</th>
+                        <th>Sigla</th>
+                        <th>Ideologia</th>
+                        <th>Número</th>
+                        <th class="col-acoes">Ações</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <% partidos.forEach(partido=> { %>
+                        <tr>
+                            <td>
+                                <%= partido.nomePartido %>
+                            </td>
+                            <td>
+                                <%= partido.sigla %>
+                            </td>
+                            <td>
+                                <%= partido.ideologia %>
+                            </td>
+                            <td>
+                                <%= partido.numero %>
+                            </td>
+                            <td class="acoes">
+
+                                <a href="/partido/editar/<%= partido.id %>" class="botao-editar">Atualizar</a>
+                                <form action="/partido/excluir/<%= partido.id %>" method="POST" style="display:inline;"
+                                    onsubmit="return confirmarExclusao();">
+                                    <button class="botao-excluir" type="submit">Excluir</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+<script>
+    function confirmarExclusao() {
+        return confirm("Tem certeza que deseja excluir este eleitor?");
+    }
+</script>
+
+</html>

@@ -370,6 +370,61 @@ async function salvaCadastroPartido(req, res) {
     }
 }
 
+async function tela_gerenciar_partido(req, res) {
+    try {
+        const partidos = await Partido.findAll();
+        return res.render('gerenciarPartido', { partidos });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send('Erro ao carregar a página de gerenciamento de partidos');
+    }
+}
+
+async function excluirPartido(req, res) {
+    try {
+        const { id } = req.params;
+        await Partido.destroy({ where: { id } });
+        return res.redirect('/gerenciarPartido');
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send('Erro ao excluir partido');
+    }
+}
+
+async function editarPartido(req, res) {
+    try {
+        const { id } = req.params;
+        const partido = await Partido.findByPk(id);
+
+        if (!partido) {
+            return res.status(404).send('Partido não encontrado');
+        }
+
+        return res.render('atualizarPartido', { partido });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send('Erro ao carregar edição do partido');
+    }
+}
+
+async function atualizarPartido(req, res) {
+    try {
+        const { id } = req.params;
+        const { nomePartido, sigla, ideologia, numero} = req.body;
+
+        const partido = await Partido.findByPk(id);
+        if (!partido) {
+            return res.status(404).send('Partido não encontrado');
+        }
+
+        await partido.update( { nomePartido, sigla, ideologia, numero });
+
+        return res.redirect('/gerenciarPartido');
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send('Erro ao atualizar partido');
+    }
+}
 
 module.exports = {
     abreCadastroEleitores,
@@ -384,6 +439,10 @@ module.exports = {
     abreAtualizacao,
     atualizaDados,
     abreCadastroPartido,
-    salvaCadastroPartido
+    salvaCadastroPartido,
+    tela_gerenciar_partido,
+    excluirPartido,
+    editarPartido,
+    atualizarPartido
 };
 

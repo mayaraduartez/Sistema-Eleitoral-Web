@@ -232,3 +232,12 @@ body {
 .col-acoes {
   width: 170px;
 }
+
+.botao-pequeno {
+  text-decoration: none;
+  padding: 3px 8px;
+  background: #007bff;
+  color: #fff;
+  border-radius: 100px;
+  font-size: 14px;
+}

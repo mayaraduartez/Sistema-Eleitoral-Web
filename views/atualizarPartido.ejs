@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Atualizar Partido</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="left">
+            <span class="subtitle">ATUALIZAR PARTIDO</span>
+            <h1>Editar Partido</h1>
+            <p>Faça as alterações necessárias e confirme para salvar.</p>
+            <div class="imagem">
+                <img src="images/Tribunal_Superior_Eleitoral.png" alt="Justiça Eleitoral">
+            </div>
+        </div>
+
+        <div class="right">
+            <form action="/partido/atualizar/<%= partido.id %>" method="POST">
+                <input type="text" name="nomePartido" placeholder="Nome" value="<%= partido.nomePartido %>" required>
+                <input type="text" name="sigla" placeholder="Sigla do partido" value="<%= partido.sigla %>" required>
+                <input type="text" name="ideologia" placeholder="Ideologia" value="<%= partido.ideologia %>">
+                <input type="number" name="numero" placeholder="Número do partido" value="<%= partido.numero %>"
+                    required>
+
+                <button type="submit" class="btn">Salvar alterações</button>
+            </form>
+            <div style="margin-top: 1rem;">
+                <a href="/cadastroPartido" class="btn"
+                    style="text-decoration:none; padding:8px 12px; background:#6c757d; color:#fff; border-radius:4px;">Voltar
+                    para cadastrar partido</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
