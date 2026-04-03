@@ -1,6 +1,7 @@
 const Eleitor = require("../models/Eleitor");
 const Solicitacao = require("../models/Solicitacao");
 const Partido = require("../models/Partido");
+const Cargo = require("../models/Cargo");
 const { Op } = require("sequelize");
 
 async function abreCadastroEleitores(req, res){
@@ -426,6 +427,7 @@ async function atualizarPartido(req, res) {
     }
 }
 
+
 module.exports = {
     abreCadastroEleitores,
     salvaCadastroEleitores,
@@ -443,6 +445,6 @@ module.exports = {
     tela_gerenciar_partido,
     excluirPartido,
     editarPartido,
-    atualizarPartido
+    atualizarPartido,
 };
 

@@ -29,4 +29,5 @@ router.post("/atualizarDados/:id", mainController.atualizaDados);
 router.get("/cadastroPartido", mainController.abreCadastroPartido);
 router.post("/cadastroPartido", mainController.salvaCadastroPartido);
 
+
 module.exports = router;
