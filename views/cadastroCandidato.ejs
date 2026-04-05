@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <title>Cadastro de Candidato</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="container">
+  
+  <div class="left">
+    <span class="subtitle">CADASTRO DO CANDIDATO</span>
+    <h1>Faça o seu <br> Cadastro <br> de Candidato</h1>
+    <p>
+      Cadastre um candidato vinculado a um eleitor e a um partido político.
+    </p>
+
+    <div class="imagem">
+      <img src="images/Tribunal_Superior_Eleitoral.png" alt="Justiça Eleitoral">
+    </div>
+
+    <div class="info">
+      <p>
+        O sistema valida o número do candidato para evitar duplicidade.
+        <br></br>
+        <a href="https://www.instagram.com/tsejusbr/" target="_blank">
+          <i class="fa-brands fa-instagram"></i>
+        </a>
+      </p>
+    </div>
+  </div>
+
+  <div class="right">
+    <form method="POST" action="/cadastroCandidato">
+      
+      <select name="eleitorId" required>
+        <option value="">Selecione o eleitor</option>
+        <% eleitores.forEach(function(eleitor) { %>
+          <option value="<%= eleitor.id %>">
+            <%= eleitor.nome %> <%= eleitor.sobrenome %> - CPF: <%= eleitor.cpf %>
+          </option>
+        <% }) %>
+      </select>
+
+      <input type="number" name="numeroCandidato" placeholder="Número do Candidato" required>
+
+      <select name="partidoId" required>
+        <option value="">Selecione o partido</option>
+        <% partidos.forEach(function(partido) { %>
+          <option value="<%= partido.id %>">
+            <%= partido.nomePartido %> - <%= partido.sigla %>
+          </option>
+        <% }) %>
+      </select>
+
+      <input type="text" name="cargoDisputado" placeholder="Cargo Disputado" required>
+
+      <button type="submit" class="btn">Cadastrar candidato</button>
+
+      <div class="mensagem">
+        <% if (typeof mensagem !== 'undefined' && mensagem) { %>
+          <p><%= mensagem %></p>
+        <% } %>
+
+        <% if (typeof erro !== 'undefined' && erro) { %>
+          <p><%= erro %></p>
+        <% } %>
+      </div>
+
+    </form>
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -6,6 +6,7 @@ var session = require("express-session");
 var passport = require("passport"); 
 
 const mainRouter = require("./router/mainRouters");
+const candidatoRouter = require("./router/candidatoRouter");
 
 app.use(express.json());
 
@@ -29,6 +30,7 @@ app.use(
 app.use(passport.authenticate("session"));
 
 app.use("/", mainRouter);
+app.use("/", candidatoRouter);
 
 app.listen(port, function () {
   console.log("Servidor funcionando na porta: " + port);
