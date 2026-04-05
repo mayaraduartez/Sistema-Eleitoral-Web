@@ -6,7 +6,6 @@
   <link rel="stylesheet" href="/css/style.css">
   <title>Perfil do Eleitor - TSE</title>
   <style>
-    /* AJUSTE PARA CARD COMPACTO (ALTURA E LARGURA REDUZIDAS) */
     body {
       background-color: #1E4FA1 !important;
       margin: 0;
@@ -18,20 +17,19 @@
       font-family: Arial, sans-serif;
     }
 
-    /* Card bem compacto: Largura 550px e Padding menor */
     .container-perfil-final {
       background-color: white;
       width: 90%;
-      max-width: 900px; 
-      border-radius: 30px; 
-      padding: 30px 40px; /* Diminuí o padding superior e inferior */
+      max-width: 900px;
+      border-radius: 30px;
+      padding: 30px 40px;
       box-shadow: 0 15px 35px rgba(0,0,0,0.4);
       margin: 10px;
     }
 
     .cabecalho-perfil {
       text-align: center;
-      margin-bottom: 15px; /* Menos espaço aqui */
+      margin-bottom: 15px;
     }
 
     .cabecalho-perfil h1 {
@@ -42,7 +40,7 @@
     }
 
     .logo-tse-p {
-      max-width: 180px; /* Logo um pouco menor para economizar altura */
+      max-width: 180px;
       margin: 10px 0;
     }
 
@@ -68,7 +66,7 @@
     }
 
     p {
-      margin: 8px 0; /* Diminuí a margem entre os parágrafos de dados */
+      margin: 8px 0;
       font-size: 14px;
     }
   </style>
@@ -80,34 +78,33 @@
     <div class="cabecalho-perfil">
       <h1>Perfil do Eleitor</h1>
       <p style="color: #888; font-size: 11px; text-transform: uppercase; margin: 0;">Dados Oficiais</p>
-      
       <img src="/images/Tribunal_Superior_Eleitoral.png" alt="TSE" class="logo-tse-p">
     </div>
 
-        <div class="tabela-eleitores">
-            <h2>Dados Cadastrais</h2>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                <div>
-                    <p><strong>Nome:</strong> <%= eleitor.nome %></p>
-                    <p><strong>Sobrenome:</strong> <%= eleitor.sobrenome %></p>
-                    <p><strong>CPF:</strong> <%= eleitor.cpf %></p>
-                </div>
-                <div>
-                    <p><strong>Título:</strong> <%= eleitor.titulo %></p>
-                    <p><strong>Situação:</strong> <%= eleitor.status %></p>
-                    <p><strong>Cidade:</strong> <%= eleitor.cidade %>/<%= eleitor.UF %></p>
-                </div>
-            </div>
-            <div class="acoes" style="margin-top: 20px;">
-                <button onclick="window.location.href='/gerenciarEleitor'" class="botao-inativar" style="background: #666; width: auto; cursor: pointer;">
-    Voltar
-</button>
-<a href="/solicitarAtualizacao" class="botao-atualizar" style="background: #2563eb; width: auto; text-decoration: none; display: inline-block; padding: 10px 20px; border-radius: 5px; color: white; font-weight: bold;">
-    Solicitar Atualização
-</a>
-            </div>
+    <div class="tabela-eleitores">
+      <h2>Dados Cadastrais</h2>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div>
+          <p><strong>Nome:</strong> <%= eleitor.nome %></p>
+          <p><strong>Sobrenome:</strong> <%= eleitor.sobrenome %></p>
+          <p><strong>CPF:</strong> <%= eleitor.cpf %></p>
         </div>
-        
+        <div>
+          <p><strong>Título:</strong> <%= eleitor.titulo %></p>
+          <p><strong>Situação:</strong> <span class="status-cor"><%= eleitor.status %></span></p>
+          <p><strong>Cidade:</strong> <%= eleitor.cidade %>/<%= eleitor.UF %></p>
+        </div>
+      </div>
+
+      <div class="acoes" style="margin-top: 20px;">
+        <button onclick="window.location.href='/gerenciarEleitor'" class="botao-inativar" style="background: #666; width: auto; cursor: pointer;">
+          Voltar
+        </button>
+
+        <a href="/solicitarAtualizacao" class="botao-atualizar" style="background: #2563eb; width: auto; text-decoration: none; display: inline-block; padding: 10px 20px; border-radius: 5px; color: white; font-weight: bold;">
+          Solicitar Atualização
+        </a>
+      </div>
     </div>
 
   </div>
