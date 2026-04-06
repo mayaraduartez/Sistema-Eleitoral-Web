@@ -35,6 +35,7 @@
   <div class="right">
     <form method="POST" action="/cadastroCandidato">
       
+      <!-- Seleção do Eleitor -->
       <select name="eleitorId" required>
         <option value="">Selecione o eleitor</option>
         <% eleitores.forEach(function(eleitor) { %>
@@ -44,8 +45,10 @@
         <% }) %>
       </select>
 
+      <!-- Número do candidato -->
       <input type="number" name="numeroCandidato" placeholder="Número do Candidato" required>
 
+      <!-- Seleção do Partido -->
       <select name="partidoId" required>
         <option value="">Selecione o partido</option>
         <% partidos.forEach(function(partido) { %>
@@ -55,7 +58,13 @@
         <% }) %>
       </select>
 
-      <input type="text" name="cargoDisputado" placeholder="Cargo Disputado" required>
+      <!-- Seleção do Cargo (puxado do banco) -->
+      <select name="cargoDisputado" required>
+  <option value="">Selecione o cargo</option>
+  <% cargos.forEach(function(cargo) { %>
+    <option value="<%= cargo.nomecargo %>"><%= cargo.nomecargo %></option>
+  <% }) %>
+</select>
 
       <button type="submit" class="btn">Cadastrar candidato</button>
 

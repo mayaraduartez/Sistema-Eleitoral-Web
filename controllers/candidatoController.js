@@ -1,6 +1,7 @@
 const Candidato = require("../models/Candidato");
 const Eleitor = require("../models/Eleitor");
 const Partido = require("../models/Partido");
+const Cargo = require("../models/Cargo"); // import do model
 
 module.exports = {
   async abreCadastroCandidato(req, res) {
@@ -11,9 +12,12 @@ module.exports = {
 
       const partidos = await Partido.findAll();
 
+      const cargos = await Cargo.findAll(); // busca todos os cargos
+
       res.render("cadastroCandidato", {
         eleitores,
         partidos,
+        cargos, // envia para a view
         mensagem: null,
         erro: null,
       });
@@ -32,6 +36,7 @@ module.exports = {
       });
 
       const partidos = await Partido.findAll();
+      const cargos = await Cargo.findAll(); // envia cargos também em caso de erro
 
       const numeroExistente = await Candidato.findOne({
         where: { numeroCandidato: numeroCandidato },
@@ -41,6 +46,7 @@ module.exports = {
         return res.render("cadastroCandidato", {
           eleitores,
           partidos,
+          cargos,
           mensagem: null,
           erro: "Número de candidato já cadastrado.",
         });
@@ -54,6 +60,7 @@ module.exports = {
         return res.render("cadastroCandidato", {
           eleitores,
           partidos,
+          cargos,
           mensagem: null,
           erro: "Este eleitor já foi cadastrado como candidato.",
         });
@@ -70,6 +77,7 @@ module.exports = {
       res.render("cadastroCandidato", {
         eleitores,
         partidos,
+        cargos,
         mensagem: "Candidato cadastrado com sucesso.",
         erro: null,
       });
