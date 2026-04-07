@@ -39,5 +39,8 @@ router.post("/partido/atualizar/:id", mainController.atualizarPartido);
 // Rotas de gerenciamento de partido
 router.get("/cadastroCandidato", mainController.abreCadastroCandidato);
 router.post("/cadastroCandidato", mainController.salvaCadastroCandidato);
-
+router.get("/gerenciarCandidato", mainController.tela_gerenciar_candidato);
+router.post('/candidato/inativar/:id', mainController.inativarCandidato);
+router.post('/candidato/ativar/:id', mainController.ativarCandidato);
+router.post('/candidato/excluir/:id', mainController.excluirCandidato);
 module.exports = router;

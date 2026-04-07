@@ -25,6 +25,11 @@ const Candidato = sequelizeconnect.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+     status: {
+      type: DataTypes.ENUM('ativo', 'inativo'),
+      allowNull: false,
+      defaultValue: 'ativo'
+    },
   },
   {
     timestamps: true, 
@@ -33,9 +38,9 @@ const Candidato = sequelizeconnect.define(
 );
 
 Candidato.associate = (models) => {
-  Candidato.belongsTo(models.Eleitor, {
-    foreignKey: "eleitor_id",
-  });
+  Candidato.belongsTo(models.Eleitor, { foreignKey: 'eleitor_id', as: 'eleitor' });
+  Candidato.belongsTo(models.Partido, { foreignKey: 'partido_id', as: 'partido' });
+  Candidato.belongsTo(models.Cargo, { foreignKey: 'cargo_id', as: 'cargo' });
 };
 
 module.exports = Candidato;

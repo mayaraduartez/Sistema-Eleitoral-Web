@@ -3,7 +3,8 @@ const sequelizeconnect = require("../config/connection");
 
 const Eleitor = sequelizeconnect.define(
   "Eleitor",
-  {
+  
+    {
     nome: {
       type: DataTypes.STRING,
     },
@@ -58,4 +59,8 @@ const Eleitor = sequelizeconnect.define(
   },
 );
 
+ Eleitor.associate = (models) => {
+    // Use 'models.Candidato' ao invés de 'Candidato' diretamente
+    Eleitor.hasOne(models.Candidato, { foreignKey: 'eleitor_id' });
+  };
 module.exports = Eleitor;

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/style.css">
+  <title>Gerenciar Candidatos</title>
+</head>
+
+<body>
+  <div class="container-eleitor">
+    <div class="cabecalho">
+      <div class="subtitle">
+        <h1>Gerenciar Candidatos</h1>
+        <p>Gerencie os candidatos cadastrados no sistema de forma segura e eficiente.</p>
+      </div>
+
+      <div class="imagem">
+        <img src="images/Tribunal_Superior_Eleitoral.png" alt="Justiça Eleitoral">
+      </div>
+
+      <div class="info">
+        <p>Consulte dados oficiais da Justiça Eleitoral</p>
+      </div>
+    </div>
+
+    <div class="tabela-eleitores">
+      <h2>Lista de Candidatos</h2>
+
+      <table class="tabela">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>CPF</th>
+            <th>Data de Nascimento</th>
+            <th>Email</th>
+            <th>Título</th>
+            <th>Endereço</th>
+            <th>Status Eleitor</th>
+            <th>Status Candidatura</th>
+            <th>Número Candidato</th>
+            <th>Nome do Partido</th>
+            <th>Sigla</th>
+            <th>Ideologia</th>
+            <th>Número do Partido</th>
+            <th>Cargo Disputado</th>
+            <th>Esfera</th>
+            <th>Poder</th>
+            <th class="col-acoes">Ações</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% candidatos.forEach(candidato=> { %>
+            <tr>
+              <td>
+                <%= candidato.Eleitor.nome %>
+                  <%= candidato.Eleitor.sobrenome %>
+              </td>
+              <td>
+                <%= candidato.Eleitor.cpf %>
+              </td>
+              <td>
+                <%= candidato.Eleitor.data_nascimento %>
+              </td>
+              <td>
+                <%= candidato.Eleitor.email %>
+              </td>
+              <td>
+                <%= candidato.Eleitor.titulo %>
+              </td>
+              <td>
+                <%= candidato.Eleitor.rua %>,
+                  <%= candidato.Eleitor.nro_endereco %> -
+                    <%= candidato.Eleitor.bairro %>,
+                      <%= candidato.Eleitor.cidade %>
+              </td>
+              <td>
+                <%= candidato.Eleitor.status==='ativo' ? 'Ativo' : 'Inativo' %>
+              </td>
+              <td>
+                <%= candidato.status === 'ativo' ? 'Ativo' : 'Inativo' %>
+              </td>
+              <td>
+                <%= candidato.numero %>
+              </td>
+              <td>
+                <%= candidato.Partido.nomePartido %>
+              </td>
+              <td>
+                <%= candidato.Partido.sigla %>
+              </td>
+              <td>
+                <%= candidato.Partido.ideologia %>
+              </td>
+              <td>
+                <%= candidato.Partido.numero %>
+              </td>
+              <td>
+                <%= candidato.Cargo.nome %>
+              </td>
+              <td>
+                <%= candidato.Cargo.esfera %>
+              </td>
+              <td>
+                <%= candidato.Cargo.poder %>
+              </td>
+              <td class="acoes">
+
+                <!-- Botões Inativar e Excluir -->
+                <form action="/candidato/<%= candidato.status === 'ativo' ? 'inativar' : 'ativar' %>/<%= candidato.eleitor_id %>"
+                  method="POST">
+                  <button class="botao-inativar" type="submit"
+                    class="btn <%= candidato.status === 'ativo' ? 'btn-danger' : 'btn-success' %>">
+                    <%= candidato.status==='ativo' ? 'Inativar' : 'Ativar' %>
+                  </button>
+                </form>
+                <form action="/candidato/excluir/<%= candidato.eleitor_id %>" method="POST" onsubmit="return confirmarExclusao()">
+                  <button class="botao-excluir" type="submit">Excluir</button>
+                </form>
+                <a href="/candidato/editar/<%= candidato.eleitor_id %>">
+                  <button class="botao-inativar" type="button">Atualizar</button>
+                </a>
+
+                </>
+            </tr>
+            <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+<script>
+  function confirmarExclusao() {
+    return confirm("Tem certeza que deseja excluir este candidato?");
+  }
+</script>
+
+</html>

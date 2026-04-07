@@ -20,4 +20,8 @@ const Cargo = sequelizeconnect.define('Cargo', {
   timestamps: true
 });
 
+Cargo.associate = (models) => {
+  // Cargo tem muitos Candidatos
+  Cargo.hasMany(models.Candidato, { foreignKey: 'cargo_id' });
+};
 module.exports = Cargo;

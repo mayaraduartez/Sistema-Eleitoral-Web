@@ -28,4 +28,8 @@ const Partido = sequelizeconnect.define(
   }
 );
 
+Partido.associate = (models) => {
+  // Partido tem muitos Candidatos
+  Partido.hasMany(models.Candidato, { foreignKey: 'partido_id' });
+};
 module.exports = Partido;

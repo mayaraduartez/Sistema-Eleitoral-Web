@@ -23,7 +23,7 @@ module.exports = {
       },
 
       partido_id: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
         allowNull: false,
       },
 
@@ -39,6 +39,11 @@ module.exports = {
           model: "cargos",
           key: "id",
         },
+      },
+      status: {
+        type: Sequelize.ENUM("ativo", "inativo"),
+        allowNull:false,
+        defaultValue: "ativo",
       },
 
       updatedAt: {

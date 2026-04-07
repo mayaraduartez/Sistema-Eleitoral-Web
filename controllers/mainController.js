@@ -5,6 +5,29 @@ const Cargo = require("../models/Cargo");
 const Candidato = require("../models/Candidato");
 
 const { Op } = require("sequelize");
+// Registrar associações dos modelos
+// DEFINIR ASSOCIAÇÕES DIRETAMENTE (sem usar o método associate)
+// Isso é mais confiável e evita problemas de ordem
+
+// Candidato pertence a Eleitor, Partido e Cargo
+Candidato.belongsTo(Eleitor, { foreignKey: 'eleitor_id' });
+Candidato.belongsTo(Partido, { foreignKey: 'partido_id' });
+Candidato.belongsTo(Cargo, { foreignKey: 'cargo_id' });
+
+// Eleitor tem um Candidato
+Eleitor.hasOne(Candidato, { foreignKey: 'eleitor_id' });
+
+// Partido tem muitos Candidatos
+Partido.hasMany(Candidato, { foreignKey: 'partido_id' });
+
+// Cargo tem muitos Candidatos
+Cargo.hasMany(Candidato, { foreignKey: 'cargo_id' });
+
+// Se Solicitacao precisar de associações, adicione aqui também
+
+console.log('✅ Associações registradas com sucesso!');
+
+
 
 async function abreCadastroEleitores(req, res){
     const mensagem = '';
@@ -517,6 +540,73 @@ async function salvaCadastroCandidato(req, res) {
   }
 }
 
+//FUNÇÕES PARA CANDIDATO
+
+async function tela_gerenciar_candidato(req, res) {
+  try {
+    console.log('Iniciando busca de candidatos...');
+    const candidatos = await Candidato.findAll({
+      include: [
+        { model: Eleitor },  // sem alias
+        { model: Partido },  // sem alias
+        { model: Cargo }     // sem alias
+      ]
+    });
+    
+    console.log('Candidatos encontrados:', candidatos.length);
+    
+    return res.render('gerenciarCandidato', { candidatos });
+  } catch (error) {
+    console.error('Erro completo:', error);
+    return res.status(500).send('Erro ao carregar a página: ' + error.message);
+  }
+}
+
+// Função para inativar candidato
+async function inativarCandidato(req, res) {
+    try {
+        const { id } = req.params; // eleitor_id
+        await Candidato.update(
+            { status: "inativo" },
+            { where: { eleitor_id: id } }
+        );
+        return res.redirect("/gerenciarCandidato");
+    } catch(error) {
+        console.error(error);
+        return res.status(500).send("Erro ao inativar candidato.");
+    }
+}
+
+// Função para ativar candidato
+async function ativarCandidato(req, res) {
+    try {
+        const { id } = req.params; // eleitor_id
+        await Candidato.update(
+            { status: "ativo" },
+            { where: { eleitor_id: id } }
+        );
+        return res.redirect("/gerenciarCandidato");
+    } catch(error) {
+        console.error(error);
+        return res.status(500).send("Erro ao ativar candidato.");
+    }
+}
+
+// Função para excluir candidato
+async function excluirCandidato(req, res) {
+    try {
+        const { id } = req.params; // eleitor_id
+        await Candidato.destroy({
+            where: { eleitor_id: id }
+        });
+        return res.redirect("/gerenciarCandidato");
+    } catch(error) {
+        console.error(error);
+        return res.status(500).send("Erro ao excluir candidato.");
+    }
+}
+
+
 module.exports = {
     abreCadastroEleitores,
     salvaCadastroEleitores,
@@ -536,6 +626,10 @@ module.exports = {
     editarPartido,
     atualizarPartido,
     abreCadastroCandidato,
-    salvaCadastroCandidato
+    salvaCadastroCandidato,
+    tela_gerenciar_candidato,
+    ativarCandidato,
+    inativarCandidato,
+    excluirCandidato
 };
 
