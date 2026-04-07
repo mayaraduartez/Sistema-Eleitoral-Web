@@ -35,4 +35,9 @@ router.post("/partido/excluir/:id", mainController.excluirPartido);
 router.get("/partido/editar/:id", mainController.editarPartido);
 router.post("/partido/atualizar/:id", mainController.atualizarPartido);
 
+
+// Rotas de gerenciamento de partido
+router.get("/cadastroCandidato", mainController.abreCadastroCandidato);
+router.post("/cadastroCandidato", mainController.salvaCadastroCandidato);
+
 module.exports = router;

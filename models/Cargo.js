@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const sequelizeconnect = require('../config/connection');
 
 const Cargo = sequelizeconnect.define('Cargo', {
-  nomecargo: { // ⚠️ deve bater exatamente com o nome da coluna no banco PostgreSQL
+  nome: {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true
@@ -16,7 +16,7 @@ const Cargo = sequelizeconnect.define('Cargo', {
     allowNull: true
   }
 }, {
-  tableName: 'cargos', // nome da tabela no banco
+  tableName: 'cargos',
   timestamps: true
 });
 

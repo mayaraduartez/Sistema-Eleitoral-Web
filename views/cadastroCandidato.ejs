@@ -59,12 +59,14 @@
       </select>
 
       <!-- Seleção do Cargo (puxado do banco) -->
-      <select name="cargoDisputado" required>
-  <option value="">Selecione o cargo</option>
-  <% cargos.forEach(function(cargo) { %>
-    <option value="<%= cargo.nomecargo %>"><%= cargo.nomecargo %></option>
-  <% }) %>
-</select>
+      <select name="cargoId" required>
+        <option value="">Selecione o cargo</option>
+        <% cargos.forEach(function(cargo) { %>
+          <option value="<%= cargo.id %>">
+            <%= cargo.nome %>
+          </option>
+        <% }) %>
+      </select>
 
       <button type="submit" class="btn">Cadastrar candidato</button>
 

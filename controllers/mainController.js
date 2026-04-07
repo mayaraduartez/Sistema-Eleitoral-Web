@@ -2,6 +2,8 @@ const Eleitor = require("../models/Eleitor");
 const Solicitacao = require("../models/Solicitacao");
 const Partido = require("../models/Partido");
 const Cargo = require("../models/Cargo");
+const Candidato = require("../models/Candidato");
+
 const { Op } = require("sequelize");
 
 async function abreCadastroEleitores(req, res){
@@ -428,6 +430,93 @@ async function atualizarPartido(req, res) {
 }
 
 
+async function abreCadastroCandidato(req, res) {
+    try {
+      const eleitores = await Eleitor.findAll({
+        where: { status: "ativo" },
+      });
+
+      const partidos = await Partido.findAll();
+
+      const cargos = await Cargo.findAll(); // busca todos os cargos
+
+      res.render("cadastroCandidato", {
+        eleitores,
+        partidos,
+        cargos, // envia para a view
+        mensagem: null,
+        erro: null,
+      });
+    } catch (error) {
+      console.log(error);
+      res.send("Erro ao abrir cadastro de candidato.");
+    }
+}
+
+
+async function salvaCadastroCandidato(req, res) {
+  try {
+    const { eleitorId, numeroCandidato, partidoId, cargoId } = req.body;
+
+    const eleitores = await Eleitor.findAll({
+      where: { status: "ativo" },
+    });
+
+    const partidos = await Partido.findAll();
+    const cargos = await Cargo.findAll();
+
+    // 🔥 Corrigido: numero
+    const numeroExistente = await Candidato.findOne({
+      where: { numero: numeroCandidato },
+    });
+
+    if (numeroExistente) {
+      return res.render("cadastroCandidato", {
+        eleitores,
+        partidos,
+        cargos,
+        mensagem: null,
+        erro: "Número de candidato já cadastrado.",
+      });
+    }
+
+    // 🔥 Corrigido: eleitor_id
+    const eleitorJaCandidato = await Candidato.findOne({
+      where: { eleitor_id: eleitorId },
+    });
+
+    if (eleitorJaCandidato) {
+      return res.render("cadastroCandidato", {
+        eleitores,
+        partidos,
+        cargos,
+        mensagem: null,
+        erro: "Este eleitor já foi cadastrado como candidato.",
+      });
+    }
+
+    await Candidato.create({
+      eleitor_id: eleitorId,
+      numero: numeroCandidato,
+      partido_id: partidoId,
+      cargo_id: cargoId,
+      status: "ativo",
+    });
+
+    res.render("cadastroCandidato", {
+      eleitores,
+      partidos,
+      cargos,
+      mensagem: "Candidato cadastrado com sucesso.",
+      erro: null,
+    });
+
+  } catch (error) {
+    console.log(error);
+    res.send("Erro ao salvar candidato.");
+  }
+}
+
 module.exports = {
     abreCadastroEleitores,
     salvaCadastroEleitores,
@@ -446,5 +535,7 @@ module.exports = {
     excluirPartido,
     editarPartido,
     atualizarPartido,
+    abreCadastroCandidato,
+    salvaCadastroCandidato
 };
 
