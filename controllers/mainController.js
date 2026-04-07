@@ -476,7 +476,6 @@ async function abreCadastroCandidato(req, res) {
     }
 }
 
-
 async function salvaCadastroCandidato(req, res) {
   try {
     const { eleitorId, numeroCandidato, partidoId, cargoId } = req.body;
@@ -488,7 +487,22 @@ async function salvaCadastroCandidato(req, res) {
     const partidos = await Partido.findAll();
     const cargos = await Cargo.findAll();
 
-    // 🔥 Corrigido: numero
+
+    const eleitor = await Eleitor.findOne({
+      where: { id: eleitorId }
+    });
+
+
+    if (!eleitor || eleitor.status === "inativo") {
+      return res.render("cadastroCandidato", {
+        eleitores,
+        partidos,
+        cargos,
+        mensagem: null,
+        erro: "Eleitor inativo não pode ser cadastrado como candidato.",
+      });
+    }
+
     const numeroExistente = await Candidato.findOne({
       where: { numero: numeroCandidato },
     });
@@ -503,7 +517,7 @@ async function salvaCadastroCandidato(req, res) {
       });
     }
 
-    // 🔥 Corrigido: eleitor_id
+
     const eleitorJaCandidato = await Candidato.findOne({
       where: { eleitor_id: eleitorId },
     });
@@ -526,7 +540,7 @@ async function salvaCadastroCandidato(req, res) {
       status: "ativo",
     });
 
-    res.render("cadastroCandidato", {
+    return res.render("cadastroCandidato", {
       eleitores,
       partidos,
       cargos,
@@ -539,7 +553,6 @@ async function salvaCadastroCandidato(req, res) {
     res.send("Erro ao salvar candidato.");
   }
 }
-
 //FUNÇÕES PARA CANDIDATO
 
 async function tela_gerenciar_candidato(req, res) {
@@ -606,6 +619,72 @@ async function excluirCandidato(req, res) {
     }
 }
 
+async function tela_atualizar_candidato(req, res) {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).send('ID não informado');
+    }
+
+    const candidato = await Candidato.findOne({
+      where: { eleitor_id: id },
+      include: [
+        {
+          model: Eleitor,
+          attributes: ['id', 'status', 'nome', 'sobrenome']
+        }
+      ]
+    });
+
+    if (!candidato) {
+      return res.status(404).send('Candidato não encontrado');
+    }
+
+    const eleitores = await Eleitor.findAll();
+    const partidos = await Partido.findAll();
+    const cargos = await Cargo.findAll();
+
+    return res.render('atualizarCandidato', {
+      candidato,
+      eleitores,
+      partidos,
+      cargos
+    });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send('Erro ao carregar a página');
+  }
+}
+
+async function atualizarCandidato(req, res) {
+  try {
+    const { id } = req.params;
+    const { numero, partido_id, cargo_id } = req.body;
+
+    const candidato = await Candidato.findOne({
+      where: { eleitor_id: id }
+    });
+
+    if (!candidato) {
+      return res.status(404).send('Candidato não encontrado');
+    }
+
+    // Atualiza candidato
+    await candidato.update({
+      numero,
+      partido_id,
+      cargo_id,
+    });
+
+    return res.redirect('/gerenciarCandidato');
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send('Erro ao atualizar');
+  }
+}
 
 module.exports = {
     abreCadastroEleitores,
@@ -630,6 +709,8 @@ module.exports = {
     tela_gerenciar_candidato,
     ativarCandidato,
     inativarCandidato,
-    excluirCandidato
+    excluirCandidato,
+    tela_atualizar_candidato,
+    atualizarCandidato
 };
 

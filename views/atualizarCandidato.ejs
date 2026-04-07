@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Atualizar Candidato</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="left">
+    <span class="subtitle">ATUALIZAÇÃO</span>
+
+    <h1> Atualizar<br>Cadastro<br>de Candidato</h1>
+
+    <p>Edite as informações do candidato.</p>
+
+    <div class="imagem">
+      <img src="/images/Tribunal_Superior_Eleitoral.png" alt="Justiça Eleitoral">
+    </div>
+
+    <div class="info">
+      <p>Siga a conta da Justiça eleitoral nas redes sociais:</p>
+      <br>
+      <a href="https://www.instagram.com/tsejusbr/" target="_blank">
+          <i class="fa-brands fa-instagram"></i>
+      </a>
+    </div>  
+
+  </div>
+  
+  <div class="right">
+    <form method="POST" action="/candidato/atualizar/<%= candidato.eleitor_id %>">
+
+    
+      <select name="eleitor_id" required>
+        <% eleitores.forEach(function(eleitor) { %>
+          <option value="<%= eleitor.id %>"
+            <%= eleitor.id == candidato.eleitor_id ? 'selected' : '' %>>
+            <%= eleitor.nome %> <%= eleitor.sobrenome %>
+          </option>
+        <% }) %>
+      </select>
+
+      <!-- NÚMERO -->
+      <input 
+        type="text" 
+        name="numero" 
+        value="<%= candidato.numero %>"
+        required
+      >
+
+      <!-- PARTIDO -->
+      <select name="partido_id" required>
+        <% partidos.forEach(function(partido) { %>
+          <option value="<%= partido.id %>"
+            <%= partido.id == candidato.partido_id ? 'selected' : '' %>>
+            <%= partido.nomePartido %> - <%= partido.sigla %>
+          </option>
+        <% }) %>
+      </select>
+
+      <!-- CARGO -->
+      <select name="cargo_id" required>
+        <% cargos.forEach(function(cargo) { %>
+          <option value="<%= cargo.id %>"
+            <%= cargo.id == candidato.cargo_id ? 'selected' : '' %>>
+            <%= cargo.nome %>
+          </option>
+        <% }) %>
+      </select>
+      <button type="submit" class="btn">
+        Atualizar candidato
+      </button>
+
+    </form>
+  </div>
+
+</div>
+
+</body>
+</html>
