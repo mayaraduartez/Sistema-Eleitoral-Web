@@ -3,6 +3,7 @@ const Solicitacao = require("../models/Solicitacao");
 const Partido = require("../models/Partido");
 const Cargo = require("../models/Cargo");
 const Candidato = require("../models/Candidato");
+const ZonaEleitoral = require("../models/Zona_Eleitoral");
 
 const { Op } = require("sequelize");
 // Registrar associações dos modelos
@@ -686,6 +687,61 @@ async function atualizarCandidato(req, res) {
   }
 }
 
+async function tela_cadastro_zona_eleitoral(req, res) {
+  try {
+    res.render("cadastroZonaEleitoral.ejs", {
+      mensagem: null,
+      erro: null
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Erro ao carregar página");
+  }
+}
+
+async function salvaCadastroZonaEleitoral(req, res) {
+  try {
+    let { numero, estado } = req.body;
+
+    numero = parseInt(numero);
+    estado = estado.toUpperCase().trim();
+
+    if (!numero || !estado) {
+      return res.render("cadastroZonaEleitoral.ejs", {
+        erro: "Preencha todos os campos corretamente.",
+        mensagem: null
+      });
+    }
+
+    const zonaExistente = await ZonaEleitoral.findOne({
+      where: { numero, estado }
+    });
+
+    if (zonaExistente) {
+      return res.render("cadastroZonaEleitoral.ejs", {
+        mensagem: "Zona já cadastrada para este estado.",
+        erro: null
+      });
+    }
+
+    await ZonaEleitoral.create({ numero, estado });
+
+    return res.render("cadastroZonaEleitoral.ejs", {
+      mensagem: "Zona cadastrada com sucesso!",
+      erro: null
+    });
+
+  } catch (error) {
+    console.error(error);
+
+    return res.render("cadastroZonaEleitoral.ejs", {
+      erro: "Erro ao cadastrar zona eleitoral.",
+      mensagem: null
+    });
+  }
+}
+
+
 module.exports = {
     abreCadastroEleitores,
     salvaCadastroEleitores,
@@ -711,6 +767,8 @@ module.exports = {
     inativarCandidato,
     excluirCandidato,
     tela_atualizar_candidato,
-    atualizarCandidato
+    atualizarCandidato,
+    tela_cadastro_zona_eleitoral,
+    salvaCadastroZonaEleitoral
 };
 

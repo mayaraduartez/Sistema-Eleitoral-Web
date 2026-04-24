@@ -46,4 +46,9 @@ router.post('/candidato/excluir/:id', mainController.excluirCandidato);
 router.get('/candidato/editar/:id', mainController.tela_atualizar_candidato);
 router.post('/candidato/atualizar/:id', mainController.atualizarCandidato);
 
+// Rotas de gerenciamento de Zona Eleitoral
+router.get("/cadastroZonaEleitoral", mainController.tela_cadastro_zona_eleitoral);
+router.post("/cadastroZonaEleitoral", mainController.salvaCadastroZonaEleitoral);
+
+
 module.exports = router;

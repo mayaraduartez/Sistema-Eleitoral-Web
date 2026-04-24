@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <title>Cadastro de Zona Eleitoral</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="container">
+  
+  <div class="left">
+    <span class="subtitle">CADASTRO DE ZONA ELEITORAL</span>
+    <h1>Cadastre uma <br> Zona Eleitoral</h1>
+    <p>Informe o número da zona e o estado (UF).</p>
+
+    <div class="imagem">
+      <img src="images/Tribunal_Superior_Eleitoral.png">
+    </div>
+
+    <div class="info">
+      <p>
+        Exemplo: Zona 1 - RS
+        <br><br>
+        Dados únicos por estado
+      </p>
+    </div>
+  </div>
+
+  <div class="right">
+    <form method="POST" action="/cadastroZonaEleitoral">
+
+      <input 
+        type="number" 
+        name="numero" 
+        placeholder="Número da Zona (ex: 1)" 
+        required
+      >
+
+      <input 
+        type="text" 
+        name="estado" 
+        placeholder="Estado (UF ex: RS)" 
+        maxlength="2"
+        style="text-transform: uppercase;"
+        required
+      >
+
+      <button type="submit" class="btn">Cadastrar</button>
+
+      <div class="mensagem">
+    <% if (typeof mensagem !== 'undefined' && mensagem) { %>
+      <p><%= mensagem %></p>
+    <% } %>
+
+    <% if (typeof erro !== 'undefined' && erro) { %>
+      <p><%= erro %></p>
+    <% } %>
+  </div>
+
+    </form>
+  </div>
+
+</div>
+
+</body>
+</html>
