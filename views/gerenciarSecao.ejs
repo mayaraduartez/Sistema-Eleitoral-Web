@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/style.css">
+  <title>Gerenciar Seção</title>
+</head>
+
+<body>
+  <div class="container-eleitor">
+    <div class="cabecalho">
+      <div class="subtitle">
+        <h1>Gerenciar Seções</h1>
+        <p>Gerencie as seções eleitorais cadastradas no sistema de forma segura e eficiente.</p>
+      </div>
+
+      <div class="imagem">
+        <img src="images/Tribunal_Superior_Eleitoral.png" alt="Justiça Eleitoral">
+      </div>
+
+      <div class="info">
+        <p>Consulte dados oficiais da Justiça Eleitoral</p>
+      </div>
+    </div>
+
+    <a href="/cadastroSecaoEleitoral" class="btn-zona-eleitoral">
+        <i class="fa-solid fa-list"></i> Cadastro de Seções
+      </a>
+    <div class="tabela-eleitores">
+      <h2>Lista de Seções</h2>
+
+      <table class="tabela">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Endereço</th>
+            <th>Zona Eleitoral</th>
+            <th class="col-acoes">Ações</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% secoes.forEach(secao=> { %>
+            <tr>
+              <td>
+                <%= secao.id %>
+              </td>
+              <td>
+                <%= secao.nome %>
+              </td>
+              <td>
+                <%= secao.rua %>,
+                  <%= secao.nro_local %> -
+                    <%= secao.bairro %>,
+                      <%= secao.cidade %>
+              </td>
+              <td>
+                <%= secao.zonaEleitoral_id %> id,
+                <%= secao.ZonaEleitoral.numero %> nro,  <%= secao.ZonaEleitoral.estado %> 
+              </td>
+              <td class="acoes">
+
+                <!-- Botão Excluir -->
+               
+                
+                <form action="/secao-eleitoral/excluir/<%= secao.id %>" method="POST" onsubmit="return confirmarExclusao()">
+                  <button class="botao-excluir" type="submit">Excluir</button>
+                </form>
+
+                <a href="/secao-eleitoral/editar/<%= secao.id %>">
+                  <button class="botao-inativar" type="button">Atualizar</button>
+                </a>
+
+                </>
+            </tr>
+            <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+<script>
+  function confirmarExclusao() {
+    return confirm("Tem certeza que deseja excluir esta seção?");
+  }
+</script>
+
+</html>

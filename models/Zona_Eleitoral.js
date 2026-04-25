@@ -28,5 +28,8 @@ const ZonaEleitoral = sequelizeconnect.define(
     tableName: "zona_eleitoral",
   }
 );
+ZonaEleitoral.associate = (models) => {
+  ZonaEleitoral.hasMany(models.SecaoEleitoral, { foreignKey: 'zonaEleitoral_id' });
+};
 
 module.exports = ZonaEleitoral;

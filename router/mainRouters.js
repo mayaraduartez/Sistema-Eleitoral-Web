@@ -54,4 +54,11 @@ router.post('/zona-eleitoral/excluir/:id', mainController.excluirZonaEleitoral);
 router.get('/zona-eleitoral/editar/:id', mainController.tela_atualizar_zona_eleitoral);
 router.post('/zona-eleitoral/atualizar/:id', mainController.atualizarZonaEleitoral);
 
+// Rotas de gerenciamento de Seção Eleitoral
+router.get("/cadastroSecaoEleitoral", mainController.tela_cadastro_secao_eleitoral);
+router.post("/cadastroSecaoEleitoral", mainController.salvaCadastroSecao);
+router.get("/gerenciarSecaoEleitoral", mainController.tela_gerenciar_secao_eleitoral);
+router.post('/secao-eleitoral/excluir/:id', mainController.excluirSecaoEleitoral);
+router.get('/secao-eleitoral/editar/:id', mainController.tela_atualizar_secao_eleitoral);
+router.post('/secao-eleitoral/atualizar/:id', mainController.atualizarSecaoEleitoral);
 module.exports = router;

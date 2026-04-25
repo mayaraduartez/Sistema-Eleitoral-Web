@@ -4,6 +4,7 @@ const Partido = require("../models/Partido");
 const Cargo = require("../models/Cargo");
 const Candidato = require("../models/Candidato");
 const ZonaEleitoral = require("../models/Zona_Eleitoral");
+const SecaoEleitoral = require("../models/Secao_Eleitoral");
 
 const { Op } = require("sequelize");
 // Registrar associações dos modelos
@@ -25,8 +26,13 @@ Partido.hasMany(Candidato, { foreignKey: 'partido_id' });
 Cargo.hasMany(Candidato, { foreignKey: 'cargo_id' });
 
 // Se Solicitacao precisar de associações, adicione aqui também
+  SecaoEleitoral.belongsTo(ZonaEleitoral, {foreignKey: 'zonaEleitoral_id'});
+  ZonaEleitoral.hasMany(SecaoEleitoral, { foreignKey: 'zonaEleitoral_id' });
+
 
 console.log('✅ Associações registradas com sucesso!');
+
+  
 
 
 
@@ -818,6 +824,166 @@ async function atualizarZonaEleitoral(req, res) {
     }
 }
 
+async function tela_cadastro_secao_eleitoral(req, res) {
+
+      try {
+     const zona = await ZonaEleitoral.findAll();
+
+      res.render("secaoEleitoral", {
+        ZonaEleitoral: zona,
+        mensagem: null,
+        erro: null,
+      });
+    } catch (error) {
+      console.log(error);
+      res.send("Erro ao carregar a página.");
+    }
+}
+  
+async function salvaCadastroSecao(req, res) {
+  try {
+    let { zonaEleitoral_id, nome, rua, nro_local, bairro, cidade } = req.body;
+    nro_local = parseInt(nro_local);
+
+    const zonas = await ZonaEleitoral.findAll();
+
+    const zona = await ZonaEleitoral.findOne({
+      where: { id: zonaEleitoral_id }
+    });
+
+    if (!zona || !nome || !rua || !nro_local || !bairro || !cidade) {
+      return res.render("secaoEleitoral.ejs", {
+        ZonaEleitoral: zonas, 
+        erro: "Preencha todos os campos corretamente.",
+        mensagem: null
+      });
+    }
+
+    const secaoExistente = await SecaoEleitoral.findOne({
+      where: { nome, rua, nro_local, bairro, cidade }
+    });
+
+    if (secaoExistente) {
+      return res.render("secaoEleitoral.ejs", {
+        ZonaEleitoral: zonas,
+        mensagem: "Seção já cadastrada.",
+        erro: null
+      });
+    }
+
+    await SecaoEleitoral.create({ zonaEleitoral_id, nome, rua, nro_local, bairro, cidade });
+
+    return res.render("secaoEleitoral.ejs", {
+      ZonaEleitoral: zonas,
+      mensagem: "Seção cadastrada com sucesso!",
+      erro: null
+    });
+
+  } catch (error) {
+    console.error(error);
+
+    const zonas = await ZonaEleitoral.findAll().catch(() => []);
+
+    return res.render("secaoEleitoral.ejs", {
+      ZonaEleitoral: zonas,
+      erro: "Erro ao cadastrar seção eleitoral.",
+      mensagem: null
+    });
+  }
+}
+
+async function tela_gerenciar_secao_eleitoral(req, res) {
+  try {
+    const secoes = await SecaoEleitoral.findAll({
+      include: [
+   { model: ZonaEleitoral
+    
+   }
+           
+    ]
+  
+});
+    
+    res.render("gerenciarSecao.ejs", {
+      secoes,
+      mensagem: null,
+      erro: null
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Erro ao carregar página");
+  }
+}
+
+async function excluirSecaoEleitoral(req, res) {
+  try {
+    const { id } = req.params;
+
+    const secao = await SecaoEleitoral.findOne({
+      where: { id }
+    });
+
+    if (!secao) {
+      return res.status(404).send('Seção eleitoral não encontrada');
+    }
+
+    await secao.destroy();
+    return res.redirect('/gerenciarSecaoEleitoral');
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send('Erro ao excluir seção eleitoral');
+  }
+}
+
+async function tela_atualizar_secao_eleitoral(req, res) {
+    try {        
+        const { id } = req.params;
+        const secao = await SecaoEleitoral.findOne({
+            where: { id }
+        });
+
+        if (!secao) {
+            return res.status(404).send('Seção eleitoral não encontrada');
+        }
+        return res.render('atualizarSecaoEleitoral', { secao });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send('Erro ao carregar seção eleitoral');
+    }
+}
+
+async function atualizarSecaoEleitoral(req, res) {
+    try {
+        const { id } = req.params;
+        const { nome, rua, nro_local, bairro, cidade } = req.body;
+
+        const secao = await SecaoEleitoral.findOne({
+            where: { id }
+        });
+
+        if (!secao) {
+            return res.status(404).send('Seção eleitoral não encontrada');
+        }
+
+        await secao.update({
+            nome: nome.trim(),
+            rua: rua.trim(),
+            nro_local: parseInt(nro_local),
+            bairro: bairro.trim(),
+            cidade: cidade.trim()
+        });
+
+        return res.redirect('/gerenciarSecaoEleitoral');
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send('Erro ao atualizar seção eleitoral');
+    }
+}
+
+
+
+
 module.exports = {
     abreCadastroEleitores,
     salvaCadastroEleitores,
@@ -849,6 +1015,12 @@ module.exports = {
     tela_gerenciar_zona_eleitoral,
     excluirZonaEleitoral,
     tela_atualizar_zona_eleitoral,
-    atualizarZonaEleitoral
+    atualizarZonaEleitoral,
+    tela_cadastro_secao_eleitoral,
+    salvaCadastroSecao,
+    tela_gerenciar_secao_eleitoral,
+    excluirSecaoEleitoral,
+    tela_atualizar_secao_eleitoral,
+    atualizarSecaoEleitoral
 };
 

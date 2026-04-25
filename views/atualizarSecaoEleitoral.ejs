@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/../css/style.css">
+  <title>Atualizar Seção Eleitoral</title>
+</head>
+<body>
+  <div class="container">
+    <div class="left">
+      <span class="subtitle">Atualizar Seção Eleitoral</span>
+      <h1>Atualize a <br> Seção Eleitoral</h1>   
+
+      <p>Altere os dados da seção cadastrada no sistema</p>
+      
+      <div class="imagem">
+        <img src="/../images/Tribunal_Superior_Eleitoral.png" alt="Justiça Eleitoral">
+      </div>
+
+      <div class="info">
+        <p>As seções pertencem a uma Zona Eleitoral específica.</p>
+        <br>
+        <i class="fa-solid fa-location-dot"></i>
+      </div>
+    </div>
+
+    <div class="right">
+      <form action="/secao-eleitoral/atualizar/<%= secao.id %>" method="post">
+        
+        <input 
+          type="text" 
+          name="nome" 
+          placeholder="Nome da Seção"
+          value="<%= secao.nome || '' %>" 
+          required
+        >
+
+        <input 
+          type="text" 
+          name="rua" 
+          placeholder="Rua/Logradouro"
+          value="<%= secao.rua || '' %>" 
+          required
+        >
+
+        <input 
+          type="text" 
+          name="nro_local" 
+          placeholder="Número do Local"
+          value="<%= secao.nro_local || '' %>" 
+          required
+        >
+
+        <input 
+          type="text" 
+          name="bairro" 
+          placeholder="Bairro"
+          value="<%= secao.bairro || '' %>" 
+          required
+        >
+
+        <input 
+          type="text" 
+          name="cidade" 
+          placeholder="Cidade"
+          value="<%= secao.cidade || '' %>" 
+          required
+        >
+
+        
+
+        <button type="submit" class="btn">
+          Atualizar seção eleitoral
+        </button>
+
+        <a href="/gerenciarSecaoEleitoral" class="btn" style="display: block; text-align: center; text-decoration: none; margin-top: 10px; background-color: #6c757d;">
+          Voltar
+        </a>
+
+        <div class="mensagem">
+           <% if (typeof mensagem !== 'undefined' && mensagem) { %>
+            <p><%= mensagem %></p>
+          <% } %>
+
+          <% if (typeof erro !== 'undefined' && erro) { %>
+            <p><%= erro %></p>
+          <% } %>
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
