@@ -241,3 +241,14 @@ body {
   border-radius: 100px;
   font-size: 14px;
 }
+
+.btn-zona-eleitoral {
+  display: inline-block;
+  margin-bottom: 20px;
+  padding: 10px 20px;
+  background: #007bff;
+  color: white;
+  border-radius: 25px;
+  text-decoration: none;
+  font-size: 16px;
+}

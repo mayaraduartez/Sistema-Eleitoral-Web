@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/../css/style.css">
+  <title>Gerenciar Zona Eleitoral</title>
+</head>
+<body>
+  <div class="container-eleitor">
+    <div class="subtitle">
+      <h2>Gerenciar Zona Eleitoral</h2>
+      <p>Gerencie as zonas eleitorais do sistema.</p>
+    </div>
+
+    <div class="imagem">
+      <img src="/../images/Tribunal_Superior_Eleitoral.png" alt="Justiça Eleitoral">
+    </div>
+
+    <div class="info">
+      <p>Organização das zonas por estado</p>
+    </div>
+
+    <form action="/cadastroZonaEleitoral" method="post">
+      <button type="submit" class="btn">Cadastrar Zona</button>
+    </form>
+
+    <div class="tabela-eleitores">
+      <h2>Lista de Zonas</h2>
+
+      <table class="tabela">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Número</th>
+            <th>Estado</th>
+            <th class="col-acoes">Ações</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% if (zonas && zonas.length > 0) { %>
+            <% zonas.forEach(zona => { %>
+              <tr>
+                <td><%= zona.id %></td>
+                <td><%= zona.numero %></td>
+                <td><%= zona.estado %></td>
+
+                <td class="acoes">
+
+                  <a href="/zona-eleitoral/editar/<%= zona.id %>">
+                    <button type="button" class="botao-inativar">
+                      Atualizar
+                    </button>
+                  </a>
+
+                  <form action="/zona-eleitoral/excluir/<%= zona.id %>" method="POST" onsubmit="return confirmarExclusao()">
+                    <button type="submit" class="botao-excluir">
+                      Excluir
+                    </button>
+                  </form>
+
+                </td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr>
+              <td colspan="4">Nenhuma zona cadastrada</td>
+            </tr>
+          <% } %>
+        </tbody>
+
+      </table>
+    </div>
+  </div>
+
+  <script>
+    function confirmarExclusao() {
+      return confirm("Tem certeza que deseja excluir esta zona eleitoral?");
+    }
+  </script>
+</body>
+</html>

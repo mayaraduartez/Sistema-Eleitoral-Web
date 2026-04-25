@@ -741,6 +741,82 @@ async function salvaCadastroZonaEleitoral(req, res) {
   }
 }
 
+async function tela_gerenciar_zona_eleitoral(req, res) {
+  try {
+    const zonas = await ZonaEleitoral.findAll();
+    res.render("gerenciarZonaEleitoral.ejs", {
+      zonas,
+      mensagem: null,
+      erro: null
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Erro ao carregar página");
+  }
+}
+
+async function excluirZonaEleitoral(req, res) {
+  try {
+    const { id } = req.params;
+
+    const zona = await ZonaEleitoral.findOne({
+      where: { id }
+    });
+
+    if (!zona) {
+      return res.status(404).send('Zona eleitoral não encontrada');
+    }
+
+    await zona.destroy();
+    return res.redirect('/gerenciarZonaEleitoral');
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send('Erro ao excluir zona eleitoral');
+  }
+}
+
+async function tela_atualizar_zona_eleitoral(req, res) {
+    try {        
+        const { id } = req.params;
+        const zona = await ZonaEleitoral.findOne({
+            where: { id }
+        });
+
+        if (!zona) {
+            return res.status(404).send('Zona eleitoral não encontrada');
+        }
+        return res.render('atualizarZonaEleitoral', { zona });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send('Erro ao carregar zona eleitoral');
+    }
+}
+
+async function atualizarZonaEleitoral(req, res) {
+    try {
+        const { id } = req.params;
+        const { numero, estado } = req.body;
+
+        const zona = await ZonaEleitoral.findOne({
+            where: { id }
+        });
+
+        if (!zona) {
+            return res.status(404).send('Zona eleitoral não encontrada');
+        }
+
+        await zona.update({
+            numero: parseInt(numero),
+            estado: estado.toUpperCase().trim()
+        });
+
+        return res.redirect('/gerenciarZonaEleitoral');
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send('Erro ao atualizar zona eleitoral');
+    }
+}
 
 module.exports = {
     abreCadastroEleitores,
@@ -769,6 +845,10 @@ module.exports = {
     tela_atualizar_candidato,
     atualizarCandidato,
     tela_cadastro_zona_eleitoral,
-    salvaCadastroZonaEleitoral
+    salvaCadastroZonaEleitoral,
+    tela_gerenciar_zona_eleitoral,
+    excluirZonaEleitoral,
+    tela_atualizar_zona_eleitoral,
+    atualizarZonaEleitoral
 };
 

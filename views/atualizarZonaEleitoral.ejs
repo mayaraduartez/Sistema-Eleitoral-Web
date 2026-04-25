@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/../css/style.css">
+  <title>Atualizar Zona Eleitoral</title>
+</head>
+<body>
+  <div class="container">
+    <div class="left">
+      <span class="subtitle">Atualizar Zona Eleitoral</span>
+      <h1>Atualize a <br> Zona Eleitoral</h1>   
+
+      <p>Altere os dados da zona eleitoral cadastrada no sistema</p>
+      
+      <div class="imagem">
+        <img src="/../images/Tribunal_Superior_Eleitoral.png" alt="Justiça Eleitoral">
+      </div>
+
+      <div class="info">
+        <p>As zonas são únicas por estado (UF).</p>
+        <br>
+        <i class="fa-solid fa-location-dot"></i>
+      </div>
+    </div>
+
+    <div class="right">
+      <form action="/zona-eleitoral/atualizar/<%= zona.id %>" method="post">
+      <input 
+        type="number" 
+        name="numero" 
+        placeholder="Número da Zona"
+        value="<%= zona.numero || '' %>" 
+        required
+      >
+
+      <input 
+        type="text" 
+        name="estado" 
+        placeholder="Estado (UF)"
+        value="<%= zona.estado || '' %>" 
+        maxlength="2"
+        style="text-transform: uppercase;"
+        required
+      >
+
+      <button type="submit" class="btn">
+        Atualizar zona eleitoral
+      </button>
+
+      <div class="mensagem">
+         <% if (typeof mensagem !== 'undefined' && mensagem) { %>
+          <p><%= mensagem %></p>
+        <% } %>
+
+        <% if (typeof erro !== 'undefined' && erro) { %>
+          <p><%= erro %></p>
+        <% } %>
+      </div>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
