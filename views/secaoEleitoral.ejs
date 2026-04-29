@@ -29,6 +29,9 @@
   </div>
 
   <div class="right">
+    <a href="/gerenciarSecaoEleitoral" class="btn-zona-eleitoral">
+      Gerenciar Seções Eleitorais
+    </a>
     <form method="POST" action="/cadastroSecaoEleitoral">
       <select name="zonaEleitoral_id" required>
         <option value="">Selecione a zona</option>
@@ -41,6 +44,17 @@
         <% } %>
       </select>
 
+       <select name="urna_id" required>
+        <option value="">Selecione a urna</option>
+        <% if (typeof Urna !== 'undefined') { %>
+          <% Urna.forEach(function(urna) { %>
+            <option value="<%= urna.id %>">
+              <%= urna.numero %> - <%= urna.localizacao %>
+            </option>
+          <% }) %>
+        <% } %>
+      </select>
+      <input type="text" name="nro_secao" placeholder="Número da Seção" required>
       <input type="text" name="nome" placeholder="Nome da Seção" required>
       <input type="text" name="rua" placeholder="Rua" required>
       <input type="text" name="nro_local" placeholder="Número do Local" required>

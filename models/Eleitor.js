@@ -54,7 +54,7 @@ const Eleitor = sequelizeconnect.define(
     
     secao_id: {
       type: DataTypes.INTEGER,
-      allowNull: true
+      allowNull: false
     }
   },
   {

@@ -1,3 +1,4 @@
+
 "use strict";
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -8,13 +9,14 @@ module.exports = {
         primaryKey: true,
         allowNull: false,
       },
+     nro_secao: {type: Sequelize.INTEGER, allowNull: false, unique: true},
       nome: {type: Sequelize.STRING, allowNull: false},
       rua: Sequelize.STRING,
       nro_local: Sequelize.INTEGER,
       bairro: Sequelize.STRING,
       cidade: Sequelize.STRING,
-      zonaEleitoral_id: Sequelize.INTEGER,
-      // urna_id: Sequelize.INTEGER,
+      zonaEleitoral_id: Sequelize.INTEGER, 
+      urna_id: Sequelize.INTEGER, 
       
     });
   },

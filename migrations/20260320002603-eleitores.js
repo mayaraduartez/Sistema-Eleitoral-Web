@@ -25,7 +25,12 @@ module.exports = {
         type: Sequelize.ENUM("ativo", "inativo"),
         allowNull:false,
         defaultValue: "ativo",
-      }
+      },
+      secao_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+  
     });
   },
 

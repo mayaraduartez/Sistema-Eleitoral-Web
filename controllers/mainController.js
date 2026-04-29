@@ -30,7 +30,8 @@ Cargo.hasMany(Candidato, { foreignKey: 'cargo_id' });
 // Se Solicitacao precisar de associações, adicione aqui também
   SecaoEleitoral.belongsTo(ZonaEleitoral, {foreignKey: 'zonaEleitoral_id'});
   ZonaEleitoral.hasMany(SecaoEleitoral, { foreignKey: 'zonaEleitoral_id' });
-
+SecaoEleitoral.belongsTo(Urna, {foreignKey: 'urna_id'});
+  Urna.hasOne(SecaoEleitoral, { foreignKey: 'urna_id' });
 
 console.log('✅ Associações registradas com sucesso!');
 
@@ -812,9 +813,11 @@ async function tela_cadastro_secao_eleitoral(req, res) {
 
       try {
      const zona = await ZonaEleitoral.findAll();
+      const urnas = await Urna.findAll(); 
 
       res.render("secaoEleitoral", {
         ZonaEleitoral: zona,
+        Urna: urnas,
         mensagem: null,
         erro: null,
       });
@@ -826,39 +829,48 @@ async function tela_cadastro_secao_eleitoral(req, res) {
   
 async function salvaCadastroSecao(req, res) {
   try {
-    let { zonaEleitoral_id, nome, rua, nro_local, bairro, cidade } = req.body;
+    let { zonaEleitoral_id, urna_id, nro_secao, nome, rua, nro_local, bairro, cidade } = req.body;
     nro_local = parseInt(nro_local);
+    nro_secao = parseInt(nro_secao);
 
     const zonas = await ZonaEleitoral.findAll();
+     const urnas = await Urna.findAll(); 
 
     const zona = await ZonaEleitoral.findOne({
       where: { id: zonaEleitoral_id }
     });
 
-    if (!zona || !nome || !rua || !nro_local || !bairro || !cidade) {
+    const urna = await Urna.findOne({
+      where: { id: urna_id }
+    });
+
+    if (!zona || !urna ||!nro_secao || !nome || !rua || !nro_local || !bairro || !cidade) {
       return res.render("secaoEleitoral.ejs", {
         ZonaEleitoral: zonas, 
+        Urna: urnas,
         erro: "Preencha todos os campos corretamente.",
         mensagem: null
       });
     }
 
     const secaoExistente = await SecaoEleitoral.findOne({
-      where: { nome, rua, nro_local, bairro, cidade }
+      where: { nro_secao }
     });
 
     if (secaoExistente) {
       return res.render("secaoEleitoral.ejs", {
         ZonaEleitoral: zonas,
+        Urna: urnas,
         mensagem: "Seção já cadastrada.",
         erro: null
       });
     }
 
-    await SecaoEleitoral.create({ zonaEleitoral_id, nome, rua, nro_local, bairro, cidade });
+    await SecaoEleitoral.create({ zonaEleitoral_id, urna_id, nro_secao, nome, rua, nro_local, bairro, cidade });
 
     return res.render("secaoEleitoral.ejs", {
       ZonaEleitoral: zonas,
+      Urna: urnas,
       mensagem: "Seção cadastrada com sucesso!",
       erro: null
     });
@@ -867,9 +879,11 @@ async function salvaCadastroSecao(req, res) {
     console.error(error);
 
     const zonas = await ZonaEleitoral.findAll().catch(() => []);
+  const urnas = await Urna.findAll().catch(() => []); 
 
     return res.render("secaoEleitoral.ejs", {
       ZonaEleitoral: zonas,
+      Urna: urnas,
       erro: "Erro ao cadastrar seção eleitoral.",
       mensagem: null
     });
@@ -940,7 +954,7 @@ async function tela_atualizar_secao_eleitoral(req, res) {
 async function atualizarSecaoEleitoral(req, res) {
     try {
         const { id } = req.params;
-        const { nome, rua, nro_local, bairro, cidade } = req.body;
+        const {nro_secao, nome, rua, nro_local, bairro, cidade } = req.body;
 
         const secao = await SecaoEleitoral.findOne({
             where: { id }
@@ -951,6 +965,7 @@ async function atualizarSecaoEleitoral(req, res) {
         }
 
         await secao.update({
+            nro_secao: parseInt(nro_secao),
             nome: nome.trim(),
             rua: rua.trim(),
             nro_local: parseInt(nro_local),
@@ -964,7 +979,6 @@ async function atualizarSecaoEleitoral(req, res) {
         return res.status(500).send('Erro ao atualizar seção eleitoral');
     }
 }
-
 async function CadastrarUrna(req, res) {
   try {
     const { situacao } = req.body;

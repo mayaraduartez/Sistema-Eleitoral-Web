@@ -28,6 +28,13 @@
     <div class="right">
       <form action="/secao-eleitoral/atualizar/<%= secao.id %>" method="post">
         
+         <input 
+          type="text" 
+          name="nro_secao" 
+          placeholder="Número da Seção"
+          value="<%= secao.nro_secao || '' %>" 
+          required
+        >
         <input 
           type="text" 
           name="nome" 
