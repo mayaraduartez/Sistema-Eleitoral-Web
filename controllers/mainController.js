@@ -5,6 +5,8 @@ const Cargo = require("../models/Cargo");
 const Candidato = require("../models/Candidato");
 const ZonaEleitoral = require("../models/Zona_Eleitoral");
 const SecaoEleitoral = require("../models/Secao_Eleitoral");
+const Urna = require("../models/Urna");
+
 
 const { Op } = require("sequelize");
 // Registrar associações dos modelos
@@ -981,8 +983,169 @@ async function atualizarSecaoEleitoral(req, res) {
     }
 }
 
+async function CadastrarUrna(req, res) {
+  try {
+    const { situacao } = req.body;
+
+    const urna = await Urna.create({
+      situacao: situacao ?? true,
+    });
+
+    return res.status(201).json({
+      message: "Urna cadastrada com sucesso",
+      urna,
+    });
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      message: "Erro ao cadastrar urna",
+      error: error.message,
+    });
+  }
+}
+
+async function ExcluirUrna(req, res) {
+    try {
+        const { id } = req.params;
+        const urna = await Urna.findByPk(id);
+
+        if (!urna) {
+            return res.status(404).json({ message: "Urna não encontrada" });
+        }
+
+        await urna.destroy();
+        return res.json({ message: "Urna excluída com sucesso" });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Erro ao excluir urna", error: error.message });
+    }
+}
+
+async function AtivarUrna(urna) {
+  const secao = await SecaoEleitoral.findOne({
+    where: { urna_id: urna.id },
+  });
+
+  if (!secao) {
+    throw new Error("Esta urna não está vinculada a nenhuma seção");
+  }
+
+  await urna.update({ situacao: true });
+
+  return urna;
+}
+
+async function DesativarUrna(urna) {
+  await urna.update({ situacao: false });
+
+  return urna;
+}
+
+async function AtualizarUrna(req, res) {
+  try {
+    const { id } = req.params;
+    const { situacao } = req.body;
+
+    const urna = await Urna.findByPk(id);
+
+    if (!urna) {
+      return res.status(404).json({ message: "Urna não encontrada" });
+    }
+
+    let urnaAtualizada;
+
+    if (situacao === true) {
+      urnaAtualizada = await AtivarUrna(urna);
+    } else if (situacao === false) {
+      urnaAtualizada = await DesativarUrna(urna);
+    } else {
+      urnaAtualizada = urna;
+    }
+
+    return res.json({
+      message: "Urna atualizada com sucesso",
+      urna: urnaAtualizada,
+    });
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      message: "Erro ao atualizar urna",
+      error: error.message,
+    });
+  }
+}
+
+async function abreCadastroUrnas(req, res) {
+    try {
+        const urnas = await Urna.findAll();
+        const mensagem = req.query.mensagem || '';
+        res.render("cadastroUrnas.ejs", { urnas, mensagem });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Erro ao carregar cadastro de urnas');
+    }
+}
+
+async function salvaCadastroUrnas(req, res) {
+    const { numero, localizacao } = req.body;
+    try {
+        const urnaExistente = await Urna.findOne({ where: { numero } });
+        if (urnaExistente) {
+            return res.redirect('/cadastroUrnas?mensagem=Número da urna já cadastrado');
+        }
+        await Urna.create({ numero, localizacao });
+        res.redirect('/cadastroUrnas?mensagem=Urna cadastrada com sucesso');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Erro ao cadastrar urna');
+    }
+}
+
+async function inativarUrna(req, res) {
+    const { id } = req.params;
+    try {
+        await Urna.update({ situacao: false }, { where: { id } });
+        res.redirect('/cadastroUrnas');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Erro ao inativar urna');
+    }
+}
+
+async function ativarUrna(req, res) {
+    const { id } = req.params;
+    try {
+        await Urna.update({ situacao: true }, { where: { id } });
+        res.redirect('/cadastroUrnas');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Erro ao ativar urna');
+    }
+}
+
+async function excluirUrna(req, res) {
+    const { id } = req.params;
+    try {
+        await Urna.destroy({ where: { id } });
+        res.redirect('/cadastroUrnas');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Erro ao excluir urna');
+    }
+}
 
 
+//Tela Urna
+async function urnaEletronica(req, res) {
+    try {
+        res.render("urnaEletronica.ejs");
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Erro ao carregar tela de urnas');
+    }
+}
 
 module.exports = {
     abreCadastroEleitores,
@@ -1021,6 +1184,15 @@ module.exports = {
     tela_gerenciar_secao_eleitoral,
     excluirSecaoEleitoral,
     tela_atualizar_secao_eleitoral,
-    atualizarSecaoEleitoral
+    atualizarSecaoEleitoral,
+    CadastrarUrna,
+    ExcluirUrna,
+    AtualizarUrna,
+    abreCadastroUrnas,
+    salvaCadastroUrnas,
+    inativarUrna,
+    ativarUrna,
+    excluirUrna,
+    urnaEletronica
 };
 
