@@ -3,8 +3,7 @@ const sequelizeconnect = require("../config/connection");
 
 const Eleitor = sequelizeconnect.define(
   "Eleitor",
-  
-    {
+  {
     nome: {
       type: DataTypes.STRING,
     },
@@ -48,10 +47,15 @@ const Eleitor = sequelizeconnect.define(
       type: DataTypes.STRING,
     },
     status: {
-    type: DataTypes.STRING,
-    allowNull: true,
-    defaultValue: 'ativo'
-}
+      type: DataTypes.STRING,
+      allowNull: true,
+      defaultValue: 'ativo'
+    },
+    
+    secao_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    }
   },
   {
     timestamps: false,
@@ -59,8 +63,9 @@ const Eleitor = sequelizeconnect.define(
   },
 );
 
- Eleitor.associate = (models) => {
-    // Use 'models.Candidato' ao invés de 'Candidato' diretamente
-    Eleitor.hasOne(models.Candidato, { foreignKey: 'eleitor_id' });
-  };
+Eleitor.associate = (models) => {
+  Eleitor.hasOne(models.Candidato, { foreignKey: 'eleitor_id' });
+  Eleitor.belongsTo(models.SecaoEleitoral, { foreignKey: 'secao_id', as: 'secao' });
+};
+
 module.exports = Eleitor;

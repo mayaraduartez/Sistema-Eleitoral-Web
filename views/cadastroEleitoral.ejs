@@ -9,32 +9,23 @@
 <body>
 
 <div class="container">
-  
   <div class="left">
     <span class="subtitle">CADASTRO DO ELEITOR</span>
     <h1>Faça o seu <br> Cadastro <br> Eleitoral Aqui</h1>
-    <p>
-      Participe da construção de um processo eleitoral mais organizado e eficiente!
-    </p>
+    <p>Participe da construção de um processo eleitoral mais organizado e eficiente!</p>
     <div class="imagem">
-  <img src="images/Tribunal_Superior_Eleitoral.png" alt="Justiça Eleitoral">
-</div>
-
+      <img src="images/Tribunal_Superior_Eleitoral.png" alt="Justiça Eleitoral">
+    </div>
     <div class="info">
-      <p> Siga a conta da Justiça eleitoral nas redes socias; 
-        <br></br>
+      <p> Siga a conta da Justiça eleitoral nas redes socias; <br><br>
       <a href="https://www.instagram.com/tsejusbr/" target="_blank">
-  <i class="fa-brands fa-instagram"></i>
-</a>
+        <i class="fa-brands fa-instagram"></i>
+      </a>
     </div>
   </div>
 
   <div class="right">
-
-    <a href="/gerenciarEleitor" class="btn-zona-eleitoral">
-     Gerenciar Eleitores
-    </a>
-
+    <a href="/gerenciarEleitor" class="btn-zona-eleitoral">Gerenciar Eleitores</a>
     <form method="POST">
       <input type="text" name="nome" placeholder="Nome" required>
       <input type="text" name="sobrenome" placeholder="Sobrenome" required>
@@ -47,18 +38,24 @@
       <input type="text" name="bairro" placeholder="Bairro" required>
       <input type="text" name="cidade" placeholder="Cidade" required>
       <input type="text" name="estado" placeholder="Estado" required>
-
+      
+      <select name="secao_id" required>
+        <option value="" disabled selected>Selecione a Seção Eleitoral</option>
+        <% if (typeof secoes !== 'undefined') { %>
+          <% secoes.forEach(secao => { %>
+            <option value="<%= secao.id %>"><%= secao.nome %> - <%= secao.bairro %></option>
+          <% }) %>
+        <% } %>
+      </select>
+      
       <button type="submit" class="btn">Cadastre agora</button>
       <div class="mensagem">
-      <% if (typeof mensagem !== 'undefined' && mensagem) { %>
-        <p><%= mensagem %></p>
-      <% } %>
-    </div>
-
+        <% if (typeof mensagem !== 'undefined' && mensagem) { %>
+          <p><%= mensagem %></p>
+        <% } %>
+      </div>
     </form>
   </div>
-  
-
 </div>
 
 </body>
