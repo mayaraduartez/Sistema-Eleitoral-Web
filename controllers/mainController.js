@@ -1077,8 +1077,64 @@ async function AtualizarUrna(req, res) {
   }
 }
 
+async function abreCadastroUrnas(req, res) {
+    try {
+        const urnas = await Urna.findAll();
+        const mensagem = req.query.mensagem || '';
+        res.render("cadastroUrnas.ejs", { urnas, mensagem });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Erro ao carregar cadastro de urnas');
+    }
+}
 
+async function salvaCadastroUrnas(req, res) {
+    const { numero, localizacao } = req.body;
+    try {
+        const urnaExistente = await Urna.findOne({ where: { numero } });
+        if (urnaExistente) {
+            return res.redirect('/cadastroUrnas?mensagem=Número da urna já cadastrado');
+        }
+        await Urna.create({ numero, localizacao });
+        res.redirect('/cadastroUrnas?mensagem=Urna cadastrada com sucesso');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Erro ao cadastrar urna');
+    }
+}
 
+async function inativarUrna(req, res) {
+    const { id } = req.params;
+    try {
+        await Urna.update({ situacao: false }, { where: { id } });
+        res.redirect('/cadastroUrnas');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Erro ao inativar urna');
+    }
+}
+
+async function ativarUrna(req, res) {
+    const { id } = req.params;
+    try {
+        await Urna.update({ situacao: true }, { where: { id } });
+        res.redirect('/cadastroUrnas');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Erro ao ativar urna');
+    }
+}
+
+async function excluirUrna(req, res) {
+    const { id } = req.params;
+    try {
+        await Urna.destroy({ where: { id } });
+        res.redirect('/cadastroUrnas');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Erro ao excluir urna');
+    }
+}
 
 
 module.exports = {
@@ -1121,6 +1177,11 @@ module.exports = {
     atualizarSecaoEleitoral,
     CadastrarUrna,
     ExcluirUrna,
-    AtualizarUrna
+    AtualizarUrna,
+    abreCadastroUrnas,
+    salvaCadastroUrnas,
+    inativarUrna,
+    ativarUrna,
+    excluirUrna
 };
 

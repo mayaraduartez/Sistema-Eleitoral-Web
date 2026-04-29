@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <title>Cadastro de Urnas</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="left">
+            <span class="subtitle">CADASTRO DE URNAS</span>
+
+            <h1>
+                Faça o <br> Cadastro <br> das urnas aqui
+            </h1>
+
+            <p>
+                Cadastre, edite e gerencie as urnas do sistema.
+            </p>
+
+            <div class="imagem">
+                <img src="images/Tribunal_Superior_Eleitoral.png" alt="Justiça Eleitoral">
+            </div>
+
+            <div class="info">
+                <p>
+                    Controle completo das urnas eleitorais.
+                </p>
+            </div>
+        </div>
+
+        <div class="right">
+
+            <a href="/cadastroUrnas" class="btn-zona-eleitoral">
+                Gerenciar Urnas
+            </a>
+
+            <form action="/cadastroUrnas" method="post">
+
+                <input type="text" name="numero" placeholder="Número da Urna" required>
+
+                <input type="text" name="localizacao" placeholder="Localização da Urna" required>
+
+                <button type="submit" class="btn">
+                    Cadastrar Urna
+                </button>
+
+            </form>
+
+            <div class="mensagem">
+                <% if (mensagem) { %>
+                    <p>
+                        <%= mensagem %>
+                    </p>
+                    <% } %>
+            </div>
+
+            <h3>Urnas cadastradas</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Número</th>
+                        <th>Localização</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <% urnas.forEach(urna=> { %>
+                        <tr>
+                            <td>
+                                <%= urna.numero %>
+                            </td>
+                            <td>
+                                <%= urna.localizacao %>
+                            </td>
+                            <td>
+                                <%= urna.situacao ? 'Ativa' : 'Inativa' %>
+                            </td>
+                            <td>
+                                <% if (urna.situacao) { %>
+                                    <form action="/urna/inativar/<%= urna.id %>" method="post" style="display:inline;">
+                                        <button type="submit">Desativar</button>
+                                    </form>
+                                    <% } else { %>
+                                        <form action="/urna/ativar/<%= urna.id %>" method="post"
+                                            style="display:inline;">
+                                            <button type="submit">Ativar</button>
+                                        </form>
+                                        <% } %>
+                                            <form action="/urna/excluir/<%= urna.id %>" method="post"
+                                                style="display:inline;"
+                                                onsubmit="return confirm('Tem certeza que deseja excluir?')">
+                                                <button type="submit">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </form>
+                            </td>
+                        </tr>
+                        <% }); %>
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

@@ -37,10 +37,9 @@ const SecaoEleitoral = sequelizeconnect.define(
 
  SecaoEleitoral.associate = (models) => {
   SecaoEleitoral.belongsTo(models.ZonaEleitoral, {foreignKey: 'zonaEleitoral_id', as: 'zonaEleitoral'});
+  SecaoEleitoral.belongsTo(models.Urna, {
+    foreignKey: "urna_id",
+    as: "urna",
+  });
 };
-
-SecaoEleitoral.belongsTo(models.Urna, {
-  foreignKey: "urna_id",
-  as: "urna",
-});
 module.exports = SecaoEleitoral;
