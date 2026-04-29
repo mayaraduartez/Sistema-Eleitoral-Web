@@ -5,6 +5,8 @@ const Cargo = require("../models/Cargo");
 const Candidato = require("../models/Candidato");
 const ZonaEleitoral = require("../models/Zona_Eleitoral");
 const SecaoEleitoral = require("../models/Secao_Eleitoral");
+const Urna = require("../models/Urna");
+
 
 const { Op } = require("sequelize");
 // Registrar associações dos modelos
@@ -981,6 +983,13 @@ async function atualizarSecaoEleitoral(req, res) {
     }
 }
 
+async function CadastrarUrna(req, res) {
+    try {
+        
+    }catch (error) {
+        console.error(error);
+    }
+}
 
 
 

@@ -24,10 +24,10 @@ const SecaoEleitoral = sequelizeconnect.define(
      type: DataTypes.INTEGER,
       allowNull: false,
     },
-    // urna_id: {
-     // type: DataTypes.INTEGER,
-      // allowNull: false,
-    // }
+    urna_id: {
+     type: DataTypes.INTEGER,
+      allowNull: false,
+    }
   },
   {
     timestamps: false,
@@ -38,4 +38,9 @@ const SecaoEleitoral = sequelizeconnect.define(
  SecaoEleitoral.associate = (models) => {
   SecaoEleitoral.belongsTo(models.ZonaEleitoral, {foreignKey: 'zonaEleitoral_id', as: 'zonaEleitoral'});
 };
+
+SecaoEleitoral.belongsTo(models.Urna, {
+  foreignKey: "urna_id",
+  as: "urna",
+});
 module.exports = SecaoEleitoral;
