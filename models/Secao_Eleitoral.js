@@ -3,23 +3,31 @@ const sequelizeconnect = require("../config/connection");
 
 const SecaoEleitoral = sequelizeconnect.define(
   "SecaoEleitoral",
-  {
-    nome: { type: DataTypes.STRING },
-    rua: { type: DataTypes.STRING },
-    nro_local: { type: DataTypes.INTEGER },
-    bairro: { type: DataTypes.STRING },
-    cidade: { type: DataTypes.STRING },
-    zonaEleitoral_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-<<<<<<< HEAD
-=======
+  
+    {
+    nome: {
+      type: DataTypes.STRING,
     },
-    urna_id: {
+    rua: {
+      type: DataTypes.STRING,
+    },
+    nro_local: {
+      type: DataTypes.INTEGER,
+    },
+    bairro: {
+      type: DataTypes.STRING,
+    },
+    cidade: {
+      type: DataTypes.STRING,
+    },
+    zonaEleitoral_id: {
      type: DataTypes.INTEGER,
       allowNull: false,
->>>>>>> 4ec0397434517287e974c7b7dce306618f8849f1
-    }
+    },
+    // urna_id: {
+     // type: DataTypes.INTEGER,
+      // allowNull: false,
+    // }
   },
   {
     timestamps: false,
@@ -27,12 +35,7 @@ const SecaoEleitoral = sequelizeconnect.define(
   },
 );
 
-SecaoEleitoral.associate = (models) => {
+ SecaoEleitoral.associate = (models) => {
   SecaoEleitoral.belongsTo(models.ZonaEleitoral, {foreignKey: 'zonaEleitoral_id', as: 'zonaEleitoral'});
-  SecaoEleitoral.belongsTo(models.Urna, {
-    foreignKey: "urna_id",
-    as: "urna",
-  });
 };
-
 module.exports = SecaoEleitoral;
