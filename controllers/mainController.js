@@ -984,12 +984,100 @@ async function atualizarSecaoEleitoral(req, res) {
 }
 
 async function CadastrarUrna(req, res) {
+  try {
+    const { situacao } = req.body;
+
+    const urna = await Urna.create({
+      situacao: situacao ?? true,
+    });
+
+    return res.status(201).json({
+      message: "Urna cadastrada com sucesso",
+      urna,
+    });
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      message: "Erro ao cadastrar urna",
+      error: error.message,
+    });
+  }
+}
+
+async function ExcluirUrna(req, res) {
     try {
-        
-    }catch (error) {
+        const { id } = req.params;
+        const urna = await Urna.findByPk(id);
+
+        if (!urna) {
+            return res.status(404).json({ message: "Urna não encontrada" });
+        }
+
+        await urna.destroy();
+        return res.json({ message: "Urna excluída com sucesso" });
+    } catch (error) {
         console.error(error);
+        return res.status(500).json({ message: "Erro ao excluir urna", error: error.message });
     }
 }
+
+async function AtivarUrna(urna) {
+  const secao = await SecaoEleitoral.findOne({
+    where: { urna_id: urna.id },
+  });
+
+  if (!secao) {
+    throw new Error("Esta urna não está vinculada a nenhuma seção");
+  }
+
+  await urna.update({ situacao: true });
+
+  return urna;
+}
+
+async function DesativarUrna(urna) {
+  await urna.update({ situacao: false });
+
+  return urna;
+}
+
+async function AtualizarUrna(req, res) {
+  try {
+    const { id } = req.params;
+    const { situacao } = req.body;
+
+    const urna = await Urna.findByPk(id);
+
+    if (!urna) {
+      return res.status(404).json({ message: "Urna não encontrada" });
+    }
+
+    let urnaAtualizada;
+
+    if (situacao === true) {
+      urnaAtualizada = await AtivarUrna(urna);
+    } else if (situacao === false) {
+      urnaAtualizada = await DesativarUrna(urna);
+    } else {
+      urnaAtualizada = urna;
+    }
+
+    return res.json({
+      message: "Urna atualizada com sucesso",
+      urna: urnaAtualizada,
+    });
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      message: "Erro ao atualizar urna",
+      error: error.message,
+    });
+  }
+}
+
+
 
 
 
@@ -1030,6 +1118,9 @@ module.exports = {
     tela_gerenciar_secao_eleitoral,
     excluirSecaoEleitoral,
     tela_atualizar_secao_eleitoral,
-    atualizarSecaoEleitoral
+    atualizarSecaoEleitoral,
+    CadastrarUrna,
+    ExcluirUrna,
+    AtualizarUrna
 };
 
