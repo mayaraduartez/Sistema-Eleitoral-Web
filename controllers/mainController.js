@@ -1137,6 +1137,16 @@ async function excluirUrna(req, res) {
 }
 
 
+//Tela Urna
+async function urnaEletronica(req, res) {
+    try {
+        res.render("urnaEletronica.ejs");
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Erro ao carregar tela de urnas');
+    }
+}
+
 module.exports = {
     abreCadastroEleitores,
     salvaCadastroEleitores,
@@ -1182,6 +1192,7 @@ module.exports = {
     salvaCadastroUrnas,
     inativarUrna,
     ativarUrna,
-    excluirUrna
+    excluirUrna,
+    urnaEletronica
 };
 

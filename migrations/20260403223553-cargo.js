@@ -35,55 +35,6 @@ module.exports = {
 
     await queryInterface.bulkInsert('cargos', [
       {
-        nome: "Presidente",
-        esfera: "Federal",
-        poder: "Executivo",
-        createdAt: new Date(),
-        updatedAt: new Date()
-      },
-      {
-        nome: "Vice-Presidente",
-        esfera: "Federal",
-        poder: "Executivo",
-        createdAt: new Date(),
-        updatedAt: new Date()
-      },
-      {
-        nome: "Senador",
-        esfera: "Federal",
-        poder: "Legislativo",
-        createdAt: new Date(),
-        updatedAt: new Date()
-      },
-      {
-        nome: "Deputado Federal",
-        esfera: "Federal",
-        poder: "Legislativo",
-        createdAt: new Date(),
-        updatedAt: new Date()
-      },
-      {
-        nome: "Governador",
-        esfera: "Estadual",
-        poder: "Executivo",
-        createdAt: new Date(),
-        updatedAt: new Date()
-      },
-      {
-        nome: "Vice-Governador",
-        esfera: "Estadual",
-        poder: "Executivo",
-        createdAt: new Date(),
-        updatedAt: new Date()
-      },
-      {
-        nome: "Deputado Estadual",
-        esfera: "Estadual",
-        poder: "Legislativo",
-        createdAt: new Date(),
-        updatedAt: new Date()   
-      },
-      {
         nome: "Prefeito",
         esfera: "Municipal",
         poder: "Executivo",

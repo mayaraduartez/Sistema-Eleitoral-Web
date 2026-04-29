@@ -69,4 +69,9 @@ router.post('/urna/inativar/:id', mainController.inativarUrna);
 router.post('/urna/ativar/:id', mainController.ativarUrna);
 router.post('/urna/excluir/:id', mainController.excluirUrna);
 
+
+//Tela Urna
+router.get("/urnaEletronica", mainController.urnaEletronica);
+
+
 module.exports = router;
