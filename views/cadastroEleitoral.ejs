@@ -43,7 +43,7 @@
         <option value="" disabled selected>Selecione a Seção Eleitoral</option>
         <% if (typeof secoes !== 'undefined') { %>
           <% secoes.forEach(secao => { %>
-            <option value="<%= secao.id %>"><%= secao.nome %> - <%= secao.bairro %></option>
+            <option value="<%= secao.id %>"><%= secao.nro_secao %> - <%= secao.nome %> - <%= secao.bairro %></option>
           <% }) %>
         <% } %>
       </select>
