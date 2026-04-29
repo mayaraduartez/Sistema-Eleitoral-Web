@@ -1,10 +1,11 @@
 body {
-  background: #2b2a2a;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #1E4FA1;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  font-family: Arial, sans-serif;
 }
 
 .urna {
