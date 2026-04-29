@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <title>Sistema de Votação</title>
+    <title>Sistema de Votação - Atualizar Dados</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 
@@ -35,30 +35,36 @@
         <div class="right">
             <form method="POST">
                 <input type="text" name="nome" placeholder="Nome" value="<%= eleitor.nome || '' %>" required>
-                <input type="text" name="sobrenome" placeholder="Sobrenome" value="<%= eleitor.sobrenome || '' %>"
-                    required>
+                <input type="text" name="sobrenome" placeholder="Sobrenome" value="<%= eleitor.sobrenome || '' %>" required>
                 <input type="email" name="email" placeholder="Email" value="<%= eleitor.email || '' %>" required>
                 <input type="text" name="cpf" placeholder="CPF" value="<%= eleitor.cpf || '' %>" required>
                 <input type="date" name="dataNasc" value="<%= eleitor.data_nascimento || '' %>" required>
                 <input type="text" name="titulo" placeholder="Título" value="<%= eleitor.titulo || '' %>" required>
                 <input type="text" name="rua" placeholder="Rua" value="<%= eleitor.rua || '' %>" required>
-                <input type="text" name="numeroCasa" placeholder="Número da Casa"
-                    value="<%= eleitor.nro_endereco || '' %>" required>
+                <input type="text" name="numeroCasa" placeholder="Número da Casa" value="<%= eleitor.nro_endereco || '' %>" required>
                 <input type="text" name="bairro" placeholder="Bairro" value="<%= eleitor.bairro || '' %>" required>
                 <input type="text" name="cidade" placeholder="Cidade" value="<%= eleitor.cidade || '' %>" required>
                 <input type="text" name="estado" placeholder="Estado" value="<%= eleitor.UF || '' %>" required>
                 
-                <input type="number" name="secao_id" placeholder="Seção Eleitoral" value="<%= eleitor.secao_id || '' %>">
-               
-
+                <select name="secao_id" required>
+                    <option value="" disabled>Selecione sua Seção Eleitoral</option>
+                    <% if (typeof secoes !== 'undefined' && secoes.length > 0) { %>
+                        <% secoes.forEach(secao => { %>
+                            <option value="<%= secao.id %>" <%= (eleitor.secao_id == secao.id) ? 'selected' : '' %> >
+                                <%= secao.nome %> - <%= secao.bairro %>
+                            </option>
+                        <% }) %>
+                    <% } else { %>
+                        <option value="" disabled>Nenhuma seção cadastrada</option>
+                    <% } %>
+                </select>
 
                 <button type="submit" class="btn">Atualizar dados</button>
+                
                 <div class="mensagem">
-                    <% if (typeof mensagem !=='undefined' && mensagem) { %>
-                        <p>
-                            <%= mensagem %>
-                        </p>
-                        <% } %>
+                    <% if (typeof mensagem !== 'undefined' && mensagem) { %>
+                        <p><%= mensagem %></p>
+                    <% } %>
                 </div>
             </form>
         </div>

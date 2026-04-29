@@ -61,6 +61,8 @@ router.get("/gerenciarSecaoEleitoral", mainController.tela_gerenciar_secao_eleit
 router.post('/secao-eleitoral/excluir/:id', mainController.excluirSecaoEleitoral);
 router.get('/secao-eleitoral/editar/:id', mainController.tela_atualizar_secao_eleitoral);
 router.post('/secao-eleitoral/atualizar/:id', mainController.atualizarSecaoEleitoral);
+router.get('/secaoEleitoral', mainController.tela_cadastro_secao_eleitoral);
+router.post('/cadastroSecaoEleitoral', mainController.salvaCadastroSecao);
 
 // Rotas de gerenciamento de Urnas
 router.get("/cadastroUrnas", mainController.abreCadastroUrnas);

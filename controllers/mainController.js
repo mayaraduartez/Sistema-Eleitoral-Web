@@ -39,14 +39,22 @@ console.log('✅ Associações registradas com sucesso!');
 
 
 async function abreCadastroEleitores(req, res){
-    const mensagem = '';
-    res.render("cadastroEleitoral.ejs", { mensagem });
+    try {
+        const secoes = await SecaoEleitoral.findAll();
+        const mensagem = '';
+        res.render("cadastroEleitoral.ejs", { mensagem, secoes });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Erro ao carregar a página.");
+    }
 }
 
 async function salvaCadastroEleitores(req, res) {
-    const { nome, sobrenome, email, cpf, dataNasc, titulo, rua, numeroCasa, bairro, cidade, estado } = req.body;
+    const { nome, sobrenome, email, cpf, dataNasc, titulo, rua, numeroCasa, bairro, cidade, estado, secao_id } = req.body;
 
     try {
+        const secoes = await SecaoEleitoral.findAll();
+
         const eleitorExistente = await Eleitor.findOne({
             where: {
                 [require("sequelize").Op.or]: [
@@ -67,7 +75,7 @@ async function salvaCadastroEleitores(req, res) {
                 mensagem = "Este CPF já está cadastrado.";
             }
 
-            return res.render("cadastroEleitoral.ejs", { mensagem });
+            return res.render("cadastroEleitoral.ejs", { mensagem, secoes });
         }
 
         const eleitor = await Eleitor.create({
@@ -81,33 +89,18 @@ async function salvaCadastroEleitores(req, res) {
             nro_endereco: numeroCasa,
             bairro,
             cidade,
-            UF: estado
+            UF: estado,
+            secao_id
         });
 
         console.log(eleitor.id);
 
         const mensagem = "Cadastro realizado com sucesso!";
-        return res.render("cadastroEleitoral.ejs", { mensagem });
+        return res.render("cadastroEleitoral.ejs", { mensagem, secoes });
 
     } catch (error) {
         console.error("Erro ao salvar eleitor:", error);
-
-        if (error.name === "SequelizeUniqueConstraintError") {
-            let mensagem = "CPF ou e-mail já cadastrado.";
-
-            const campos = error.errors.map(e => e.path);
-
-            if (campos.includes("cpf") && campos.includes("email")) {
-                mensagem = "CPF e e-mail já estão cadastrados.";
-            } else if (campos.includes("cpf")) {
-                mensagem = "Este CPF já está cadastrado.";
-            } else if (campos.includes("email")) {
-                mensagem = "Este e-mail já está cadastrado.";
-            }
-
-            return res.render("cadastroEleitoral.ejs", { mensagem });
-        }
-
+        const secoes = await SecaoEleitoral.findAll().catch(() => []);
         return res.status(500).send("Erro ao salvar eleitor");
     }
 }
@@ -229,21 +222,20 @@ async function solicitarAtualizacao(req, res) {
 
 async function abreAtualizacao(req, res) {
     try {
-        //const id = req.session.eleitorId;
-        //const id = 14; // Substitua pelo ID do eleitor logado, por exemplo, req.session.eleitorId
-          const id = req.params.id; 
+        const id = req.params.id; 
 
         if (!id) {
             return res.status(401).send("Usuário não autenticado.");
         }
 
         const eleitor = await Eleitor.findByPk(id);
+        const secoes = await SecaoEleitoral.findAll(); // PUXA AS SEÇÕES DO BANCO
 
         if (!eleitor) {
             return res.status(404).send("Eleitor não encontrado.");
         }
 
-        res.render("atualizarDados.ejs", { eleitor });
+        res.render("atualizarDados.ejs", { eleitor, secoes }); // ENVIA AS SEÇÕES PARA A VIEW
     } catch (error) {
         console.error(error);
         res.status(500).send("Erro ao carregar os dados.");
@@ -252,15 +244,14 @@ async function abreAtualizacao(req, res) {
 
 async function atualizaDados(req, res) {
     try {
-        // const id = req.session.eleitorId;
-        //const id = 14;
-          const id = req.params.id; 
+        const id = req.params.id; 
 
         if (!id) {
             return res.status(401).send("Usuário não autenticado.");
         }
 
         const eleitor = await Eleitor.findByPk(id);
+        const secoes = await SecaoEleitoral.findAll(); // PUXA NOVAMENTE PARA NÃO QUEBRAR O SELECT EM CASO DE ERRO
 
         if (!eleitor) {
             return res.status(404).send("Eleitor não encontrado.");
@@ -275,9 +266,7 @@ async function atualizaDados(req, res) {
                             { cpf: req.body.cpf }
                         ]
                     },
-                    {
-                        id: { [Op.ne]: id }
-                    }
+                    { id: { [Op.ne]: id } }
                 ]
             }
         });
@@ -296,8 +285,10 @@ async function atualizaDados(req, res) {
             return res.render("atualizarDados.ejs", {
                 eleitor: {
                     ...req.body,
+                    id: id,
                     dataNasc: req.body.dataNasc
                 },
+                secoes, // MANTÉM O SELECT FUNCIONANDO SE DER ERRO
                 mensagem
             });
         }
@@ -313,27 +304,18 @@ async function atualizaDados(req, res) {
             nro_endereco: req.body.numeroCasa,
             bairro: req.body.bairro,
             cidade: req.body.cidade,
-            UF: req.body.estado
+            UF: req.body.estado,
+            secao_id: req.body.secao_id // SALVA O NOVO ID DA SEÇÃO
         });
 
         return res.render("atualizarDados.ejs", {
             eleitor,
+            secoes,
             mensagem: "Dados atualizados com sucesso!"
         });
 
     } catch (error) {
         console.error(error);
-
-        if (error.name === "SequelizeUniqueConstraintError") {
-            return res.render("atualizarDados.ejs", {
-                eleitor: {
-                    ...req.body,
-                    dataNasc: req.body.dataNasc
-                },
-                mensagem: "CPF ou e-mail já cadastrado."
-            });
-        }
-
         return res.status(500).send("Erro ao atualizar os dados.");
     }
 }
@@ -901,7 +883,7 @@ async function tela_gerenciar_secao_eleitoral(req, res) {
    { model: ZonaEleitoral
     
    }
-           
+            
     ]
   
 });
@@ -1195,4 +1177,3 @@ module.exports = {
     excluirUrna,
     urnaEletronica
 };
-

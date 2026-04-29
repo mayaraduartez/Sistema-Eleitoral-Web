@@ -12,56 +12,50 @@
   
   <div class="left">
     <span class="subtitle">CADASTRO DA SEÇÃO ELEITORAL</span>
-    <h1>Faça o  <br> Cadastro da <br> Seção Eleitoral </h1>
+    <h1>Faça o <br> Cadastro da <br> Seção Eleitoral </h1>
     <p>
       Cadastre a seção vinculada a uma zona eleitoral e a uma urna!
     </p>
     <div class="imagem">
-  <img src="images/Tribunal_Superior_Eleitoral.png" alt="Justiça Eleitoral">
-</div>
+      <img src="images/Tribunal_Superior_Eleitoral.png" alt="Justiça Eleitoral">
+    </div>
 
     <div class="info">
-      <p> Siga a conta da Justiça eleitoral nas redes socias; 
-        <br></br>
+      <p> Siga a conta da Justiça eleitoral nas redes socias; <br><br>
       <a href="https://www.instagram.com/tsejusbr/" target="_blank">
-  <i class="fa-brands fa-instagram"></i>
-</a>
+        <i class="fa-brands fa-instagram"></i>
+      </a>
     </div>
   </div>
 
   <div class="right">
     <form method="POST" action="/cadastroSecaoEleitoral">
-        <!-- Seleção da Zona -->
       <select name="zonaEleitoral_id" required>
-  <option value="">Selecione a zona</option>
-
-  <% ZonaEleitoral.forEach(function(zonas) { %>
-    <option value="<%= zonas.id %>">
-      <%= zonas.numero %> - <%= zonas.estado %>
-    </option>
-  <% }) %>
-
-</select>
-
-          <!-- Seleção da Urna -->
-
+        <option value="">Selecione a zona</option>
+        <% if (typeof ZonaEleitoral !== 'undefined') { %>
+          <% ZonaEleitoral.forEach(function(zonas) { %>
+            <option value="<%= zonas.id %>">
+              <%= zonas.numero %> - <%= zonas.estado %>
+            </option>
+          <% }) %>
+        <% } %>
       </select>
-      <input type="text" name="nome" placeholder="Nome" required>
+
+      <input type="text" name="nome" placeholder="Nome da Seção" required>
       <input type="text" name="rua" placeholder="Rua" required>
       <input type="text" name="nro_local" placeholder="Número do Local" required>
       <input type="text" name="bairro" placeholder="Bairro" required>
       <input type="text" name="cidade" placeholder="Cidade" required>
 
       <button type="submit" class="btn">Cadastrar</button>
+      
       <div class="mensagem">
-      <% if (typeof mensagem !== 'undefined' && mensagem) { %>
-        <p><%= mensagem %></p>
-      <% } %>
-    </div>
-
+        <% if (typeof mensagem !== 'undefined' && mensagem) { %>
+          <p><%= mensagem %></p>
+        <% } %>
+      </div>
     </form>
   </div>
-  
 
 </div>
 
