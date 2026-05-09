@@ -6,43 +6,64 @@
 
   <title>Login - Sistema Eleitoral</title>
 
-  <link rel="stylesheet" href="/css/login.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
 <body>
 
-  <div class="container-login">
+<div class="container">
 
-    <div class="card-login">
+  <!-- LADO ESQUERDO (mesmo estilo do cadastro) -->
+  <div class="left">
 
-      <h2>Sistema Eleitoral</h2>
-      <p>Faça login para continuar</p>
+    <span class="subtitle">SISTEMA ELEITORAL</span>
 
-      <% if (mensagem) { %>
-        <div class="mensagem">
-          <%= mensagem %>
-        </div>
-      <% } %>
+    <h1>Acesse sua <br> Conta <br> Eleitoral</h1>
 
-      <form action="/login" method="POST">
+    <p>Entre para acessar o sistema de votação com segurança e agilidade.</p>
 
-        <div class="input-group">
-          <label>Email</label>
-          <input type="email" name="email" required>
-        </div>
+    <div class="imagem">
+      <img src="images/Tribunal_Superior_Eleitoral.png" alt="Justiça Eleitoral">
+    </div>
 
-        <div class="input-group">
-          <label>Senha</label>
-          <input type="password" name="senha" required>
-        </div>
+    <div class="info">
+      <p>
+        Acompanhe a Justiça Eleitoral nas redes sociais:
+        <br><br>
 
-        <button type="submit">Entrar</button>
-
-      </form>
-
+        <a href="https://www.instagram.com/tsejusbr/" target="_blank">
+          <i class="fa-brands fa-instagram"></i>
+        </a>
+      </p>
     </div>
 
   </div>
+
+  <!-- LADO DIREITO (form login adaptado) -->
+  <div class="right">
+
+    <h2>Login</h2>
+
+    <% if (mensagem) { %>
+      <div class="mensagem">
+        <%= mensagem %>
+      </div>
+    <% } %>
+
+    <form action="/login" method="POST">
+
+      <input type="email" name="email" placeholder="Email" required>
+
+      <input type="password" name="senha" placeholder="Senha" required>
+
+      <button type="submit" class="btn">Entrar</button>
+
+    </form>
+
+  </div>
+
+</div>
 
 </body>
 </html>

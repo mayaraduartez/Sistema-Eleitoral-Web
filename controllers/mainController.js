@@ -1159,6 +1159,7 @@ async function urnaEletronica(req, res) {
 }
 
 //Voto
+// Voto
 async function votar(req, res) {
   try {
     const { votos, urna_id } = req.body;
@@ -1187,9 +1188,19 @@ async function votar(req, res) {
       });
     }
 
-    for (const voto of votos) {
+    if (!Array.isArray(votos)) {
+      return res.render("urnaEletronica", {
+        modal: true,
+        tipoModal: "erro",
+        mensagem: "DADOS DE VOTO INVÁLIDOS"
+      });
+    }
 
-      if (voto.numero === "BRANCO") {
+    for (const voto of votos) {
+      const numero = String(voto.numero).trim();
+
+      // BRANCO
+      if (numero === "BRANCO") {
         await Voto.create({
           urna_id,
           candidato_id: null,
@@ -1198,12 +1209,14 @@ async function votar(req, res) {
         continue;
       }
 
+      // BUSCA CANDIDATO
       const candidato = await Candidato.findOne({
         where: {
-          numero: voto.numero
+          numero
         }
       });
 
+      // NULO (não encontrado)
       if (!candidato) {
         await Voto.create({
           urna_id,
@@ -1213,9 +1226,10 @@ async function votar(req, res) {
         continue;
       }
 
+      // VOTO VÁLIDO
       await Voto.create({
         urna_id,
-        candidato_id: candidato.id,
+        candidato_id: candidato.eleitor_id, // ⚠️ importante: seu PK é eleitor_id
         tipo: "valido"
       });
     }
@@ -1245,6 +1259,7 @@ async function votar(req, res) {
     });
   }
 }
+
 async function telaLogin(req, res) {
   res.render("login", { mensagem: null });
 }
