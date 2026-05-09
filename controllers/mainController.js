@@ -6,6 +6,7 @@ const Candidato = require("../models/Candidato");
 const ZonaEleitoral = require("../models/Zona_Eleitoral");
 const SecaoEleitoral = require("../models/Secao_Eleitoral");
 const Urna = require("../models/Urna");
+const Voto = require("../models/Voto");
 
 
 const { Op } = require("sequelize");
@@ -51,7 +52,7 @@ async function abreCadastroEleitores(req, res){
 }
 
 async function salvaCadastroEleitores(req, res) {
-    const { nome, sobrenome, email, cpf, dataNasc, titulo, rua, numeroCasa, bairro, cidade, estado, secao_id } = req.body;
+    const { nome, sobrenome, email, senha, cpf, dataNasc, titulo, rua, numeroCasa, bairro, cidade, estado, secao_id } = req.body;
 
     try {
         const secoes = await SecaoEleitoral.findAll();
@@ -83,6 +84,7 @@ async function salvaCadastroEleitores(req, res) {
             nome,
             sobrenome,
             email,
+            senha,
             cpf,
             data_nascimento: dataNasc,
             titulo,
@@ -1135,12 +1137,150 @@ async function excluirUrna(req, res) {
 
 //Tela Urna
 async function urnaEletronica(req, res) {
-    try {
-        res.render("urnaEletronica.ejs");
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Erro ao carregar tela de urnas');
+
+  try {
+
+    res.render("urnaEletronica.ejs", {
+
+      modal: false,
+      tipoModal: null,
+      mensagem: null
+
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).send("Erro ao carregar tela de urnas");
+
+  }
+
+}
+
+//Voto
+async function votar(req, res) {
+  try {
+    const { votos, urna_id } = req.body;
+    const eleitor_id = req.session.eleitor?.id;
+
+    if (!eleitor_id) {
+      return res.render("urnaEletronica", {
+        modal: true,
+        tipoModal: "erro",
+        mensagem: "SESSÃO INVÁLIDA"
+      });
     }
+
+    const eleitor = await Eleitor.findOne({
+      where: {
+        id: eleitor_id,
+        ja_votou: false
+      }
+    });
+
+    if (!eleitor) {
+      return res.render("urnaEletronica", {
+        modal: true,
+        tipoModal: "erro",
+        mensagem: "ELEITOR JÁ VOTOU OU NÃO ENCONTRADO"
+      });
+    }
+
+    for (const voto of votos) {
+
+      if (voto.numero === "BRANCO") {
+        await Voto.create({
+          urna_id,
+          candidato_id: null,
+          tipo: "branco"
+        });
+        continue;
+      }
+
+      const candidato = await Candidato.findOne({
+        where: {
+          numero: voto.numero
+        }
+      });
+
+      if (!candidato) {
+        await Voto.create({
+          urna_id,
+          candidato_id: null,
+          tipo: "nulo"
+        });
+        continue;
+      }
+
+      await Voto.create({
+        urna_id,
+        candidato_id: candidato.id,
+        tipo: "valido"
+      });
+    }
+
+    await Eleitor.update(
+      { ja_votou: true },
+      {
+        where: {
+          id: eleitor_id
+        }
+      }
+    );
+
+    return res.render("urnaEletronica", {
+      modal: true,
+      tipoModal: "sucesso",
+      mensagem: "VOTAÇÃO FINALIZADA"
+    });
+
+  } catch (error) {
+    console.log(error);
+
+    return res.render("urnaEletronica", {
+      modal: true,
+      tipoModal: "erro",
+      mensagem: "ERRO AO COMPUTAR VOTO"
+    });
+  }
+}
+async function telaLogin(req, res) {
+  res.render("login", { mensagem: null });
+}
+
+async function login(req, res) {
+  try {
+
+    const { email, senha } = req.body;
+
+    const eleitor = await Eleitor.findOne({
+      where: { email, senha }
+    });
+
+    if (!eleitor) {
+      return res.render("login", {
+        mensagem: "Email ou senha inválidos"
+      });
+    }
+
+    // salva sessão
+    req.session.eleitor = {
+      id: eleitor.id,
+      nome: eleitor.nome,
+      email: eleitor.email
+    };
+
+    // redireciona após login
+    return res.redirect("/urnaEletronica");
+
+  } catch (error) {
+
+    console.log(error);
+
+    return res.status(500).send("Erro no login");
+
+  }
 }
 
 module.exports = {
@@ -1189,5 +1329,8 @@ module.exports = {
     inativarUrna,
     ativarUrna,
     excluirUrna,
-    urnaEletronica
+    urnaEletronica,
+    votar,
+    telaLogin,
+    login
 };

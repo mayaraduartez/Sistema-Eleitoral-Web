@@ -55,7 +55,13 @@ const Eleitor = sequelizeconnect.define(
     secao_id: {
       type: DataTypes.INTEGER,
       allowNull: false
-    }
+    },
+    
+    ja_votou: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    },
   },
   {
     timestamps: false,

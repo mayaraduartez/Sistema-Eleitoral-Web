@@ -30,6 +30,11 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
+      ja_votou: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
   
     });
   },

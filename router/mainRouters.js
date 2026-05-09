@@ -76,5 +76,12 @@ router.post('/urna/excluir/:id', mainController.excluirUrna);
 router.get("/urnaEletronica", mainController.urnaEletronica);
 
 
+//Votos
+router.post("/votar", mainController.votar);
+
+//login
+router.get("/login", mainController.telaLogin);
+router.post("/login", mainController.login);
+
 module.exports = router;
 
