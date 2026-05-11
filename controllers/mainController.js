@@ -7,6 +7,7 @@ const ZonaEleitoral = require("../models/Zona_Eleitoral");
 const SecaoEleitoral = require("../models/Secao_Eleitoral");
 const Urna = require("../models/Urna");
 const Voto = require("../models/Voto");
+const Chapa = require("../models/Chapa");
 
 
 const { Op } = require("sequelize");
@@ -1159,7 +1160,6 @@ async function urnaEletronica(req, res) {
 }
 
 //Voto
-// Voto
 async function votar(req, res) {
   try {
     const { votos, urna_id } = req.body;
@@ -1199,48 +1199,69 @@ async function votar(req, res) {
     for (const voto of votos) {
       const numero = String(voto.numero).trim();
 
-      // BRANCO
       if (numero === "BRANCO") {
         await Voto.create({
           urna_id,
+          tipo: "branco",
           candidato_id: null,
-          tipo: "branco"
+          chapa_id: null
         });
         continue;
       }
 
-      // BUSCA CANDIDATO
-      const candidato = await Candidato.findOne({
-        where: {
-          numero
-        }
+     if (voto.cargo === "CHAPA") {
+
+      const numero = String(voto.numero).trim();
+
+      const chapa = await Chapa.findOne({
+        where: { numero }
       });
 
-      // NULO (não encontrado)
+      if (!chapa) {
+        await Voto.create({
+          urna_id,
+          tipo: "nulo",
+          candidato_id: null,
+          chapa_id: null
+        });
+        continue;
+      }
+
+      await Voto.create({
+        urna_id,
+        tipo: "valido",
+        chapa_id: chapa.id,
+        candidato_id: null
+      });
+
+        continue;
+      }
+
+      const candidato = await Candidato.findOne({
+        where: { numero }
+      });
+
       if (!candidato) {
         await Voto.create({
           urna_id,
+          tipo: "nulo",
           candidato_id: null,
-          tipo: "nulo"
+          chapa_id: null
         });
         continue;
       }
 
-      // VOTO VÁLIDO
       await Voto.create({
         urna_id,
-        candidato_id: candidato.eleitor_id, // ⚠️ importante: seu PK é eleitor_id
-        tipo: "valido"
+        tipo: "valido",
+        candidato_id: candidato.id,
+        chapa_id: null
       });
     }
 
     await Eleitor.update(
       { ja_votou: true },
-      {
-        where: {
-          id: eleitor_id
-        }
-      }
+      { where: { id: eleitor_id } }
     );
 
     return res.render("urnaEletronica", {
@@ -1298,6 +1319,97 @@ async function login(req, res) {
   }
 }
 
+async function abreCadastroChapa(req, res) {
+  try {
+    const eleitores = await Eleitor.findAll({
+      where: { status: "ativo" },
+    });
+
+    const partidos = await Partido.findAll();
+
+    res.render("cadastroChapa", {
+      eleitores,
+      partidos,
+      mensagem: null,
+      erro: null
+    });
+  } catch (error) {
+    console.log(error);
+    res.send("Erro ao abrir cadastro de chapa.");
+  }
+}
+
+
+async function salvaCadastroChapa(req, res) {
+  try {
+    const { nomeChapa, numero, prefeitoId, viceId, partidoId } = req.body;
+
+    const eleitores = await Eleitor.findAll({ where: { status: "ativo" } });
+    const partidos = await Partido.findAll();
+
+    if (!nomeChapa || !numero || !prefeitoId || !viceId || !partidoId) {
+      return res.render("cadastroChapa", {
+        eleitores,
+        partidos,
+        mensagem: null,
+        erro: "Todos os campos são obrigatórios."
+      });
+    }
+
+    if (prefeitoId === viceId) {
+      return res.render("cadastroChapa", {
+        eleitores,
+        partidos,
+        mensagem: null,
+        erro: "Prefeito e vice não podem ser a mesma pessoa."
+      });
+    }
+
+    const chapaExiste = await Chapa.findOne({
+      where: { numero }
+    });
+
+    if (chapaExiste) {
+      return res.render("cadastroChapa", {
+        eleitores,
+        partidos,
+        mensagem: null,
+        erro: "Já existe uma chapa com esse número."
+      });
+    }
+
+    const prefeito = await Eleitor.findByPk(prefeitoId);
+    const vice = await Eleitor.findByPk(viceId);
+
+    if (!prefeito || !vice) {
+      return res.render("cadastroChapa", {
+        eleitores,
+        partidos,
+        mensagem: null,
+        erro: "Prefeito ou vice inválido."
+      });
+    }
+
+    await Chapa.create({
+      nome: nomeChapa,
+      numero: Number(numero),
+      prefeitoNome: `${prefeito.nome} ${prefeito.sobrenome}`,
+      viceNome: `${vice.nome} ${vice.sobrenome}`,
+      partido_id: partidoId
+    });
+
+    return res.render("cadastroChapa", {
+      eleitores,
+      partidos,
+      mensagem: "Chapa cadastrada com sucesso.",
+      erro: null
+    });
+
+  } catch (error) {
+    console.log(error);
+    return res.send("Erro ao salvar chapa.");
+  }
+}
 module.exports = {
     abreCadastroEleitores,
     salvaCadastroEleitores,
@@ -1347,5 +1459,7 @@ module.exports = {
     urnaEletronica,
     votar,
     telaLogin,
-    login
+    login,
+    abreCadastroChapa,
+    salvaCadastroChapa
 };

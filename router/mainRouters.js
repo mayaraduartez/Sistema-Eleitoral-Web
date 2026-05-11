@@ -83,5 +83,9 @@ router.post("/votar", mainController.votar);
 router.get("/login", mainController.telaLogin);
 router.post("/login", mainController.login);
 
+//cadastroChapa
+router.get("/cadastroChapa", mainController.abreCadastroChapa);
+router.post("/cadastroChapa", mainController.salvaCadastroChapa);
+
 module.exports = router;
 

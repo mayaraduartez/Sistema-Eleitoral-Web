@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Urna Eletrônica</title>
 
   <link rel="stylesheet" href="/css/urnaEletronica.css">
@@ -11,103 +10,83 @@
 
 <body>
 
-  <div class="urna">
+<div class="urna">
 
-    <!-- TELA DA URNA -->
-    <div class="tela">
+  <!-- TELA -->
+  <div class="tela">
 
-      <!-- MODAL (dentro da urna) -->
-      <% if(modal){ %>
-
-        <div class="modal-voto <%= tipoModal %>">
-
-          <div class="modal-content">
-
-            <h2><%= mensagem %></h2>
-
-            <button type="button" onclick="fecharModal()">
-              OK
-            </button>
-
-          </div>
-
+    <% if(modal){ %>
+      <div class="modal-voto <%= tipoModal %>">
+        <div class="modal-content">
+          <h2><%= mensagem %></h2>
+          <button onclick="fecharModal()">OK</button>
         </div>
+      </div>
+    <% } %>
 
-      <% } %>
+    <div class="topo-tela"></div>
 
-      <!-- TOPO (sem imagem da urna) -->
-      <div class="topo-tela">
+    <div class="visor">
+
+      <div class="cargo" id="cargoAtual">
+        PREFEITO / VICE
       </div>
 
-      <!-- VISOR -->
-      <div class="visor">
+      <div class="numero-digitado" id="numeroDigitado">
+        __
+      </div>
 
-        <div class="cargo" id="cargoAtual">
-          PREFEITO
-        </div>
-
-        <div class="numero-digitado" id="numeroDigitado">
-          __
-        </div>
-
-        <div class="candidato-info" id="candidatoInfo">
-          Digite o número do candidato
-        </div>
-
+      <div class="candidato-info" id="candidatoInfo">
+        Digite o número
       </div>
 
     </div>
 
-    <!-- LADO DIREITO -->
-    <div class="lado-direito">
+  </div>
 
-      <div class="justica-eleitoral">
+  <!-- LADO DIREITO -->
+  <div class="lado-direito">
 
-        <img src="/images/justica-eleitoral logo.png" alt="Justiça Eleitoral">
+    <div class="justica-eleitoral">
+      <img src="/images/justica-eleitoral logo.png" alt="Justiça Eleitoral">
+      <div class="titulo">JUSTIÇA ELEITORAL</div>
+    </div>
 
-        <div class="titulo">
-          JUSTIÇA ELEITORAL
-        </div>
+    <!-- TECLADO -->
+    <div class="container-botoes">
+
+      <div class="teclado">
+
+        <button class="simple" data-numero="1">1</button>
+        <button class="simple" data-numero="2">2</button>
+        <button class="simple" data-numero="3">3</button>
+
+        <button class="simple" data-numero="4">4</button>
+        <button class="simple" data-numero="5">5</button>
+        <button class="simple" data-numero="6">6</button>
+
+        <button class="simple" data-numero="7">7</button>
+        <button class="simple" data-numero="8">8</button>
+        <button class="simple" data-numero="9">9</button>
+
+        <button class="zero simple" data-numero="0">0</button>
 
       </div>
 
-      <!-- TECLADO -->
-      <div class="container-botoes">
+      <!-- AÇÕES -->
+      <div class="acoes">
 
-        <div class="teclado">
+        <button type="button" class="branco" id="branco">
+          BRANCO
+        </button>
 
-          <button type="button" class="simple" data-numero="1">1</button>
-          <button type="button" class="simple" data-numero="2">2</button>
-          <button type="button" class="simple" data-numero="3">3</button>
+        <button type="button" class="corrige" id="corrige">
+          CORRIGE
+        </button>
 
-          <button type="button" class="simple" data-numero="4">4</button>
-          <button type="button" class="simple" data-numero="5">5</button>
-          <button type="button" class="simple" data-numero="6">6</button>
-
-          <button type="button" class="simple" data-numero="7">7</button>
-          <button type="button" class="simple" data-numero="8">8</button>
-          <button type="button" class="simple" data-numero="9">9</button>
-
-          <button type="button" class="zero simple" data-numero="0">0</button>
-
-        </div>
-
-        <!-- AÇÕES -->
-        <div class="acoes">
-
-          <button type="button" class="branco" id="branco">
-            BRANCO
-          </button>
-
-          <button type="button" class="corrige" id="corrige">
-            CORRIGE
-          </button>
-
-          <button type="button" class="confirma" id="confirma">
-            CONFIRMA
-          </button>
-
-        </div>
+        <button type="button" class="confirma" id="confirma">
+          CONFIRMA
+        </button>
 
       </div>
 
@@ -115,139 +94,135 @@
 
   </div>
 
-  <script>
+</div>
 
-    const etapas = [
-      { cargo: "PREFEITO", digits: 2 },
-      { cargo: "VICE-PREFEITO", digits: 2 },
-      { cargo: "VEREADOR", digits: 4 }
-    ];
+<script>
 
-    let etapaAtual = 0;
-    let numeroAtual = "";
-    let votos = [];
+const etapas = [
+  { cargo: "CHAPA", digits: 2 },
+  { cargo: "VEREADOR", digits: 4 }
+];
 
-    const visor = document.getElementById("numeroDigitado");
-    const cargoAtual = document.getElementById("cargoAtual");
-    const botoes = document.querySelectorAll(".simple");
+let etapaAtual = 0;
+let numeroAtual = "";
+let votos = [];
 
-    function iniciarEtapa(){
-      numeroAtual = "";
-      const etapa = etapas[etapaAtual];
-      cargoAtual.innerText = etapa.cargo;
-      visor.innerText = "_".repeat(etapa.digits);
-    }
+const visor = document.getElementById("numeroDigitado");
+const cargoAtual = document.getElementById("cargoAtual");
+const botoes = document.querySelectorAll(".simple");
 
-    iniciarEtapa();
+function iniciarEtapa(){
+  numeroAtual = "";
+  const etapa = etapas[etapaAtual];
 
-    botoes.forEach(botao => {
-      botao.addEventListener("click", () => {
+  cargoAtual.innerText = etapa.cargo;
 
-        const etapa = etapas[etapaAtual];
+  visor.innerText = "_".repeat(etapa.digits);
+}
 
-        if(numeroAtual.length < etapa.digits){
+iniciarEtapa();
 
-          numeroAtual += botao.dataset.numero;
+botoes.forEach(botao => {
+  botao.addEventListener("click", () => {
 
-          let texto = numeroAtual;
+    const etapa = etapas[etapaAtual];
 
-          while(texto.length < etapa.digits){
-            texto += "_";
-          }
+    if(numeroAtual.length < etapa.digits){
 
-          visor.innerText = texto;
+      numeroAtual += botao.dataset.numero;
 
-        }
+      let texto = numeroAtual;
 
-      });
-    });
-
-    document.getElementById("corrige").addEventListener("click", () => {
-      iniciarEtapa();
-    });
-
-    document.getElementById("branco").addEventListener("click", () => {
-
-      votos.push({
-        cargo: etapas[etapaAtual].cargo,
-        numero: "BRANCO"
-      });
-
-      avancarEtapa();
-
-    });
-
-    document.getElementById("confirma").addEventListener("click", () => {
-
-      const etapa = etapas[etapaAtual];
-
-      if(numeroAtual.length !== etapa.digits){
-        mostrarModal("VOTO NULO", "nulo");
-        return;
+      while(texto.length < etapa.digits){
+        texto += "_";
       }
 
-      votos.push({
-        cargo: etapa.cargo,
-        numero: numeroAtual
-      });
-
-      avancarEtapa();
-
-    });
-
-    function mostrarModal(mensagem, tipo, callback){
-
-      const modal = document.createElement("div");
-      modal.className = `modal-voto ${tipo}`;
-
-      modal.innerHTML = `
-        <div class="modal-content">
-          <h2>${mensagem}</h2>
-          <button>OK</button>
-        </div>
-      `;
-
-      document.querySelector(".tela").appendChild(modal);
-
-      modal.querySelector("button").addEventListener("click", () => {
-        modal.remove();
-        if(callback) callback();
-      });
-
+      visor.innerText = texto;
     }
 
-    function avancarEtapa(){
+  });
+});
 
-      etapaAtual++;
+document.getElementById("corrige").addEventListener("click", iniciarEtapa);
 
-      if(etapaAtual >= etapas.length){
-        enviarVotos();
-        return;
-      }
+document.getElementById("branco").addEventListener("click", () => {
 
-      iniciarEtapa();
-    }
+  votos.push({
+    cargo: etapas[etapaAtual].cargo,
+    numero: "BRANCO"
+  });
 
-    async function enviarVotos(){
+  avancarEtapa();
+});
 
-      const response = await fetch("/votar", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ votos, urna_id: 1 })
-      });
+document.getElementById("confirma").addEventListener("click", () => {
 
-      const html = await response.text();
+  const etapa = etapas[etapaAtual];
 
-      document.open();
-      document.write(html);
-      document.close();
-    }
+  if(numeroAtual.length !== etapa.digits){
+    mostrarModal("VOTO NULO", "nulo");
+    return;
+  }
 
-    function fecharModal(){
-      window.location.reload();
-    }
+  votos.push({
+    cargo: etapa.cargo,
+    numero: numeroAtual
+  });
 
-  </script>
+  avancarEtapa();
+});
+
+function mostrarModal(mensagem, tipo){
+
+  const modal = document.createElement("div");
+  modal.className = `modal-voto ${tipo}`;
+
+  modal.innerHTML = `
+    <div class="modal-content">
+      <h2>${mensagem}</h2>
+      <button>OK</button>
+    </div>
+  `;
+
+  document.querySelector(".tela").appendChild(modal);
+
+  modal.querySelector("button").addEventListener("click", () => {
+    modal.remove();
+  });
+}
+
+function avancarEtapa(){
+
+  etapaAtual++;
+
+  if(etapaAtual >= etapas.length){
+    enviarVotos();
+    return;
+  }
+
+  iniciarEtapa();
+}
+
+async function enviarVotos(){
+
+  const response = await fetch("/votar", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ votos, urna_id: 1 })
+  });
+
+  const html = await response.text();
+
+  document.open();
+  document.write(html);
+  document.close();
+}
+
+function fecharModal(){
+  window.location.reload();
+}
+
+</script>
 
 </body>
 </html>
