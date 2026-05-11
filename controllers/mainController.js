@@ -555,9 +555,9 @@ async function tela_gerenciar_candidato(req, res) {
     console.log('Iniciando busca de candidatos...');
     const candidatos = await Candidato.findAll({
       include: [
-        { model: Eleitor },  // sem alias
-        { model: Partido },  // sem alias
-        { model: Cargo }     // sem alias
+        { model: Eleitor }, 
+        { model: Partido }, 
+        { model: Cargo } 
       ]
     });
     
