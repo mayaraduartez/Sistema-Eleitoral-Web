@@ -87,5 +87,6 @@ router.post("/login", mainController.login);
 router.get("/cadastroChapa", mainController.abreCadastroChapa);
 router.post("/cadastroChapa", mainController.salvaCadastroChapa);
 
+router.get("/resultadoEleicao", mainController.abreResultadoEleicao);
 module.exports = router;
 

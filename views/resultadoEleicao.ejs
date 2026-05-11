@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/style.css">
+  <title>Resultado da Eleição</title>
+</head>
+
+<body>
+  <div class="container-eleitor">
+    <div class="cabecalho">
+      <div class="subtitle">
+        <h1>Resultado da Eleição</h1>
+        <p>Acompanhe os resultados oficiais da eleição municipal.</p>
+      </div>
+
+      <div class="imagem">
+        <img src="images/Tribunal_Superior_Eleitoral.png" alt="Justiça Eleitoral">
+      </div>
+
+      <div class="info">
+        <p>Dados oficiais da Justiça Eleitoral</p>
+      </div>
+    </div>
+
+    <!-- DIV DE RESUMO DOS VOTOS -->
+    <div class="resumo-votos">
+      <h2>Resumo dos Votos</h2>
+      <div class="cards-votos">
+        <div class="card-voto">Total de Votos: <strong></strong></div>
+        <div class="card-voto">Votos Brancos: <strong></strong></div>
+        <div class="card-voto">Votos Válidos: <strong></strong></div>
+        <div class="card-voto">Votos Nulos: <strong></strong></div>
+      </div>
+    </div>
+
+    <!-- TABELA PREFEITO -->
+    <div class="tabela-eleitores">
+  <h2>Tabela Prefeito</h2>
+  <table class="tabela">
+    <thead>
+      <tr>
+        <th>Nome do Candidato</th>
+        <th>Nome do Vice</th>
+        <th>Nome da Chapa</th>
+        <th>Número da Chapa</th>
+        <th>Partido</th>
+        <th>Votos Computados</th>
+        <th>Situação</th>
+      </tr>
+    </thead>
+   <tbody>
+  <% prefeitos.forEach(prefeito => { %>
+    <tr>
+      <td><%= prefeito.prefeitoNome %></td>
+      <td><%= prefeito.viceNome %></td>
+      <td><%= prefeito.nome %></td>
+      <td><%= prefeito.numero %></td>
+      <td><%= prefeito.partido ? prefeito.partido.sigla : '' %></td>
+    <td></td>
+    <td></td>
+    </tr>
+  <% }) %>
+</tbody>
+  </table>
+</div>
+
+<!-- TABELA VEREADOR -->
+ 
+<div class="tabela-eleitores">
+  <h2>Tabela Vereador</h2>
+  <table class="tabela">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Número do candidato</th>
+        <th>Partido</th>
+        <th>Votos Computados</th>
+        <th>Situação</th>
+      </tr>
+    </thead>
+     <tbody>
+  <% vereadores.forEach(vereador => { %>
+    <tr>
+      <td><%= vereador.Eleitor ? vereador.Eleitor.nome : '' %></td>
+      <td><%= vereador.numero %></td>
+      <td><%= vereador.Partido ? vereador.Partido.sigla : '' %></td>
+    <td></td>
+    <td></td>
+    </tr>
+  <% }) %>
+</tbody>
+  </table>
+</div>
+    </div>
+  </div>
+</body>
+
+</html>

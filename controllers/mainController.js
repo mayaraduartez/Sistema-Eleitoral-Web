@@ -35,6 +35,8 @@ Cargo.hasMany(Candidato, { foreignKey: 'cargo_id' });
 SecaoEleitoral.belongsTo(Urna, {foreignKey: 'urna_id'});
   Urna.hasOne(SecaoEleitoral, { foreignKey: 'urna_id' });
 
+  Chapa.belongsTo(Partido, { foreignKey: 'partido_id', as: 'partido' });
+
 console.log('✅ Associações registradas com sucesso!');
 
   
@@ -1410,6 +1412,67 @@ async function salvaCadastroChapa(req, res) {
     return res.send("Erro ao salvar chapa.");
   }
 }
+
+async function abreResultadoEleicao(req, res) {
+  try {
+
+    // Busca todas as chapas (prefeito + vice)
+    const prefeitos = await Chapa.findAll({
+      include: [
+        {
+          model: Partido,
+          as: 'partido'
+        }
+      ]
+    });
+
+    // Busca o cargo vereador
+    const cargoVereador = await Cargo.findOne({
+      where: { nome: 'Vereador' }
+    });
+
+    let vereadores = [];
+
+    // Só busca vereadores se o cargo existir
+    if (cargoVereador) {
+      vereadores = await Candidato.findAll({
+        where: {
+          cargo_id: cargoVereador.id
+        },
+        include: [
+          {
+            model: Eleitor
+          },
+          {
+            model: Partido
+          },
+          {
+            model: Cargo
+          }
+        ]
+      });
+    }
+
+    res.render("resultadoEleicao", {
+      prefeitos,
+      vereadores,
+      mensagem: null,
+      erro: null
+    });
+
+  } catch (error) {
+    console.error(error);
+
+    res.render("resultadoEleicao", {
+      prefeitos: [],
+      vereadores: [],
+      mensagem: null,
+      erro: "Erro ao carregar resultados da eleição."
+    });
+  }
+}
+
+
 module.exports = {
     abreCadastroEleitores,
     salvaCadastroEleitores,
@@ -1461,5 +1524,6 @@ module.exports = {
     telaLogin,
     login,
     abreCadastroChapa,
-    salvaCadastroChapa
+    salvaCadastroChapa,
+    abreResultadoEleicao
 };
