@@ -48,7 +48,7 @@
         <th>Número da Chapa</th>
         <th>Partido</th>
         <th>Votos Computados</th>
-        <th>Situação</th>
+        
       </tr>
     </thead>
    <tbody>
@@ -58,8 +58,7 @@
       <td><%= prefeito.viceNome %></td>
       <td><%= prefeito.nome %></td>
       <td><%= prefeito.numero %></td>
-      <td><%= prefeito.partido ? prefeito.partido.sigla : '' %></td>
-    <td></td>
+      <td><%= prefeito.partido ? prefeito.partido.sigla : '' %></td>   
     <td></td>
     </tr>
   <% }) %>
@@ -77,8 +76,7 @@
         <th>Nome</th>
         <th>Número do candidato</th>
         <th>Partido</th>
-        <th>Votos Computados</th>
-        <th>Situação</th>
+        <th>Votos Computados</th>        
       </tr>
     </thead>
      <tbody>
@@ -86,8 +84,7 @@
     <tr>
       <td><%= vereador.Eleitor ? vereador.Eleitor.nome : '' %></td>
       <td><%= vereador.numero %></td>
-      <td><%= vereador.Partido ? vereador.Partido.sigla : '' %></td>
-    <td></td>
+      <td><%= vereador.Partido ? vereador.Partido.sigla : '' %></td>   
     <td></td>
     </tr>
   <% }) %>
