@@ -89,5 +89,9 @@ router.post("/cadastroChapa", mainController.salvaCadastroChapa);
 
 //tela resultado da eleição
 router.get("/resultadoEleicao", mainController.abreResultadoEleicao);
+
+//tela comprovante
+router.get("/comprovante", mainController.abreComprovante);
+
 module.exports = router;
 

@@ -1472,6 +1472,63 @@ async function abreResultadoEleicao(req, res) {
   }
 }
 
+async function abreComprovante(req, res) {
+  try {
+    // Modo teste: permite acessar sem login
+    const modo_teste = req.query.teste === "true";
+
+    if (modo_teste) {
+      // Dados de teste
+      return res.render("comprovante", {
+        cpf: "123.456.789-00",
+        nome: "João",
+        sobrenome: "Silva",
+        urna_id: 42,
+        erro: null
+      });
+    }
+
+    // Modo produção: exige login
+    const eleitor_id = req.session.eleitor?.id;
+
+    if (!eleitor_id) {
+      return res.redirect("/login");
+    }
+
+    const eleitor = await Eleitor.findByPk(eleitor_id);
+
+    if (!eleitor) {
+      return res.render("comprovante", {
+        erro: "Eleitor não encontrado"
+      });
+    }
+
+    // Buscar um voto do eleitor para obter o ID da urna
+    const voto = await Voto.findOne({
+      where: {
+        urna_id: { [require("sequelize").Op.gt]: 0 }
+      },
+      order: [["createdAt", "DESC"]],
+      limit: 1
+    });
+
+    const urna_id = voto ? voto.urna_id : null;
+
+    res.render("comprovante", {
+      cpf: eleitor.cpf,
+      nome: eleitor.nome,
+      sobrenome: eleitor.sobrenome,
+      urna_id: urna_id,
+      erro: null
+    });
+  } catch (error) {
+    console.log(error);
+    res.render("comprovante", {
+      erro: "Erro ao carregar comprovante"
+    });
+  }
+}
+
 
 module.exports = {
     abreCadastroEleitores,
@@ -1525,5 +1582,6 @@ module.exports = {
     login,
     abreCadastroChapa,
     salvaCadastroChapa,
-    abreResultadoEleicao
+    abreResultadoEleicao,
+    abreComprovante
 };

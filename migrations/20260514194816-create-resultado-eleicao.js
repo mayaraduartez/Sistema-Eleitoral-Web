@@ -38,8 +38,8 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: true,
         references: {
-          model: 'candidatos',
-          key: 'id'
+          model: 'candidato',
+          key: 'eleitor_id'
         },
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL'
