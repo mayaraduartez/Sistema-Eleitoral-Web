@@ -87,5 +87,15 @@ router.post("/gerar-relatorio", mainController.gerarRelatorio);
 router.get("/login", mainController.telaLogin);
 router.post("/login", mainController.login);
 
+//cadastroChapa
+router.get("/cadastroChapa", mainController.abreCadastroChapa);
+router.post("/cadastroChapa", mainController.salvaCadastroChapa);
+
+//tela resultado da eleição
+router.get("/resultadoEleicao", mainController.abreResultadoEleicao);
+
+//tela comprovante
+router.get("/comprovante", mainController.abreComprovante);
+
 module.exports = router;
 

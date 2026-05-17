@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Comprovante de Votação</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0b4db3, #1b5fd1);
+            font-family: Arial, Helvetica, sans-serif;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            padding: 30px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px;
+
+            background: #fff;
+
+            border-radius: 20px;
+
+            overflow: hidden;
+
+            display: flex;
+
+            box-shadow: 0 20px 60px rgba(0, 0, 0, .25);
+        }
+
+        .left {
+            width: 35%;
+
+            background: #f4f4f4;
+
+            padding: 40px 30px;
+        }
+
+        .subtitle {
+            font-size: 13px;
+            color: #777;
+        }
+
+        .left h1 {
+            font-size: 55px;
+            line-height: 1.05;
+
+            margin: 20px 0;
+
+            color: #111;
+        }
+
+        .left p {
+            color: #555;
+            font-size: 20px;
+        }
+
+        .imagem img {
+            width: 220px;
+            margin-top: 40px;
+        }
+
+        .info {
+            margin-top: 30px;
+        }
+
+        .info a {
+            font-size: 28px;
+            color: #e1306c;
+        }
+
+        .right {
+            width: 65%;
+            padding: 50px;
+        }
+
+        .right h2 {
+            font-size: 42px;
+            margin-bottom: 30px;
+        }
+
+        .success {
+            background: #d4edda;
+
+            border-left: 5px solid #28a745;
+
+            color: #155724;
+
+            padding: 18px;
+
+            border-radius: 10px;
+
+            margin-bottom: 25px;
+
+            font-weight: bold;
+        }
+
+        .campo {
+            margin-bottom: 20px;
+        }
+
+        .campo label {
+            display: block;
+
+            font-size: 13px;
+
+            color: #666;
+
+            margin-bottom: 8px;
+
+            text-transform: uppercase;
+
+            font-weight: bold;
+        }
+
+        .valor {
+            background: #f9fafb;
+
+            padding: 15px;
+
+            border-radius: 10px;
+
+            border-left: 4px solid #007bff;
+
+            font-weight: bold;
+
+            font-size: 18px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+
+            margin-top: 35px;
+        }
+
+        .btn {
+            flex: 1;
+
+            padding: 14px;
+
+            border: none;
+
+            border-radius: 40px;
+
+            color: #fff;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            text-decoration: none;
+
+            text-align: center;
+
+            transition: .3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .home {
+            background: #007bff;
+        }
+
+        .print {
+            background: #6c757d;
+        }
+
+        @media(max-width:900px) {
+
+            .container {
+                flex-direction: column;
+            }
+
+            .left,
+            .right {
+                width: 100%;
+            }
+
+            .left h1 {
+                font-size: 42px;
+            }
+
+            .right h2 {
+                font-size: 32px;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="left">
+
+            <span class="subtitle">
+                COMPROVANTE DE VOTAÇÃO
+            </span>
+
+            <h1>
+                Sua votação foi registrada com sucesso!
+            </h1>
+
+            <p>
+                Guarde este comprovante como referência do seu voto.
+            </p>
+
+            <div class="imagem">
+                <img src="images/Tribunal_Superior_Eleitoral.png">
+            </div>
+
+            <div class="info">
+
+                <p>
+                    Acompanhe a Justiça Eleitoral:
+                </p>
+
+                <br>
+
+                <a href="https://www.instagram.com/tsejusbr/" target="_blank">
+                    <i class="fa-brands fa-instagram"></i>
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="right">
+
+            <h2>
+                Detalhes do Comprovante
+            </h2>
+
+            <% if (erro) { %>
+
+                <div class="success" style="background:#f8d7da;color:#721c24;border-left:5px solid #dc3545;">
+                    <%= erro %>
+                </div>
+
+                <% } else { %>
+
+                    <div class="success">
+                        <i class="fas fa-check-circle"></i>
+                        Votação concluída com êxito!
+                    </div>
+
+                    <div class="campo">
+                        <label>
+                            <i class="fas fa-user"></i>
+                            Nome do Eleitor
+                        </label>
+
+                        <div class="valor">
+                            <%= nome %>
+                                <%= sobrenome %>
+                        </div>
+                    </div>
+
+                    <div class="campo">
+                        <label>
+                            <i class="fas fa-id-card"></i>
+                            CPF
+                        </label>
+
+                        <div class="valor">
+                            <%= cpf %>
+                        </div>
+                    </div>
+
+                    <div class="campo">
+                        <label>
+                            <i class="fas fa-box"></i>
+                            ID da Urna
+                        </label>
+
+                        <div class="valor">
+                            <%= urna_id %>
+                        </div>
+                    </div>
+
+                    <div class="campo">
+                        <label>
+                            <i class="fas fa-clock"></i>
+                            Data e Hora
+                        </label>
+
+                        <div class="valor">
+                            <%= new Date().toLocaleString('pt-BR') %>
+                        </div>
+                    </div>
+
+                    <div class="buttons">
+
+                        <a href="/" class="btn home">
+                            <i class="fas fa-home"></i>
+                            Início
+                        </a>
+
+                        <button onclick="window.print()" class="btn print">
+                            <i class="fas fa-print"></i>
+                            Imprimir
+                        </button>
+
+                    </div>
+
+                    <% } %>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

@@ -8,6 +8,7 @@ const SecaoEleitoral = require("../models/Secao_Eleitoral");
 const Urna = require("../models/Urna");
 const Voto = require("../models/Voto");
 const Relatorio = require("../models/Relatorio");
+const Chapa = require("../models/Chapa");
 
 
 const { Op } = require("sequelize");
@@ -37,6 +38,7 @@ SecaoEleitoral.belongsTo(Urna, {foreignKey: 'urna_id'});
 
 Voto.belongsTo(Candidato, { foreignKey: "candidato_id", targetKey: "eleitor_id" });
 Candidato.hasMany(Voto, { foreignKey: "candidato_id", sourceKey: "eleitor_id" });
+  Chapa.belongsTo(Partido, { foreignKey: 'partido_id', as: 'partido' });
 
 console.log('✅ Associações registradas com sucesso!');
 
@@ -558,9 +560,9 @@ async function tela_gerenciar_candidato(req, res) {
     console.log('Iniciando busca de candidatos...');
     const candidatos = await Candidato.findAll({
       include: [
-        { model: Eleitor },  // sem alias
-        { model: Partido },  // sem alias
-        { model: Cargo }     // sem alias
+        { model: Eleitor }, 
+        { model: Partido }, 
+        { model: Cargo } 
       ]
     });
     
@@ -1163,7 +1165,6 @@ async function urnaEletronica(req, res) {
 }
 
 //Voto
-// Voto
 async function votar(req, res) {
   try {
     const { votos, urna_id } = req.body;
@@ -1203,48 +1204,69 @@ async function votar(req, res) {
     for (const voto of votos) {
       const numero = String(voto.numero).trim();
 
-      // BRANCO
       if (numero === "BRANCO") {
         await Voto.create({
           urna_id,
+          tipo: "branco",
           candidato_id: null,
-          tipo: "branco"
+          chapa_id: null
         });
         continue;
       }
 
-      // BUSCA CANDIDATO
-      const candidato = await Candidato.findOne({
-        where: {
-          numero
-        }
+     if (voto.cargo === "CHAPA") {
+
+      const numero = String(voto.numero).trim();
+
+      const chapa = await Chapa.findOne({
+        where: { numero }
       });
 
-      // NULO (não encontrado)
+      if (!chapa) {
+        await Voto.create({
+          urna_id,
+          tipo: "nulo",
+          candidato_id: null,
+          chapa_id: null
+        });
+        continue;
+      }
+
+      await Voto.create({
+        urna_id,
+        tipo: "valido",
+        chapa_id: chapa.id,
+        candidato_id: null
+      });
+
+        continue;
+      }
+
+      const candidato = await Candidato.findOne({
+        where: { numero }
+      });
+
       if (!candidato) {
         await Voto.create({
           urna_id,
+          tipo: "nulo",
           candidato_id: null,
-          tipo: "nulo"
+          chapa_id: null
         });
         continue;
       }
 
-      // VOTO VÁLIDO
       await Voto.create({
         urna_id,
-        candidato_id: candidato.eleitor_id, // ⚠️ importante: seu PK é eleitor_id
-        tipo: "valido"
+        tipo: "valido",
+        candidato_id: candidato.id,
+        chapa_id: null
       });
     }
 
     await Eleitor.update(
       { ja_votou: true },
-      {
-        where: {
-          id: eleitor_id
-        }
-      }
+      { where: { id: eleitor_id } }
     );
 
     return res.render("urnaEletronica", {
@@ -1353,6 +1375,215 @@ async function gerarRelatorio(req, res) {
     }
 }
 
+async function abreCadastroChapa(req, res) {
+  try {
+    const eleitores = await Eleitor.findAll({
+      where: { status: "ativo" },
+    });
+
+    const partidos = await Partido.findAll();
+
+    res.render("cadastroChapa", {
+      eleitores,
+      partidos,
+      mensagem: null,
+      erro: null
+    });
+  } catch (error) {
+    console.log(error);
+    res.send("Erro ao abrir cadastro de chapa.");
+  }
+}
+
+
+async function salvaCadastroChapa(req, res) {
+  try {
+    const { nomeChapa, numero, prefeitoId, viceId, partidoId } = req.body;
+
+    const eleitores = await Eleitor.findAll({ where: { status: "ativo" } });
+    const partidos = await Partido.findAll();
+
+    if (!nomeChapa || !numero || !prefeitoId || !viceId || !partidoId) {
+      return res.render("cadastroChapa", {
+        eleitores,
+        partidos,
+        mensagem: null,
+        erro: "Todos os campos são obrigatórios."
+      });
+    }
+
+    if (prefeitoId === viceId) {
+      return res.render("cadastroChapa", {
+        eleitores,
+        partidos,
+        mensagem: null,
+        erro: "Prefeito e vice não podem ser a mesma pessoa."
+      });
+    }
+
+    const chapaExiste = await Chapa.findOne({
+      where: { numero }
+    });
+
+    if (chapaExiste) {
+      return res.render("cadastroChapa", {
+        eleitores,
+        partidos,
+        mensagem: null,
+        erro: "Já existe uma chapa com esse número."
+      });
+    }
+
+    const prefeito = await Eleitor.findByPk(prefeitoId);
+    const vice = await Eleitor.findByPk(viceId);
+
+    if (!prefeito || !vice) {
+      return res.render("cadastroChapa", {
+        eleitores,
+        partidos,
+        mensagem: null,
+        erro: "Prefeito ou vice inválido."
+      });
+    }
+
+    await Chapa.create({
+      nome: nomeChapa,
+      numero: Number(numero),
+      prefeitoNome: `${prefeito.nome} ${prefeito.sobrenome}`,
+      viceNome: `${vice.nome} ${vice.sobrenome}`,
+      partido_id: partidoId
+    });
+
+    return res.render("cadastroChapa", {
+      eleitores,
+      partidos,
+      mensagem: "Chapa cadastrada com sucesso.",
+      erro: null
+    });
+
+  } catch (error) {
+    console.log(error);
+    return res.send("Erro ao salvar chapa.");
+  }
+}
+
+async function abreResultadoEleicao(req, res) {
+  try {
+
+    // Busca todas as chapas (prefeito + vice)
+    const prefeitos = await Chapa.findAll({
+      include: [
+        {
+          model: Partido,
+          as: 'partido'
+        }
+      ]
+    });
+
+    // Busca o cargo vereador
+    const cargoVereador = await Cargo.findOne({
+      where: { nome: 'Vereador' }
+    });
+
+    let vereadores = [];
+
+    // Só busca vereadores se o cargo existir
+    if (cargoVereador) {
+      vereadores = await Candidato.findAll({
+        where: {
+          cargo_id: cargoVereador.id
+        },
+        include: [
+          {
+            model: Eleitor
+          },
+          {
+            model: Partido
+          },
+          {
+            model: Cargo
+          }
+        ]
+      });
+    }
+
+    res.render("resultadoEleicao", {
+      prefeitos,
+      vereadores,
+      mensagem: null,
+      erro: null
+    });
+
+  } catch (error) {
+    console.error(error);
+
+    res.render("resultadoEleicao", {
+      prefeitos: [],
+      vereadores: [],
+      mensagem: null,
+      erro: "Erro ao carregar resultados da eleição."
+    });
+  }
+}
+
+async function abreComprovante(req, res) {
+  try {
+    // Modo teste: permite acessar sem login
+    const modo_teste = req.query.teste === "true";
+
+    if (modo_teste) {
+      // Dados de teste
+      return res.render("comprovante", {
+        cpf: "123.456.789-00",
+        nome: "João",
+        sobrenome: "Silva",
+        urna_id: 42,
+        erro: null
+      });
+    }
+
+    // Modo produção: exige login
+    const eleitor_id = req.session.eleitor?.id;
+
+    if (!eleitor_id) {
+      return res.redirect("/login");
+    }
+
+    const eleitor = await Eleitor.findByPk(eleitor_id);
+
+    if (!eleitor) {
+      return res.render("comprovante", {
+        erro: "Eleitor não encontrado"
+      });
+    }
+
+    // Buscar um voto do eleitor para obter o ID da urna
+    const voto = await Voto.findOne({
+      where: {
+        urna_id: { [require("sequelize").Op.gt]: 0 }
+      },
+      order: [["createdAt", "DESC"]],
+      limit: 1
+    });
+
+    const urna_id = voto ? voto.urna_id : null;
+
+    res.render("comprovante", {
+      cpf: eleitor.cpf,
+      nome: eleitor.nome,
+      sobrenome: eleitor.sobrenome,
+      urna_id: urna_id,
+      erro: null
+    });
+  } catch (error) {
+    console.log(error);
+    res.render("comprovante", {
+      erro: "Erro ao carregar comprovante"
+    });
+  }
+}
+
+
 module.exports = {
     abreCadastroEleitores,
     salvaCadastroEleitores,
@@ -1403,5 +1634,9 @@ module.exports = {
     votar,
     telaLogin,
     login,
-    gerarRelatorio
+    gerarRelatorio,
+    abreCadastroChapa,
+    salvaCadastroChapa,
+    abreResultadoEleicao,
+    abreComprovante
 };

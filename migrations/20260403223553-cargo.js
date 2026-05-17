@@ -35,20 +35,6 @@ module.exports = {
 
     await queryInterface.bulkInsert('cargos', [
       {
-        nome: "Prefeito",
-        esfera: "Municipal",
-        poder: "Executivo",
-        createdAt: new Date(),
-        updatedAt: new Date()
-      },
-      {
-        nome: "Vice-Prefeito",
-        esfera: "Municipal",
-        poder: "Executivo",
-        createdAt: new Date(),
-        updatedAt: new Date()
-      },
-      {
         nome: "Vereador",
         esfera: "Municipal",
         poder: "Legislativo",

@@ -26,6 +26,17 @@ module.exports = {
         onUpdate: "CASCADE",
       },
 
+      chapa_id: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        references: {
+          model: "chapas",
+          key: "id",
+        },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
+      },
+
       candidato_id: {
         type: Sequelize.INTEGER,
         allowNull: true,

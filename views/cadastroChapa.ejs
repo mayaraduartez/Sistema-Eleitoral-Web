@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <title>Cadastro de Chapa</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="container">
+  
+  <!-- LADO ESQUERDO -->
+  <div class="left">
+    <span class="subtitle">CADASTRO DE CHAPA</span>
+    <h1>Cadastro de <br> Prefeito e Vice</h1>
+
+    <p>
+      Cadastre uma chapa eleitoral composta por Prefeito e Vice-Prefeito.
+    </p>
+
+    <div class="imagem">
+      <img src="images/Tribunal_Superior_Eleitoral.png" alt="Justiça Eleitoral">
+    </div>
+
+    <div class="info">
+      <p>
+        O sistema valida se os candidatos são diferentes antes de criar a chapa.
+        <br><br>
+        <a href="https://www.instagram.com/tsejusbr/" target="_blank">
+          <i class="fa-brands fa-instagram"></i>
+        </a>
+      </p>
+    </div>
+  </div>
+
+  <!-- LADO DIREITO -->
+  <div class="right">
+
+    <a href="/gerenciarChapas" class="btn-zona-eleitoral">
+      Gerenciar Chapas
+    </a>
+
+    <form method="POST" action="/cadastroChapa">
+
+      <!-- Nome da chapa -->
+      <input type="text" name="nomeChapa" placeholder="Nome da Chapa" required>
+
+      <!-- Número da chapa -->
+      <input type="number" name="numero" placeholder="Número da chapa" required>
+
+      <!-- Prefeito -->
+      <select name="prefeitoId" required>
+        <option value="">Selecione o Prefeito</option>
+        <% eleitores.forEach(function(eleitor) { %>
+          <option value="<%= eleitor.id %>">
+            <%= eleitor.nome %> <%= eleitor.sobrenome %> - CPF: <%= eleitor.cpf %>
+          </option>
+        <% }) %>
+      </select>
+
+      <!-- Vice -->
+      <select name="viceId" required>
+        <option value="">Selecione o Vice-Prefeito</option>
+        <% eleitores.forEach(function(eleitor) { %>
+          <option value="<%= eleitor.id %>">
+            <%= eleitor.nome %> <%= eleitor.sobrenome %> - CPF: <%= eleitor.cpf %>
+          </option>
+        <% }) %>
+      </select>
+
+      <!-- Chapa -->
+      <select name="partidoId" required>
+        <option value="">Selecione o partido</option>
+        <% partidos.forEach(function(partido) { %>
+          <option value="<%= partido.id %>">
+            <%= partido.nomePartido %> - <%= partido.sigla %>
+          </option>
+        <% }) %>
+      </select>
+
+      <button type="submit" class="btn">Cadastrar Chapa</button>
+
+      <!-- MENSAGENS -->
+      <div class="mensagem">
+        <% if (typeof mensagem !== 'undefined' && mensagem) { %>
+          <p><%= mensagem %></p>
+        <% } %>
+
+        <% if (typeof erro !== 'undefined' && erro) { %>
+          <p><%= erro %></p>
+        <% } %>
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
+
+</body>
+</html>
