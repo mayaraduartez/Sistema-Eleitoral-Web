@@ -104,6 +104,8 @@
 
   </div>
 
+  <div id="urnaData" data-urna-id="<%= typeof urna_id !== 'undefined' ? urna_id : 1 %>" style="display: none;"></div>
+
   <script>
 
     const etapas = [
@@ -213,11 +215,12 @@
     }
 
     async function enviarVotos() {
+      const urnaId = document.getElementById("urnaData").dataset.urnaId;
 
       const response = await fetch("/votar", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ votos, urna_id: <%= typeof urna_id !== 'undefined' ? urna_id : 1 %> })
+        body: JSON.stringify({ votos, urna_id: Number(urnaId) })
       });
 
       const html = await response.text();
