@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <title>Comprovante de Votação</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .comprovante-card {
+            background: white;
+            padding: 40px;
+            width: 450px;
+            margin: 60px auto;
+            border: 1px solid #ddd;
+            box-shadow: 8px 8px 0px #f0f0f0;
+            text-align: center;
+            font-family: sans-serif;
+        }
+        .header-comp img { width: 80px; margin-bottom: 10px; }
+        .divider { border-top: 2px dashed #eee; margin: 20px 0; }
+        .auth-code { font-weight: bold; color: #004a8e; }
+        .btn-print { background: #28a745; color: white; padding: 12px; border: none; width: 100%; cursor: pointer; margin-top: 20px; border-radius: 4px; }
+        @media print { .btn-print, .back-link { display: none; } }
+    </style>
+</head>
+<body>
+    <div class="comprovante-card">
+        <div class="header-comp">
+            <img src="/images/Tribunal_Superior_Eleitoral.png" alt="TSE">
+            <h2>Justiça Eleitoral</h2>
+            <p>Comprovante de Comparecimento</p>
+        </div>
+        <div class="divider"></div>
+        <p><strong>ELEITOR:</strong> <%= dadosComprovante.nome %></p>
+        <p><strong>TÍTULO:</strong> <%= dadosComprovante.titulo %></p>
+        <p><strong>SEÇÃO:</strong> <%= dadosComprovante.secao %></p>
+        <div class="divider"></div>
+        <p>Data: <%= dadosComprovante.data %></p>
+        <p>Hora: <%= dadosComprovante.hora %></p>
+        <p>Autenticação: <span class="auth-code"><%= dadosComprovante.autenticacao %></span></p>
+        <button class="btn-print" onclick="window.print()">Imprimir Comprovante</button>
+        <br><br>
+        <a href="/urnaEletronica" class="back-link">Voltar para Urna</a>
+    </div>
+</body>
+</html>

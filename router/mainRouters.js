@@ -79,6 +79,10 @@ router.get("/urnaEletronica", mainController.urnaEletronica);
 //Votos
 router.post("/votar", mainController.votar);
 
+//Relatório
+router.get("/gerar-relatorio", mainController.gerarRelatorio);
+router.post("/gerar-relatorio", mainController.gerarRelatorio);
+
 //login
 router.get("/login", mainController.telaLogin);
 router.post("/login", mainController.login);

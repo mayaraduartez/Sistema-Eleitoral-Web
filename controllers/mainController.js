@@ -7,6 +7,7 @@ const ZonaEleitoral = require("../models/Zona_Eleitoral");
 const SecaoEleitoral = require("../models/Secao_Eleitoral");
 const Urna = require("../models/Urna");
 const Voto = require("../models/Voto");
+const Relatorio = require("../models/Relatorio");
 
 
 const { Op } = require("sequelize");
@@ -33,6 +34,9 @@ Cargo.hasMany(Candidato, { foreignKey: 'cargo_id' });
   ZonaEleitoral.hasMany(SecaoEleitoral, { foreignKey: 'zonaEleitoral_id' });
 SecaoEleitoral.belongsTo(Urna, {foreignKey: 'urna_id'});
   Urna.hasOne(SecaoEleitoral, { foreignKey: 'urna_id' });
+
+Voto.belongsTo(Candidato, { foreignKey: "candidato_id", targetKey: "eleitor_id" });
+Candidato.hasMany(Voto, { foreignKey: "candidato_id", sourceKey: "eleitor_id" });
 
 console.log('✅ Associações registradas com sucesso!');
 
@@ -1298,6 +1302,57 @@ async function login(req, res) {
   }
 }
 
+async function gerarRelatorio(req, res) {
+    try {
+        const votosValidos = await Voto.count({ where: { tipo: 'valido' } });
+        const votosBrancos = await Voto.count({ where: { tipo: 'branco' } });
+        const votosNulos = await Voto.count({ where: { tipo: 'nulo' } });
+
+        const sequelize = require("../config/connection");
+        const contagemCandidatos = await Voto.findAll({
+            where: { tipo: 'valido' },
+            attributes: [
+                'candidato_id',
+                [sequelize.fn('COUNT', sequelize.col('Voto.id')), 'total_votos']
+            ],
+            group: ['candidato_id', 'Candidato.eleitor_id', 'Candidato->Eleitor.id', 'Candidato->Partido.id', 'Candidato->Cargo.id'],
+            include: [{
+                model: Candidato,
+                include: [
+                    { model: Eleitor, attributes: ['nome', 'sobrenome'] },
+                    { model: Cargo, attributes: ['nome'] },
+                    { model: Partido, attributes: ['sigla'] }
+                ]
+            }],
+        });
+
+        const relatorioData = {
+            resumo: {
+                votosValidos,
+                votosBrancos,
+                votosNulos,
+                totalGeral: votosValidos + votosBrancos + votosNulos
+            },
+            candidatos: contagemCandidatos
+        };
+
+        const novoRelatorio = await Relatorio.create({
+            titulo: `Relatório de Votação - ${new Date().toLocaleString('pt-BR')}`,
+            tipo: 'Resultado Parcial',
+            conteudo: relatorioData
+        });
+
+        return res.status(200).json({
+            mensagem: "Relatório gerado com sucesso!",
+            relatorio: novoRelatorio
+        });
+
+    } catch (error) {
+        console.error("Erro ao gerar relatório:", error);
+        return res.status(500).json({ erro: "Erro ao gerar relatório" });
+    }
+}
+
 module.exports = {
     abreCadastroEleitores,
     salvaCadastroEleitores,
@@ -1347,5 +1402,6 @@ module.exports = {
     urnaEletronica,
     votar,
     telaLogin,
-    login
+    login,
+    gerarRelatorio
 };
