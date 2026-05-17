@@ -29,11 +29,18 @@
     <div class="resumo-votos">
       <h2>Resumo dos Votos</h2>
       <div class="cards-votos">
-        <div class="card-voto">Total de Votos: <strong></strong></div>
-        <div class="card-voto">Votos Brancos: <strong></strong></div>
-        <div class="card-voto">Votos Válidos: <strong></strong></div>
-        <div class="card-voto">Votos Nulos: <strong></strong></div>
+        <div class="card-voto">Total de Votos: <strong><%= totalGeral %></strong></div>
+        <div class="card-voto">Votos Brancos: <strong><%= votosBrancos %></strong></div>
+        <div class="card-voto">Votos Válidos: <strong><%= votosValidos %></strong></div>
+        <div class="card-voto">Votos Nulos: <strong><%= votosNulos %></strong></div>
       </div>
+    </div>
+
+    <!-- BOTÃO GERAR RELATÓRIO -->
+    <div style="margin-bottom: 20px;">
+      <form action="/gerar-relatorio" method="POST" target="_blank">
+        <button type="submit" class="btn">Gerar Relatório</button>
+      </form>
     </div>
 
     <!-- TABELA PREFEITO -->

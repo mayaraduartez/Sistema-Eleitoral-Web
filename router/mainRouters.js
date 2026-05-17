@@ -90,6 +90,8 @@ router.post("/login", mainController.login);
 //cadastroChapa
 router.get("/cadastroChapa", mainController.abreCadastroChapa);
 router.post("/cadastroChapa", mainController.salvaCadastroChapa);
+router.get("/gerenciarChapas", mainController.tela_gerenciar_chapa);
+router.post("/chapa/excluir/:id", mainController.excluirChapa);
 
 //tela resultado da eleição
 router.get("/resultadoEleicao", mainController.abreResultadoEleicao);

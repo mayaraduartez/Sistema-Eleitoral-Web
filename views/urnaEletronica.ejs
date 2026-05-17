@@ -107,7 +107,8 @@
   <script>
 
     const etapas = [
-      { cargo: "CHAPA", digits: 2 },
+      { cargo: "PREFEITO", digits: 2 },
+      { cargo: "VICE-PREFEITO", digits: 2 },
       { cargo: "VEREADOR", digits: 4 }
     ];
 
@@ -216,7 +217,7 @@
       const response = await fetch("/votar", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ votos, urna_id: 1 })
+        body: JSON.stringify({ votos, urna_id: <%= typeof urna_id !== 'undefined' ? urna_id : 1 %> })
       });
 
       const html = await response.text();

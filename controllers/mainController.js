@@ -1145,9 +1145,10 @@ async function excluirUrna(req, res) {
 async function urnaEletronica(req, res) {
 
   try {
+    const urna = await Urna.findOne({ where: { situacao: true } });
 
     res.render("urnaEletronica.ejs", {
-
+      urna_id: urna ? urna.id : 1,
       modal: false,
       tipoModal: null,
       mensagem: null
@@ -1467,6 +1468,29 @@ async function salvaCadastroChapa(req, res) {
   }
 }
 
+async function tela_gerenciar_chapa(req, res) {
+  try {
+    const chapas = await Chapa.findAll({
+      include: [{ model: Partido, as: 'partido' }]
+    });
+    return res.render('gerenciarChapa', { chapas });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send('Erro ao carregar a página de gerenciamento de chapas');
+  }
+}
+
+async function excluirChapa(req, res) {
+  try {
+    const { id } = req.params;
+    await Chapa.destroy({ where: { id } });
+    return res.redirect('/gerenciarChapas');
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send('Erro ao excluir chapa');
+  }
+}
+
 async function abreResultadoEleicao(req, res) {
   try {
 
@@ -1479,6 +1503,11 @@ async function abreResultadoEleicao(req, res) {
         }
       ]
     });
+
+    const votosValidos = await Voto.count({ where: { tipo: 'valido' } });
+    const votosBrancos = await Voto.count({ where: { tipo: 'branco' } });
+    const votosNulos = await Voto.count({ where: { tipo: 'nulo' } });
+    const totalGeral = votosValidos + votosBrancos + votosNulos;
 
     // Busca o cargo vereador
     const cargoVereador = await Cargo.findOne({
@@ -1494,15 +1523,9 @@ async function abreResultadoEleicao(req, res) {
           cargo_id: cargoVereador.id
         },
         include: [
-          {
-            model: Eleitor
-          },
-          {
-            model: Partido
-          },
-          {
-            model: Cargo
-          }
+          { model: Eleitor },
+          { model: Partido },
+          { model: Cargo }
         ]
       });
     }
@@ -1510,6 +1533,10 @@ async function abreResultadoEleicao(req, res) {
     res.render("resultadoEleicao", {
       prefeitos,
       vereadores,
+      votosValidos,
+      votosBrancos,
+      votosNulos,
+      totalGeral,
       mensagem: null,
       erro: null
     });
@@ -1637,6 +1664,8 @@ module.exports = {
     gerarRelatorio,
     abreCadastroChapa,
     salvaCadastroChapa,
+    tela_gerenciar_chapa,
+    excluirChapa,
     abreResultadoEleicao,
     abreComprovante
 };

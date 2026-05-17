@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/style.css">
+  <title>Gerenciar Chapas</title>
+</head>
+
+<body>
+  <div class="container-eleitor">
+    <div class="cabecalho">
+      <div class="subtitle">
+        <h1>Gerenciar Chapas</h1>
+        <p>Gerencie as chapas (Prefeito e Vice) cadastradas no sistema.</p>
+      </div>
+
+      <div class="imagem">
+        <img src="images/Tribunal_Superior_Eleitoral.png" alt="Justiça Eleitoral">
+      </div>
+
+      <div class="info">
+        <p>Consulte dados oficiais da Justiça Eleitoral</p>
+      </div>
+    </div>
+
+    <div class="tabela-eleitores">
+      <h2>Lista de Chapas</h2>
+
+      <a href="/cadastroChapa" class="btn-zona-eleitoral">
+        Cadastrar Chapa
+      </a>
+
+      <table class="tabela">
+        <thead>
+          <tr>
+            <th>Nome da Chapa</th>
+            <th>Prefeito</th>
+            <th>Vice-Prefeito</th>
+            <th>Número</th>
+            <th>Partido</th>
+            <th>Sigla</th>
+            <th class="col-acoes">Ações</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% chapas.forEach(chapa => { %>
+            <tr>
+              <td><%= chapa.nome %></td>
+              <td><%= chapa.prefeitoNome %></td>
+              <td><%= chapa.viceNome %></td>
+              <td><%= chapa.numero %></td>
+              <td><%= chapa.partido ? chapa.partido.nomePartido : '' %></td>
+              <td><%= chapa.partido ? chapa.partido.sigla : '' %></td>
+              <td class="acoes">
+                <!-- Botão Excluir -->
+                <form action="/chapa/excluir/<%= chapa.id %>" method="POST" onsubmit="return confirmarExclusao()">
+                  <button class="botao-excluir" type="submit">Excluir</button>
+                </form>
+                <!-- Botão Atualizar (opcional, mas bom ter o link) -->
+                <a href="/chapa/editar/<%= chapa.id %>">
+                  <button class="botao-inativar" type="button">Atualizar</button>
+                </a>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+<script>
+  function confirmarExclusao() {
+    return confirm("Tem certeza que deseja excluir esta chapa?");
+  }
+</script>
+
+</html>
