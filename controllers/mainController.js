@@ -9,6 +9,8 @@ const Urna = require("../models/Urna");
 const Voto = require("../models/Voto");
 const Relatorio = require("../models/Relatorio");
 const Chapa = require("../models/Chapa");
+const sequelize = require('../config/connection');
+const { QueryTypes } = require('sequelize');
 
 
 const { Op } = require("sequelize");
@@ -1491,64 +1493,167 @@ async function excluirChapa(req, res) {
   }
 }
 
+
 async function abreResultadoEleicao(req, res) {
   try {
 
-    // Busca todas as chapas (prefeito + vice)
-    const prefeitos = await Chapa.findAll({
-      include: [
-        {
-          model: Partido,
-          as: 'partido'
-        }
-      ]
+    
+    // QUANTIDADE DE VAGAS
+  
+
+    // Número de vereadores eleitos
+    const numeroDeVagas = 9;
+
+   
+    // CONTAGEM DOS VOTOS
+  
+
+    const votosValidos = await Voto.count({
+      where: {
+        tipo: 'valido'
+      }
     });
 
-    const votosValidos = await Voto.count({ where: { tipo: 'valido' } });
-    const votosBrancos = await Voto.count({ where: { tipo: 'branco' } });
-    const votosNulos = await Voto.count({ where: { tipo: 'nulo' } });
-    const totalGeral = votosValidos + votosBrancos + votosNulos;
-
-    // Busca o cargo vereador
-    const cargoVereador = await Cargo.findOne({
-      where: { nome: 'Vereador' }
+    const votosBrancos = await Voto.count({
+      where: {
+        tipo: 'branco'
+      }
     });
 
-    let vereadores = [];
+    const votosNulos = await Voto.count({
+      where: {
+        tipo: 'nulo'
+      }
+    });
 
-    // Só busca vereadores se o cargo existir
-    if (cargoVereador) {
-      vereadores = await Candidato.findAll({
-        where: {
-          cargo_id: cargoVereador.id
-        },
-        include: [
-          { model: Eleitor },
-          { model: Partido },
-          { model: Cargo }
-        ]
-      });
-    }
+    // Soma total
+    const totalGeral =
+      votosValidos +
+      votosBrancos +
+      votosNulos;
 
-    res.render("resultadoEleicao", {
+
+    // VEREADORES MAIS VOTADOS
+   
+   const vereadores = await sequelize.query(`
+
+  SELECT
+    c.eleitor_id,
+    c.numero,
+    e.nome,
+    p.sigla,
+
+    COUNT(v.id) AS total_votos
+
+  FROM candidato c
+
+  INNER JOIN eleitores e
+    ON c.eleitor_id = e.id
+
+  INNER JOIN "Partidos" p
+    ON c.partido_id = p.id
+
+  INNER JOIN cargos cg
+    ON c.cargo_id = cg.id
+
+  LEFT JOIN votos v
+    ON v.candidato_id = c.eleitor_id
+    AND v.tipo = 'valido'
+
+  WHERE
+    cg.nome = 'Vereador'
+
+  GROUP BY
+    c.eleitor_id,
+    c.numero,
+    e.nome,
+    p.sigla
+
+  ORDER BY
+    total_votos DESC,
+    e.nome ASC
+
+`, {
+  type: QueryTypes.SELECT
+});
+
+
+    // CHAPAS MAIS VOTADAS
+
+    const prefeitos = await sequelize.query(`
+
+  SELECT
+    ch.id,
+    ch.nome,
+    ch."prefeitoNome",
+    ch."viceNome",
+    ch.numero,
+    p.sigla,
+
+    COUNT(v.id) AS total_votos
+
+  FROM chapas ch
+
+  INNER JOIN "Partidos" p
+    ON ch.partido_id = p.id
+
+  LEFT JOIN votos v
+    ON v.chapa_id = ch.id
+    AND v.tipo = 'valido'
+
+  GROUP BY
+    ch.id,
+    ch.nome,
+    ch."prefeitoNome",
+    ch."viceNome",
+    ch.numero,
+    p.sigla
+
+  ORDER BY
+    total_votos DESC,
+    ch.nome ASC
+
+`, {
+  type: QueryTypes.SELECT
+});
+
+
+    // RENDERIZA VIEW
+
+    res.render('resultadoEleicao', {
+
       prefeitos,
       vereadores,
+
+      numeroDeVagas,
+
       votosValidos,
       votosBrancos,
       votosNulos,
       totalGeral,
+
       mensagem: null,
       erro: null
     });
 
   } catch (error) {
-    console.error(error);
 
-    res.render("resultadoEleicao", {
+    console.log(error);
+
+    res.render('resultadoEleicao', {
+
       prefeitos: [],
       vereadores: [],
+
+      numeroDeVagas: 0,
+
+      votosValidos: 0,
+      votosBrancos: 0,
+      votosNulos: 0,
+      totalGeral: 0,
+
       mensagem: null,
-      erro: "Erro ao carregar resultados da eleição."
+      erro: 'Erro ao carregar resultados.'
     });
   }
 }

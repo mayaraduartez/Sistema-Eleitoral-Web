@@ -252,3 +252,42 @@ body {
   text-decoration: none;
   font-size: 16px;
 }
+
+
+.vencedor {
+  background-color: #d4edda;
+  font-weight: bold;
+  border-left: 6px solid #28a745;
+}
+
+
+.eleito {
+  background-color: #d1ecf1;
+  font-weight: bold;
+  border-left: 6px solid #007bff;
+}
+
+
+.tabela tr:hover {
+  transition: 0.2s;
+  transform: scale(1.002);
+}
+
+
+.badge-vencedor {
+  background-color: #28a745;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  margin-left: 8px;
+}
+
+.badge-eleito {
+  background-color: #007bff;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  margin-left: 8px;
+}
