@@ -108,119 +108,122 @@
 
   <script>
 
-    const etapas = [
-      { cargo: "PREFEITO", digits: 2 },
-      { cargo: "VICE-PREFEITO", digits: 2 },
-      { cargo: "VEREADOR", digits: 4 }
-    ];
+  const etapas = [
+    { cargo: "CHAPA", digits: 2 },
+    { cargo: "VEREADOR", digits: 4 }
+  ];
 
-    let etapaAtual = 0;
-    let numeroAtual = "";
-    let votos = [];
+  let etapaAtual = 0;
+  let numeroAtual = "";
+  let votos = [];
 
-    const visor = document.getElementById("numeroDigitado");
-    const cargoAtual = document.getElementById("cargoAtual");
-    const botoes = document.querySelectorAll(".simple");
+  const visor = document.getElementById("numeroDigitado");
+  const cargoAtual = document.getElementById("cargoAtual");
+  const info = document.getElementById("candidatoInfo");
 
-    function iniciarEtapa() {
-      numeroAtual = "";
+  const botoes = document.querySelectorAll(".simple");
+
+  function iniciarEtapa() {
+
+    numeroAtual = "";
+
+    const etapa = etapas[etapaAtual];
+
+    cargoAtual.innerText =
+      etapa.cargo === "CHAPA"
+        ? "PREFEITO / VICE"
+        : "VEREADOR";
+
+    visor.innerText = "_".repeat(etapa.digits);
+
+    info.innerText = "Digite o número";
+  }
+
+  iniciarEtapa();
+
+  botoes.forEach(botao => {
+
+    botao.addEventListener("click", () => {
+
       const etapa = etapas[etapaAtual];
 
-      cargoAtual.innerText = etapa.cargo;
+      if (numeroAtual.length < etapa.digits) {
 
-      visor.innerText = "_".repeat(etapa.digits);
+        numeroAtual += botao.dataset.numero;
+
+        let texto = numeroAtual;
+
+        while (texto.length < etapa.digits) {
+          texto += "_";
+        }
+
+        visor.innerText = texto;
+      }
+
+    });
+
+  });
+
+  document.getElementById("corrige").addEventListener("click", () => {
+    iniciarEtapa();
+  });
+
+  document.getElementById("branco").addEventListener("click", () => {
+
+    votos.push({
+      cargo: etapas[etapaAtual].cargo,
+      numero: "BRANCO"
+    });
+
+    avancarEtapa();
+  });
+
+  document.getElementById("confirma").addEventListener("click", () => {
+
+    const etapa = etapas[etapaAtual];
+
+    if (numeroAtual.length !== etapa.digits) {
+
+      mostrarModal("NÚMERO INCOMPLETO", "erro");
+      return;
+    }
+
+    votos.push({
+      cargo: etapa.cargo,
+      numero: numeroAtual
+    });
+
+    avancarEtapa();
+  });
+
+  function avancarEtapa() {
+
+    etapaAtual++;
+
+    if (etapaAtual >= etapas.length) {
+      enviarVotos();
+      return;
     }
 
     iniciarEtapa();
+  }
 
-    botoes.forEach(botao => {
-      botao.addEventListener("click", () => {
+  async function enviarVotos() {
 
-        const etapa = etapas[etapaAtual];
+    const urnaId =
+      document.getElementById("urnaData").dataset.urnaId;
 
-        if (numeroAtual.length < etapa.digits) {
-
-          numeroAtual += botao.dataset.numero;
-
-          let texto = numeroAtual;
-
-          while (texto.length < etapa.digits) {
-            texto += "_";
-          }
-
-          visor.innerText = texto;
-        }
-
-      });
-    });
-
-    document.getElementById("corrige").addEventListener("click", iniciarEtapa);
-
-    document.getElementById("branco").addEventListener("click", () => {
-
-      votos.push({
-        cargo: etapas[etapaAtual].cargo,
-        numero: "BRANCO"
-      });
-
-      avancarEtapa();
-    });
-
-    document.getElementById("confirma").addEventListener("click", () => {
-
-      const etapa = etapas[etapaAtual];
-
-      if (numeroAtual.length !== etapa.digits) {
-        mostrarModal("VOTO NULO", "nulo");
-        return;
-      }
-
-      votos.push({
-        cargo: etapa.cargo,
-        numero: numeroAtual
-      });
-
-      avancarEtapa();
-    });
-
-    function mostrarModal(mensagem, tipo) {
-
-      const modal = document.createElement("div");
-      modal.className = `modal-voto ${tipo}`;
-
-      modal.innerHTML = `
-    <div class="modal-content">
-      <h2>${mensagem}</h2>
-      <button>OK</button>
-    </div>
-  `;
-
-      document.querySelector(".tela").appendChild(modal);
-
-      modal.querySelector("button").addEventListener("click", () => {
-        modal.remove();
-      });
-    }
-
-    function avancarEtapa() {
-
-      etapaAtual++;
-
-      if (etapaAtual >= etapas.length) {
-        enviarVotos();
-        return;
-      }
-
-      iniciarEtapa();
-    }
-
-    async function enviarVotos() {
-      const urnaId = document.getElementById("urnaData").dataset.urnaId;
+    try {
 
       const response = await fetch("/votar", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ votos, urna_id: Number(urnaId) })
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          votos,
+          urna_id: Number(urnaId)
+        })
       });
 
       const html = await response.text();
@@ -228,13 +231,41 @@
       document.open();
       document.write(html);
       document.close();
-    }
 
-    function fecharModal() {
-      window.location.reload();
-    }
+    } catch (error) {
 
-  </script>
+      console.log(error);
+
+      mostrarModal("ERRO AO ENVIAR VOTOS", "erro");
+    }
+  }
+
+  function mostrarModal(mensagem, tipo) {
+
+    const modal = document.createElement("div");
+
+    modal.className = `modal-voto ${tipo}`;
+
+    modal.innerHTML = `
+      <div class="modal-content">
+        <h2>${mensagem}</h2>
+        <button>OK</button>
+      </div>
+    `;
+
+    document.querySelector(".tela").appendChild(modal);
+
+    modal.querySelector("button")
+      .addEventListener("click", () => {
+        modal.remove();
+      });
+  }
+
+  function fecharModal() {
+    window.location.reload();
+  }
+
+</script>
 
 </body>
 

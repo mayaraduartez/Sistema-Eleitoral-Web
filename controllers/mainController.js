@@ -1167,13 +1167,17 @@ async function urnaEletronica(req, res) {
 
 }
 
-//Voto
+// Voto
 async function votar(req, res) {
+
   try {
+
     const { votos, urna_id } = req.body;
+
     const eleitor_id = req.session.eleitor?.id;
 
     if (!eleitor_id) {
+
       return res.render("urnaEletronica", {
         modal: true,
         tipoModal: "erro",
@@ -1189,6 +1193,7 @@ async function votar(req, res) {
     });
 
     if (!eleitor) {
+
       return res.render("urnaEletronica", {
         modal: true,
         tipoModal: "erro",
@@ -1197,6 +1202,7 @@ async function votar(req, res) {
     }
 
     if (!Array.isArray(votos)) {
+
       return res.render("urnaEletronica", {
         modal: true,
         tipoModal: "erro",
@@ -1204,72 +1210,110 @@ async function votar(req, res) {
       });
     }
 
+    // BUSCA CARGO VEREADOR
+    const cargoVereador = await Cargo.findOne({
+      where: {
+        nome: "Vereador"
+      }
+    });
+
     for (const voto of votos) {
+
       const numero = String(voto.numero).trim();
 
+  
+      // VOTO BRANCO
+    
       if (numero === "BRANCO") {
+
         await Voto.create({
           urna_id,
           tipo: "branco",
           candidato_id: null,
           chapa_id: null
         });
+
         continue;
       }
 
-     if (voto.cargo === "CHAPA") {
+      // VOTO CHAPA
 
-      const numero = String(voto.numero).trim();
+      if (voto.cargo === "CHAPA") {
 
-      const chapa = await Chapa.findOne({
-        where: { numero }
-      });
+        const chapa = await Chapa.findOne({
+          where: {
+            numero
+          }
+        });
 
-      if (!chapa) {
+        // CHAPA NÃO ENCONTRADA = NULO
+        if (!chapa) {
+
+          await Voto.create({
+            urna_id,
+            tipo: "nulo",
+            candidato_id: null,
+            chapa_id: null
+          });
+
+          continue;
+        }
+
+        // VOTO VÁLIDO CHAPA
         await Voto.create({
           urna_id,
-          tipo: "nulo",
-          candidato_id: null,
-          chapa_id: null
+          tipo: "valido",
+          chapa_id: chapa.id,
+          candidato_id: null
         });
-        continue;
-      }
-
-      await Voto.create({
-        urna_id,
-        tipo: "valido",
-        chapa_id: chapa.id,
-        candidato_id: null
-      });
 
         continue;
       }
+
+   
+      // VOTO VEREADOR
 
       const candidato = await Candidato.findOne({
-        where: { numero }
+        where: {
+          numero,
+          cargo_id: cargoVereador.id,
+          status: "ativo"
+        }
       });
 
+      // CANDIDATO NÃO ENCONTRADO = NULO
       if (!candidato) {
+
         await Voto.create({
           urna_id,
           tipo: "nulo",
           candidato_id: null,
           chapa_id: null
         });
+
         continue;
       }
 
+      // VOTO VÁLIDO VEREADOR
       await Voto.create({
         urna_id,
         tipo: "valido",
-        candidato_id: candidato.id,
+        candidato_id: candidato.eleitor_id,
         chapa_id: null
       });
+
     }
 
+    // MARCA ELEITOR COMO JÁ VOTOU
     await Eleitor.update(
-      { ja_votou: true },
-      { where: { id: eleitor_id } }
+      {
+        ja_votou: true
+      },
+      {
+        where: {
+          id: eleitor_id
+        }
+      }
     );
 
     return res.render("urnaEletronica", {
@@ -1279,6 +1323,7 @@ async function votar(req, res) {
     });
 
   } catch (error) {
+
     console.log(error);
 
     return res.render("urnaEletronica", {
@@ -1541,6 +1586,7 @@ async function abreResultadoEleicao(req, res) {
     c.eleitor_id,
     c.numero,
     e.nome,
+    e.data_nascimento,
     p.sigla,
 
     COUNT(v.id) AS total_votos
@@ -1567,11 +1613,12 @@ async function abreResultadoEleicao(req, res) {
     c.eleitor_id,
     c.numero,
     e.nome,
+    e.data_nascimento,
     p.sigla
 
   ORDER BY
     total_votos DESC,
-    e.nome ASC
+    e.data_nascimento ASC
 
 `, {
   type: QueryTypes.SELECT
@@ -1589,6 +1636,7 @@ async function abreResultadoEleicao(req, res) {
     ch."viceNome",
     ch.numero,
     p.sigla,
+    e.data_nascimento,
 
     COUNT(v.id) AS total_votos
 
@@ -1596,6 +1644,9 @@ async function abreResultadoEleicao(req, res) {
 
   INNER JOIN "Partidos" p
     ON ch.partido_id = p.id
+
+  LEFT JOIN eleitores e
+    ON e.nome ILIKE ch."prefeitoNome"
 
   LEFT JOIN votos v
     ON v.chapa_id = ch.id
@@ -1607,10 +1658,12 @@ async function abreResultadoEleicao(req, res) {
     ch."prefeitoNome",
     ch."viceNome",
     ch.numero,
-    p.sigla
+    p.sigla,
+    e.data_nascimento
 
   ORDER BY
     total_votos DESC,
+    e.data_nascimento ASC NULLS LAST,
     ch.nome ASC
 
 `, {
