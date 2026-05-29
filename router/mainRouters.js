@@ -74,6 +74,8 @@ router.post('/urna/excluir/:id', mainController.excluirUrna);
 
 //Tela Urna
 router.get("/urnaEletronica", mainController.urnaEletronica);
+// Tela Home do Eleitor
+router.get("/homeEleitor", mainController.homeEleitor);
 
 
 //Votos

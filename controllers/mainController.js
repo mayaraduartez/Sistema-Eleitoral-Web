@@ -1338,6 +1338,16 @@ async function telaLogin(req, res) {
   res.render("login", { mensagem: null });
 }
 
+async function homeEleitor(req, res) {
+  try {
+    const eleitor = req.session.eleitor || null;
+    return res.render("homeEleitor", { eleitor });
+  } catch (error) {
+    console.error("Erro ao carregar home do eleitor:", error);
+    return res.status(500).send("Erro ao carregar a página inicial do eleitor.");
+  }
+}
+
 async function login(req, res) {
   try {
 
@@ -1817,6 +1827,7 @@ module.exports = {
     excluirUrna,
     urnaEletronica,
     votar,
+    homeEleitor,
     telaLogin,
     login,
     gerarRelatorio,
