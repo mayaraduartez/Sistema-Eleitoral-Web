@@ -5,10 +5,27 @@ const upload = require("../config/upload");
 const mainController = require("../controllers/mainController");
 const autenticacao = require("../config/autenticacao");
 const autorizar = require("../config/autorizacao");
+const passport = require("../config/passport");
 
 //login e logout
 router.get("/login", mainController.telaLogin);
-router.post("/login", mainController.login);
+router.post("/login", (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
+    if (err) return next(err);
+
+    if (!user) {
+      return res.render("login", {
+        mensagem: info?.msg || "Email ou senha inválidos"
+      });
+    }
+
+    req.logIn(user, (err) => {
+      if (err) return next(err);
+
+      return res.redirect("/urnaEletronica");
+    });
+  })(req, res, next);
+});
 
 //eleitor
 // Admin e técnico mantêm eleitores
