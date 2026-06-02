@@ -28,14 +28,18 @@ module.exports = {
       },
       secao_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
       ja_votou: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
         defaultValue: false,
       },
-  
+      perfil: {
+        type: Sequelize.STRING,
+        allowNull: false,        
+        defaultValue: "eleitor"
+      }
     });
   },
 

@@ -51,17 +51,20 @@ const Eleitor = sequelizeconnect.define(
       allowNull: true,
       defaultValue: 'ativo'
     },
-    
     secao_id: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true
     },
-    
     ja_votou: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false
     },
+    perfil: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: "eleitor"
+    }
   },
   {
     timestamps: false,
