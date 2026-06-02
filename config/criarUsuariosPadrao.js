@@ -3,8 +3,8 @@ const Eleitor = require("../models/Eleitor");
 
 async function criarUsuariosPadrao() {
   try {
-    const senhaAdmin = await bcrypt.hash("admin123", 10);
-    const senhaTecnico = await bcrypt.hash("tecnico123", 10);
+    const senhaAdmin = "admin123";
+    const senhaTecnico = "tecnico123";
 
     const usuarios = [
       {
