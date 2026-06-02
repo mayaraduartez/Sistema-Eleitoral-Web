@@ -11,6 +11,7 @@ const Relatorio = require("../models/Relatorio");
 const Chapa = require("../models/Chapa");
 const sequelize = require('../config/connection');
 const { QueryTypes } = require('sequelize');
+const passport = require("../config/passport");
 
 
 const { Op } = require("sequelize");
@@ -1348,39 +1349,7 @@ async function homeEleitor(req, res) {
   }
 }
 
-async function login(req, res) {
-  try {
 
-    const { email, senha } = req.body;
-
-    const eleitor = await Eleitor.findOne({
-      where: { email, senha }
-    });
-
-    if (!eleitor) {
-      return res.render("login", {
-        mensagem: "Email ou senha inválidos"
-      });
-    }
-
-    // salva sessão
-    req.session.eleitor = {
-      id: eleitor.id,
-      nome: eleitor.nome,
-      email: eleitor.email
-    };
-
-    // redireciona após login
-    return res.redirect("/urnaEletronica");
-
-  } catch (error) {
-
-    console.log(error);
-
-    return res.status(500).send("Erro no login");
-
-  }
-}
 
 async function gerarRelatorio(req, res) {
     try {
@@ -1829,7 +1798,6 @@ module.exports = {
     votar,
     homeEleitor,
     telaLogin,
-    login,
     gerarRelatorio,
     abreCadastroChapa,
     salvaCadastroChapa,

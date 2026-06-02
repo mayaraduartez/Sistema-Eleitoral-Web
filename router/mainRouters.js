@@ -22,7 +22,15 @@ router.post("/login", (req, res, next) => {
     req.logIn(user, (err) => {
       if (err) return next(err);
 
-      return res.redirect("/urnaEletronica");
+      if (user.perfil === "admin") {
+        return res.redirect("/homeAdmin");
+      }
+
+      if (user.perfil === "tecnico") {
+        return res.redirect("/homeTecnico");
+      }
+
+      return res.redirect("/homeEleitor");
     });
   })(req, res, next);
 });
