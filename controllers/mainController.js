@@ -1340,6 +1340,16 @@ async function telaLogin(req, res) {
   res.render("login", { mensagem: null });
 }
 
+async function homeAdmin(req, res) {
+  try{
+    const admin = req.user || null;
+    return res.render("homeAdministrador", { admin });
+  } catch (error) {
+    console.error("Erro ao carregar home do admin:", error);
+    return res.status(500).send("Erro ao carregar a página inicial do admin.");
+  }
+}
+
 async function homeEleitor(req, res) {
   try {
     const eleitor = req.user || null;
@@ -1805,5 +1815,6 @@ module.exports = {
     tela_gerenciar_chapa,
     excluirChapa,
     abreResultadoEleicao,
-    abreComprovante
+    abreComprovante,
+    homeAdmin
 };

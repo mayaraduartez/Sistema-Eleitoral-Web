@@ -106,6 +106,8 @@ router.post("/urna/excluir/:id", autorizar("admin"), mainController.excluirUrna)
 router.get("/urnaEletronica", autorizar("admin", "eleitor", "tecnico"), mainController.urnaEletronica);
 router.post("/votar", autorizar("admin", "eleitor", "tecnico"), mainController.votar);
 
+router.get("/homeAdmin", autorizar("admin"), mainController.homeAdmin);
+
 router.get("/homeEleitor", autorizar("admin", "eleitor", "tecnico"), mainController.homeEleitor);
 
 //relatórios

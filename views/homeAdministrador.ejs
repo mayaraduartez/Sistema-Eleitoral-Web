@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TSE Clone</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #0047c7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 40px;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1400px;
+            background: white;
+            border-radius: 20px;
+            padding: 40px 50px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: "";
+            position: absolute;
+            width: 700px;
+            height: 700px;
+            background: #f3f5fb;
+            border-radius: 50%;
+            top: -250px;
+            right: 150px;
+        }
+
+        .hero {
+            margin-top: 40px;
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            z-index: 2;
+        }
+
+        .left {
+            width: 35%;
+        }
+
+        .left a {
+            color: #0a45c9;
+            font-weight: bold;
+            text-decoration: none;
+            border-bottom: 2px solid #0a45c9;
+            padding-bottom: 4px;
+        }
+
+        .right {
+            width: 50%;
+            text-align: center;
+        }
+
+        .right h2 {
+            font-size: 64px;
+            color: #0a45c9;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        .right p {
+            color: #666;
+            font-size: 22px;
+            margin-bottom: 30px;
+        }
+
+        .right a {
+            color: #0a45c9;
+            font-weight: bold;
+            text-decoration: none;
+            border-bottom: 2px solid #0a45c9;
+            padding-bottom: 5px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 25px;
+            margin-top: 80px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .card {
+            background: #f5f7ff;
+            border-radius: 25px;
+            padding: 40px 30px;
+            text-align: center;
+            min-height: 420px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all .3s ease;
+            cursor: pointer;
+            border: 3px solid transparent;
+            position: relative;
+        }
+
+        /* EFEITO HOVER DINÂMICO */
+        .card:hover {
+            background: #0047c7;
+            transform: translateY(-10px) scale(1.02);
+            border: 3px solid #4d8dff;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.20);
+        }
+
+        .card:hover h3,
+        .card:hover p,
+        .card:hover .link {
+            color: white;
+        }
+
+        .card:hover .icon {
+            transform: scale(1.1);
+        }
+
+        .card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 25px;
+            opacity: 0;
+            transition: .3s;
+            box-shadow: 0 0 0 4px rgba(77, 141, 255, 0.3);
+        }
+
+        .card:hover::after {
+            opacity: 1;
+        }
+
+        .icon {
+            width: 120px;
+            height: 120px;
+            background: white;
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 50px;
+            color: #0047c7;
+            transition: .3s;
+        }
+
+        .card h3 {
+            font-size: 38px;
+            margin-bottom: 20px;
+            color: #0a45c9;
+            transition: .3s;
+        }
+
+        .card p {
+            font-size: 22px;
+            line-height: 1.5;
+            color: #555;
+            transition: .3s;
+        }
+
+        .btn {
+            margin-top: 30px;
+            background: #0b63ff;
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 40px;
+            font-size: 20px;
+            cursor: pointer;
+            transition: .3s;
+        }
+
+        .btn:hover {
+            background: white;
+            color: #0047c7;
+        }
+
+        .link {
+            margin-top: 30px;
+            color: #0a45c9;
+            text-decoration: none;
+            font-size: 20px;
+            display: inline-block;
+            transition: .3s;
+        }
+
+        @media(max-width:1200px) {
+
+            .hero {
+                flex-direction: column;
+                gap: 40px;
+            }
+
+            .left,
+            .right {
+                width: 100%;
+            }
+
+            .right h2 {
+                font-size: 42px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <section class="hero">
+
+            <div class="left">
+                <a href="#">SAIBA MAIS</a>
+            </div>
+
+            <div class="right">
+                <h2>
+                    Justiça Eleitoral<br>
+                    mais próxima de você
+                </h2>
+
+                <p>
+                    Serviços digitais para facilitar sua participação na democracia.
+                </p>
+
+                <a href="#">
+                    CONHEÇA TODOS OS SERVIÇOS
+                </a>
+            </div>
+
+        </section>
+
+        <!-- CARDS DINÂMICOS -->
+        <section class="cards" id="cards-container"></section>
+
+    </div>
+
+    <script>
+    const servicos = [
+    {
+        icon: "👥",
+        titulo: "Eleitores",
+        descricao: "Cadastrar, editar, ativar e gerenciar eleitores."
+    },
+    {
+        icon: "📍",
+        titulo: "Zonas Eleitorais",
+        descricao: "Cadastrar e gerenciar zonas eleitorais."
+    },
+    {
+        icon: "🏫",
+        titulo: "Seções Eleitorais",
+        descricao: "Cadastrar e gerenciar seções eleitorais."
+    },
+    {
+        icon: "🗳️",
+        titulo: "Urnas",
+        descricao: "Cadastrar e administrar urnas eletrônicas."
+    },
+    {
+        icon: "👤",
+        titulo: "Candidatos",
+        descricao: "Cadastrar e gerenciar candidatos."
+    },
+    {
+        icon: "🏛️",
+        titulo: "Partidos",
+        descricao: "Cadastrar e administrar partidos políticos."
+    },
+    {
+        icon: "📋",
+        titulo: "Chapas",
+        descricao: "Cadastrar e gerenciar chapas eleitorais."
+    }
+];
+
+const container = document.getElementById("cards-container");
+
+servicos.forEach(servico => {
+
+    const card = document.createElement("div");
+    card.classList.add("card");
+
+    let linkHref = '#';
+
+    switch (servico.titulo) {
+        case 'Eleitores':
+            linkHref = '/gerenciarEleitor';
+            break;
+
+        case 'Zonas Eleitorais':
+            linkHref = '/gerenciarZonaEleitoral';
+            break;
+
+        case 'Seções Eleitorais':
+            linkHref = '/gerenciarSecaoEleitoral';
+            break;
+
+        case 'Urnas':
+            linkHref = '/cadastroUrnas';
+            break;
+
+        case 'Candidatos':
+            linkHref = '/gerenciarCandidato';
+            break;
+
+        case 'Partidos':
+            linkHref = '/gerenciarPartido';
+            break;
+
+        case 'Chapas':
+            linkHref = '/gerenciarChapas';
+            break;
+    }
+
+    card.innerHTML = `
+        <div class="icon">${servico.icon}</div>
+
+        <div>
+            <h3>${servico.titulo}</h3>
+            <p>${servico.descricao}</p>
+        </div>
+
+        <a href="${linkHref}" class="link">
+            Acessar módulo →
+        </a>
+    `;
+
+    card.addEventListener('click', (e) => {
+        const tag = e.target.tagName.toLowerCase();
+
+        if (tag !== 'a' && tag !== 'button') {
+            window.location.href = linkHref;
+        }
+    });
+
+    container.appendChild(card);
+});
+</script>
+
+</body>
+
+</html>
