@@ -18,8 +18,8 @@
     <div class="cabecalho">
 
       <div class="subtitle">
-        <h1>Resultado da Eleição</h1>
-        <p>Acompanhe os resultados oficiais da eleição municipal.</p>
+        <h1>Resultados Parciais</h1>
+        <p>Acompanhe os resultados parciais da eleição municipal.</p>
       </div>
 
       <div class="imagem">
@@ -41,22 +41,30 @@
 
         <div class="card-voto">
           Total de Votos:
-          <strong><%= totalGeral %></strong>
+          <strong>
+            <%= totalGeral %>
+          </strong>
         </div>
 
         <div class="card-voto">
           Votos Brancos:
-          <strong><%= votosBrancos %></strong>
+          <strong>
+            <%= votosBrancos %>
+          </strong>
         </div>
 
         <div class="card-voto">
           Votos Válidos:
-          <strong><%= votosValidos %></strong>
+          <strong>
+            <%= votosValidos %>
+          </strong>
         </div>
 
         <div class="card-voto">
           Votos Nulos:
-          <strong><%= votosNulos %></strong>
+          <strong>
+            <%= votosNulos %>
+          </strong>
         </div>
 
       </div>
@@ -94,20 +102,20 @@
 
         <tbody>
 
-          <% if(prefeitos.length > 0){ %>
+          <% if(prefeitos.length> 0){ %>
 
-            <% prefeitos.forEach((prefeito, index) => { %>
+            <% prefeitos.forEach((prefeito, index)=> { %>
 
               <tr class="<%= index === 0 ? 'vencedor' : '' %>">
 
                 <td>
                   <%= prefeito.prefeitoNome %>
 
-                  <% if(index === 0){ %>
-                    <span class="badge-vencedor">
-                      🏆 Chapa Vencedora
-                    </span>
-                  <% } %>
+                    <% if(index===0){ %>
+                      <span class="badge-vencedor">
+                        🏆 Chapa Vencedora
+                      </span>
+                      <% } %>
 
                 </td>
 
@@ -133,17 +141,17 @@
 
               </tr>
 
-            <% }) %>
+              <% }) %>
 
-          <% } else { %>
+                <% } else { %>
 
-            <tr>
-              <td colspan="6">
-                Nenhum resultado encontrado.
-              </td>
-            </tr>
+                  <tr>
+                    <td colspan="6">
+                      Nenhum resultado encontrado.
+                    </td>
+                  </tr>
 
-          <% } %>
+                  <% } %>
 
         </tbody>
 
@@ -169,9 +177,9 @@
 
         <tbody>
 
-          <% if(vereadores.length > 0){ %>
+          <% if(vereadores.length> 0){ %>
 
-            <% vereadores.forEach((vereador, index) => { %>
+            <% vereadores.forEach((vereador, index)=> { %>
 
               <tr class="<%= index < numeroDeVagas ? 'eleito' : '' %>">
 
@@ -179,13 +187,13 @@
 
                   <%= vereador.nome %>
 
-                  <% if(index < numeroDeVagas){ %>
+                    <% if(index < numeroDeVagas){ %>
 
-                    <span class="badge-eleito">
-                      🏆 Eleito
-                    </span>
+                      <span class="badge-eleito">
+                        🏆 Eleito
+                      </span>
 
-                  <% } %>
+                      <% } %>
 
                 </td>
 
@@ -203,20 +211,46 @@
 
               </tr>
 
-            <% }) %>
+              <% }) %>
 
-          <% } else { %>
+                <% } else { %>
 
-            <tr>
-              <td colspan="4">
-                Nenhum resultado encontrado.
-              </td>
-            </tr>
+                  <tr>
+                    <td colspan="4">
+                      Nenhum resultado encontrado.
+                    </td>
+                  </tr>
 
-          <% } %>
+                  <% } %>
 
         </tbody>
 
+      </table>
+
+    </div>
+
+    <!-- TABELA BRANCOS E NULOS -->
+    <div class="tabela-eleitores">
+
+      <h2>Votos em Branco e Nulos</h2>
+
+      <table class="tabela">
+        <thead>
+          <tr>
+            <th>Tipo de Voto</th>
+            <th>Votos Computados</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Votos em Branco</td>
+            <td><%= votosBrancos %></td>
+          </tr>
+          <tr>
+            <td>Votos Nulos</td>
+            <td><%= votosNulos %></td>
+          </tr>
+        </tbody>
       </table>
 
     </div>

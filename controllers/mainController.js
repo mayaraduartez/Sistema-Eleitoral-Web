@@ -1176,7 +1176,7 @@ async function votar(req, res) {
 
     const { votos, urna_id } = req.body;
 
-    const eleitor_id = req.session.eleitor?.id;
+    const eleitor_id = req.user?.id;
 
     if (!eleitor_id) {
 
@@ -1318,11 +1318,8 @@ async function votar(req, res) {
       }
     );
 
-    return res.render("urnaEletronica", {
-      modal: true,
-      tipoModal: "sucesso",
-      mensagem: "VOTAÇÃO FINALIZADA"
-    });
+    // Redireciona direto para o comprovante ao finalizar o voto
+    return res.redirect("/comprovante");
 
   } catch (error) {
 
@@ -1338,6 +1335,16 @@ async function votar(req, res) {
 
 async function telaLogin(req, res) {
   res.render("login", { mensagem: null });
+}
+
+async function homeTecnico(req, res) {
+  try{
+    const admin = req.user || null;
+    return res.render("homeTecnico", { admin });
+  } catch (error) {
+    console.error("Erro ao carregar home do tecnico:", error);
+    return res.status(500).send("Erro ao carregar a página inicial do tecnico.");
+  }
 }
 
 async function homeAdmin(req, res) {
@@ -1364,52 +1371,56 @@ async function homeEleitor(req, res) {
 
 async function gerarRelatorio(req, res) {
     try {
+        const numeroDeVagas = 9;
+
         const votosValidos = await Voto.count({ where: { tipo: 'valido' } });
         const votosBrancos = await Voto.count({ where: { tipo: 'branco' } });
         const votosNulos = await Voto.count({ where: { tipo: 'nulo' } });
+        const totalGeral = votosValidos + votosBrancos + votosNulos;
 
         const sequelize = require("../config/connection");
-        const contagemCandidatos = await Voto.findAll({
-            where: { tipo: 'valido' },
-            attributes: [
-                'candidato_id',
-                [sequelize.fn('COUNT', sequelize.col('Voto.id')), 'total_votos']
-            ],
-            group: ['candidato_id', 'Candidato.eleitor_id', 'Candidato->Eleitor.id', 'Candidato->Partido.id', 'Candidato->Cargo.id'],
-            include: [{
-                model: Candidato,
-                include: [
-                    { model: Eleitor, attributes: ['nome', 'sobrenome'] },
-                    { model: Cargo, attributes: ['nome'] },
-                    { model: Partido, attributes: ['sigla'] }
-                ]
-            }],
-        });
+        const { QueryTypes } = require('sequelize');
+
+        const vereadores = await sequelize.query(`
+          SELECT c.eleitor_id, c.numero, e.nome, e.data_nascimento, p.sigla, COUNT(v.id) AS total_votos
+          FROM candidato c
+          INNER JOIN eleitores e ON c.eleitor_id = e.id
+          INNER JOIN "Partidos" p ON c.partido_id = p.id
+          INNER JOIN cargos cg ON c.cargo_id = cg.id
+          LEFT JOIN votos v ON v.candidato_id = c.eleitor_id AND v.tipo = 'valido'
+          WHERE cg.nome = 'Vereador'
+          GROUP BY c.eleitor_id, c.numero, e.nome, e.data_nascimento, p.sigla
+          ORDER BY total_votos DESC, e.data_nascimento ASC
+        `, { type: QueryTypes.SELECT });
+
+        const prefeitos = await sequelize.query(`
+          SELECT ch.id, ch.nome, ch."prefeitoNome", ch."viceNome", ch.numero, p.sigla, e.data_nascimento, COUNT(v.id) AS total_votos
+          FROM chapas ch
+          INNER JOIN "Partidos" p ON ch.partido_id = p.id
+          LEFT JOIN eleitores e ON e.nome ILIKE ch."prefeitoNome"
+          LEFT JOIN votos v ON v.chapa_id = ch.id AND v.tipo = 'valido'
+          GROUP BY ch.id, ch.nome, ch."prefeitoNome", ch."viceNome", ch.numero, p.sigla, e.data_nascimento
+          ORDER BY total_votos DESC, e.data_nascimento ASC NULLS LAST, ch.nome ASC
+        `, { type: QueryTypes.SELECT });
 
         const relatorioData = {
-            resumo: {
-                votosValidos,
-                votosBrancos,
-                votosNulos,
-                totalGeral: votosValidos + votosBrancos + votosNulos
-            },
-            candidatos: contagemCandidatos
+            resumo: { votosValidos, votosBrancos, votosNulos, totalGeral },
+            prefeitos,
+            vereadores,
+            numeroDeVagas
         };
 
         const novoRelatorio = await Relatorio.create({
             titulo: `Relatório de Votação - ${new Date().toLocaleString('pt-BR')}`,
-            tipo: 'Resultado Parcial',
+            tipo: 'Resultado Oficial',
             conteudo: relatorioData
         });
 
-        return res.status(200).json({
-            mensagem: "Relatório gerado com sucesso!",
-            relatorio: novoRelatorio
-        });
+        return res.render("relatorioGerado", { relatorio: novoRelatorio });
 
     } catch (error) {
         console.error("Erro ao gerar relatório:", error);
-        return res.status(500).json({ erro: "Erro ao gerar relatório" });
+        return res.status(500).send("Erro ao gerar relatório");
     }
 }
 
@@ -1718,7 +1729,7 @@ async function abreComprovante(req, res) {
     }
 
     // Modo produção: exige login
-    const eleitor_id = req.session.eleitor?.id;
+    const eleitor_id = req.user?.id;
 
     if (!eleitor_id) {
       return res.redirect("/login");
@@ -1816,5 +1827,6 @@ module.exports = {
     excluirChapa,
     abreResultadoEleicao,
     abreComprovante,
-    homeAdmin
+    homeAdmin,
+    homeTecnico
 };

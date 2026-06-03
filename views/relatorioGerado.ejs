@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title><%= relatorio.titulo %></title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; color: #333; }
+        .cabecalho { display: flex; align-items: center; border-bottom: 2px solid #0047c7; padding-bottom: 20px; margin-bottom: 30px; }
+        .cabecalho .imagem img { width: 150px; margin-right: 20px; }
+        .cabecalho .texto h1 { color: #000; margin: 0; font-size: 32px; }
+        .cabecalho .texto p { margin: 5px 0 0; color: #666; font-size: 16px; }
+        
+        .print-btn { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 20px; cursor: pointer; display: block; margin: 0 auto 30px; font-size: 16px; font-weight: bold;}
+        .print-btn:hover { background: #0056b3; }
+        
+        .resumo-votos h2, .tabela-eleitores h2 { color: #000; font-size: 24px; margin-bottom: 15px; }
+        
+        .resumo-votos { margin-bottom: 40px; }
+        .resumo-votos p { font-size: 16px; margin: 5px 0; }
+        
+        table { width: 100%; border-collapse: collapse; margin-bottom: 40px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: center; }
+        th { background-color: #1c3581; color: white; }
+        
+        .vencedor { background-color: #d4edda !important; }
+        .badge-vencedor { display: inline-block; background: #28a745; color: white; padding: 3px 8px; border-radius: 12px; font-size: 12px; margin-left: 10px; font-weight: bold; }
+        
+        .eleito { background-color: #e2e3e5 !important; }
+        .badge-eleito { display: inline-block; background: #6c757d; color: white; padding: 3px 8px; border-radius: 12px; font-size: 12px; margin-left: 10px; font-weight: bold; }
+
+        @media print {
+            .print-btn { display: none; }
+            body { margin: 0; }
+        }
+    </style>
+</head>
+<body>
+    <button class="print-btn" onclick="window.print()">🖨️ Imprimir Relatório Oficial</button>
+
+    <div style="text-align: center; margin-bottom: 30px;">
+        <h1 style="margin: 0; font-size: 28px; color: #000; text-transform: uppercase;">Relatório da Eleição</h1>
+        <p style="color: #888; font-size: 14px; margin-top: 5px; text-transform: uppercase;">Acompanhe os resultados parciais da eleição municipal.</p>
+    </div>
+
+    <div class="cabecalho">
+        <div class="imagem">
+            <img src="/images/Tribunal_Superior_Eleitoral.png" alt="Justiça Eleitoral" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/4/41/Logotipo_do_Tribunal_Superior_Eleitoral.svg'">
+        </div>
+        <div class="texto">
+            <h1>Tribunal Superior Eleitoral</h1>
+            <p>Dados oficiais da Justiça Eleitoral - <%= new Date(relatorio.createdAt).toLocaleString('pt-BR') %></p>
+        </div>
+    </div>
+
+    <div class="resumo-votos">
+        <h2>Resumo dos Votos</h2>
+        <p>Total de Votos: <strong><%= relatorio.conteudo.resumo.totalGeral %></strong></p>
+        <p>Votos Brancos: <strong><%= relatorio.conteudo.resumo.votosBrancos %></strong></p>
+        <p>Votos Válidos: <strong><%= relatorio.conteudo.resumo.votosValidos %></strong></p>
+        <p>Votos Nulos: <strong><%= relatorio.conteudo.resumo.votosNulos %></strong></p>
+    </div>
+
+    <div class="tabela-eleitores">
+        <h2>Tabela Prefeito</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome do Prefeito</th>
+                    <th>Nome do Vice</th>
+                    <th>Nome da Chapa</th>
+                    <th>Número</th>
+                    <th>Partido</th>
+                    <th>Votos Computados</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if(relatorio.conteudo.prefeitos && relatorio.conteudo.prefeitos.length > 0){ %>
+                    <% relatorio.conteudo.prefeitos.forEach((prefeito, index) => { %>
+                        <tr class="<%= index === 0 && prefeito.total_votos > 0 ? 'vencedor' : '' %>">
+                            <td>
+                                <%= prefeito.prefeitoNome %>
+                                <% if(index === 0 && prefeito.total_votos > 0){ %>
+                                    <span class="badge-vencedor">🏆 Chapa Vencedora</span>
+                                <% } %>
+                            </td>
+                            <td><%= prefeito.viceNome %></td>
+                            <td><%= prefeito.nome %></td>
+                            <td><%= prefeito.numero %></td>
+                            <td><%= prefeito.sigla %></td>
+                            <td><%= prefeito.total_votos %></td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="6">Nenhum resultado encontrado.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="tabela-eleitores">
+        <h2>Tabela Vereador</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Número</th>
+                    <th>Partido</th>
+                    <th>Votos Computados</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if(relatorio.conteudo.vereadores && relatorio.conteudo.vereadores.length > 0){ %>
+                    <% relatorio.conteudo.vereadores.forEach((vereador, index) => { %>
+                        <tr class="<%= index < relatorio.conteudo.numeroDeVagas && vereador.total_votos > 0 ? 'eleito' : '' %>">
+                            <td>
+                                <%= vereador.nome %>
+                                <% if(index < relatorio.conteudo.numeroDeVagas && vereador.total_votos > 0){ %>
+                                    <span class="badge-eleito">🏆 Eleito</span>
+                                <% } %>
+                            </td>
+                            <td><%= vereador.numero %></td>
+                            <td><%= vereador.sigla %></td>
+                            <td><%= vereador.total_votos %></td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="4">Nenhum resultado encontrado.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="tabela-eleitores">
+        <h2>Votos em Branco e Nulos</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Tipo de Voto</th>
+                    <th>Votos Computados</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Votos em Branco</td>
+                    <td><strong><%= relatorio.conteudo.resumo.votosBrancos %></strong></td>
+                </tr>
+                <tr>
+                    <td>Votos Nulos</td>
+                    <td><strong><%= relatorio.conteudo.resumo.votosNulos %></strong></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

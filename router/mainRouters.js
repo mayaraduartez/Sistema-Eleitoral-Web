@@ -108,6 +108,8 @@ router.post("/votar", autorizar("admin", "eleitor", "tecnico"), mainController.v
 
 router.get("/homeAdmin", autorizar("admin"), mainController.homeAdmin);
 
+router.get("/homeTecnico", autorizar("admin", "tecnico"), mainController.homeTecnico);
+
 router.get("/homeEleitor", autorizar("admin", "eleitor", "tecnico"), mainController.homeEleitor);
 
 //relatórios
