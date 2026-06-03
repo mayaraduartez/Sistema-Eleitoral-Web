@@ -177,6 +177,7 @@ async function visualizarPerfil(req, res) {
     try {
         const { id } = req.params;
         const eleitor = await Eleitor.findByPk(id);
+        console.log("ID recebido:", req.params.id);
 
         if (!eleitor) {
             return res.status(404).send("Eleitor não encontrado.");
@@ -1341,7 +1342,7 @@ async function telaLogin(req, res) {
 
 async function homeEleitor(req, res) {
   try {
-    const eleitor = req.session.eleitor || null;
+    const eleitor = req.user || null;
     return res.render("homeEleitor", { eleitor });
   } catch (error) {
     console.error("Erro ao carregar home do eleitor:", error);

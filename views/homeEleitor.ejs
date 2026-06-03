@@ -292,7 +292,7 @@
             if (servico.titulo === 'Votar') {
                 linkHref = '/urnaEletronica';
             } else if (servico.titulo === 'Visualizar Perfil') {
-                linkHref = (eleitorId !== null) ? `/perfil/${eleitorId}` : '/login';
+                linkHref = (eleitorId !== null) ? `/perfil/${eleitorId}` : '#';
             } else if (servico.titulo === 'Solicitar atualização') {
                 linkHref = '/solicitarAtualizacao';
             } else if (servico.titulo === 'Visualizar Comprovante') {
