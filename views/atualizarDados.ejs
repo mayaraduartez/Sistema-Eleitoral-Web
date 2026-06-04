@@ -33,6 +33,9 @@
         </div>
 
         <div class="right">
+                <button onclick="window.location.href='/homeAdmin'" class="btn botao-voltar" style="background: #666; width: auto; cursor: pointer;">Tela do Administrador</button>
+                <button onclick="window.location.href='/homeTecnico'" class="btn botao-voltar" style="background: #666; width: auto; cursor: pointer;">Tela do Técnico</button>
+
             <form method="POST">
                 <input type="text" name="nome" placeholder="Nome" value="<%= eleitor.nome || '' %>" required>
                 <input type="text" name="sobrenome" placeholder="Sobrenome" value="<%= eleitor.sobrenome || '' %>" required>
@@ -60,7 +63,8 @@
                 </select>
 
                 <button type="submit" class="btn">Atualizar dados</button>
-                
+                    
+
                 <div class="mensagem">
                     <% if (typeof mensagem !== 'undefined' && mensagem) { %>
                         <p><%= mensagem %></p>

@@ -35,6 +35,17 @@ router.post("/login", (req, res, next) => {
   })(req, res, next);
 });
 
+router.get("/logout", (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.log(err);
+    }
+    // Limpa o cookie de sessão
+    res.clearCookie('connect.sid'); 
+    return res.redirect("/login");
+  });
+});
+
 //eleitor
 // Admin e técnico mantêm eleitores
 router.get("/cadastroEleitores", autorizar("admin", "tecnico"), mainController.abreCadastroEleitores);

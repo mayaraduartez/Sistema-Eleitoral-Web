@@ -73,6 +73,7 @@
 
     <!-- BOTÃO RELATÓRIO -->
     <div style="margin-bottom: 20px;">
+          <button onclick="window.location.href='/homeAdmin'" class="btn botao-voltar" style="background: #666; width: auto; cursor: pointer;">Voltar</button>
 
       <form action="/gerar-relatorio" method="POST" target="_blank">
         <button type="submit" class="btn">
@@ -111,7 +112,7 @@
                 <td>
                   <%= prefeito.prefeitoNome %>
 
-                    <% if(index===0){ %>
+                    <% if(index === 0 && prefeito.total_votos > 0) { %>
                       <span class="badge-vencedor">
                         🏆 Chapa Vencedora
                       </span>
@@ -187,7 +188,7 @@
 
                   <%= vereador.nome %>
 
-                    <% if(index < numeroDeVagas){ %>
+                    <% if(index === 0 && vereador.total_votos > 0) { %>
 
                       <span class="badge-eleito">
                         🏆 Eleito

@@ -31,29 +31,60 @@
             padding: 40px 50px;
             position: relative;
             overflow: hidden;
+            min-height: 600px; 
         }
 
         .container::before {
             content: "";
             position: absolute;
-            width: 700px;
-            height: 700px;
+             width: 1010px;
+             height: 580px;
             background: #f3f5fb;
             border-radius: 50%;
-            top: -250px;
-            right: 150px;
+            top: -150px; 
+            right: -200px; 
+            z-index: 0; 
+        }
+
+        .topo-barra {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            z-index: 10;
+        }
+
+        .botao-sair {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .botao-sair:hover {
+            background-color: #c82333;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
         }
 
         .hero {
             margin-top: 40px;
             display: flex;
             justify-content: space-between;
+            align-items: center; 
             position: relative;
             z-index: 2;
+            gap: 30px; 
         }
 
         .left {
             width: 35%;
+            z-index: 2;
         }
 
         .left a {
@@ -62,11 +93,13 @@
             text-decoration: none;
             border-bottom: 2px solid #0a45c9;
             padding-bottom: 4px;
+            font-size: 18px;
         }
 
         .right {
             width: 50%;
             text-align: center;
+            z-index: 2;
         }
 
         .right h2 {
@@ -74,6 +107,7 @@
             color: #0a45c9;
             line-height: 1.1;
             margin-bottom: 20px;
+            font-weight: bold;
         }
 
         .right p {
@@ -88,13 +122,14 @@
             text-decoration: none;
             border-bottom: 2px solid #0a45c9;
             padding-bottom: 5px;
+            font-size: 18px;
         }
 
         .cards {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 25px;
-            margin-top: 80px;
+            margin-top: 60px;
             position: relative;
             z-index: 2;
         }
@@ -113,7 +148,6 @@
             border: 3px solid transparent;
             position: relative;
         }
-
         /* EFEITO HOVER DINÂMICO */
         .card:hover {
             background: #0047c7;
@@ -132,20 +166,6 @@
             transform: scale(1.1);
         }
 
-        .card::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            border-radius: 25px;
-            opacity: 0;
-            transition: .3s;
-            box-shadow: 0 0 0 4px rgba(77, 141, 255, 0.3);
-        }
-
-        .card:hover::after {
-            opacity: 1;
-        }
-
         .icon {
             width: 120px;
             height: 120px;
@@ -158,6 +178,7 @@
             font-size: 50px;
             color: #0047c7;
             transition: .3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
         .card h3 {
@@ -174,23 +195,6 @@
             transition: .3s;
         }
 
-        .btn {
-            margin-top: 30px;
-            background: #0b63ff;
-            color: white;
-            border: none;
-            padding: 18px;
-            border-radius: 40px;
-            font-size: 20px;
-            cursor: pointer;
-            transition: .3s;
-        }
-
-        .btn:hover {
-            background: white;
-            color: #0047c7;
-        }
-
         .link {
             margin-top: 30px;
             color: #0a45c9;
@@ -198,10 +202,14 @@
             font-size: 20px;
             display: inline-block;
             transition: .3s;
+            font-weight: bold;
+        }
+
+        .link:hover {
+            text-decoration: underline;
         }
 
         @media(max-width:1200px) {
-
             .hero {
                 flex-direction: column;
                 gap: 40px;
@@ -215,14 +223,24 @@
             .right h2 {
                 font-size: 42px;
             }
+            
+            .container::before {
+                width: 400px;
+                height: 400px;
+                top: -200px;
+                right: -100px;
+            }
         }
     </style>
 </head>
 
 <body>
-
     <div class="container">
-
+       
+        <div class="topo-barra">
+            <button type="button" class="botao-sair" id="btnSair">Sair</button>
+        </div>
+        
         <section class="hero">
 
             <div class="left">
@@ -234,135 +252,78 @@
                     Justiça Eleitoral<br>
                     mais próxima de você
                 </h2>
-
                 <p>
                     Serviços digitais para facilitar sua participação na democracia.
                 </p>
-
                 <a href="#">
                     CONHEÇA TODOS OS SERVIÇOS
                 </a>
             </div>
-
         </section>
 
-        <!-- CARDS DINÂMICOS -->
+        <!-- Cards DINÂMICOS -->
         <section class="cards" id="cards-container"></section>
-
     </div>
 
     <script>
-    const servicos = [
-    {
-        icon: "👥",
-        titulo: "Eleitores",
-        descricao: "Cadastrar, editar, ativar e gerenciar eleitores."
-    },
-    {
-        icon: "📍",
-        titulo: "Zonas Eleitorais",
-        descricao: "Cadastrar e gerenciar zonas eleitorais."
-    },
-    {
-        icon: "🏫",
-        titulo: "Seções Eleitorais",
-        descricao: "Cadastrar e gerenciar seções eleitorais."
-    },
-    {
-        icon: "🗳️",
-        titulo: "Urnas",
-        descricao: "Cadastrar e administrar urnas eletrônicas."
-    },
-    {
-        icon: "👤",
-        titulo: "Candidatos",
-        descricao: "Cadastrar e gerenciar candidatos."
-    },
-    {
-        icon: "🏛️",
-        titulo: "Partidos",
-        descricao: "Cadastrar e administrar partidos políticos."
-    },
-    {
-        icon: "📋",
-        titulo: "Chapas",
-        descricao: "Cadastrar e gerenciar chapas eleitorais."
-    },
-    {
-        icon: "📊",
-        titulo: "Relatórios",
-        descricao: "Visualizar resultados parciais e gerar relatórios da eleição."
-    }
-];
+        const servicos = [
+            { icon: "👥", titulo: "Eleitores", descricao: "Cadastrar, editar, ativar e gerenciar eleitores." },
+            { icon: "📍", titulo: "Zonas Eleitorais", descricao: "Cadastrar e gerenciar zonas eleitorais." },
+            { icon: "🏫", titulo: "Seções Eleitorais", descricao: "Cadastrar e gerenciar seções eleitorais." },
+            { icon: "🗳️", titulo: "Urnas", descricao: "Cadastrar e administrar urnas eletrônicas." },
+            { icon: "👤", titulo: "Candidatos", descricao: "Cadastrar e gerenciar candidatos." },
+            { icon: "🏛️", titulo: "Partidos", descricao: "Cadastrar e administrar partidos políticos." },
+            { icon: "📋", titulo: "Chapas", descricao: "Cadastrar e gerenciar chapas eleitorais." },
+            { icon: "📊", titulo: "Relatórios", descricao: "Visualizar resultados parciais e gerar relatórios da eleição." }
+        ];
 
-const container = document.getElementById("cards-container");
+        // Mapeamento de rotas
+        const rotas = {
+            'Eleitores': '/gerenciarEleitor',
+            'Zonas Eleitorais': '/gerenciarZonaEleitoral',
+            'Seções Eleitorais': '/gerenciarSecaoEleitoral',
+            'Urnas': '/cadastroUrnas',
+            'Candidatos': '/gerenciarCandidato',
+            'Partidos': '/gerenciarPartido',
+            'Chapas': '/gerenciarChapas',
+            'Relatórios': '/resultadoEleicao'
+        };
 
-servicos.forEach(servico => {
+        const container = document.getElementById("cards-container");
 
-    const card = document.createElement("div");
-    card.classList.add("card");
+        // Criar cards
+        servicos.forEach(servico => {
+            const linkHref = rotas[servico.titulo] || '#';
+            
+            const card = document.createElement("div");
+            card.classList.add("card");
+            
+            card.innerHTML = `
+                <div class="icon">${servico.icon}</div>
+                <div>
+                    <h3>${servico.titulo}</h3>
+                    <p>${servico.descricao}</p>
+                </div>
+                <a href="${linkHref}" class="link">Acessar módulo →</a>
+            `;
 
-    let linkHref = '#';
+            // Clique no card redireciona
+            card.addEventListener('click', (e) => {
+                // Não redireciona se clicar no link
+                if (e.target.tagName.toLowerCase() !== 'a') {
+                    window.location.href = linkHref;
+                }
+            });
 
-    switch (servico.titulo) {
-        case 'Eleitores':
-            linkHref = '/gerenciarEleitor';
-            break;
+            container.appendChild(card);
+        });
 
-        case 'Zonas Eleitorais':
-            linkHref = '/gerenciarZonaEleitoral';
-            break;
-
-        case 'Seções Eleitorais':
-            linkHref = '/gerenciarSecaoEleitoral';
-            break;
-
-        case 'Urnas':
-            linkHref = '/cadastroUrnas';
-            break;
-
-        case 'Candidatos':
-            linkHref = '/gerenciarCandidato';
-            break;
-
-        case 'Partidos':
-            linkHref = '/gerenciarPartido';
-            break;
-
-        case 'Chapas':
-            linkHref = '/gerenciarChapas';
-            break;
-
-        case 'Relatórios':
-            linkHref = '/resultadoEleicao';
-            break;
-    }
-
-    card.innerHTML = `
-        <div class="icon">${servico.icon}</div>
-
-        <div>
-            <h3>${servico.titulo}</h3>
-            <p>${servico.descricao}</p>
-        </div>
-
-        <a href="${linkHref}" class="link">
-            Acessar módulo →
-        </a>
-    `;
-
-    card.addEventListener('click', (e) => {
-        const tag = e.target.tagName.toLowerCase();
-
-        if (tag !== 'a' && tag !== 'button') {
-            window.location.href = linkHref;
-        }
-    });
-
-    container.appendChild(card);
-});
-</script>
-
+        // Botão Sair
+        document.getElementById('btnSair').addEventListener('click', function() {
+            if (confirm('Tem certeza que deseja sair?')) {
+                window.location.href = '/logout';
+            }
+        });
+    </script>
 </body>
-
 </html>

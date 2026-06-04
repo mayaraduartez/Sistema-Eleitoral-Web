@@ -8,6 +8,38 @@ body {
   height: 100vh;
 }
 
+.pagina-urna {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.botao-container {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 30px;
+}
+
+.btn-voltar-urna {
+  background: #666;
+  color: #fff;
+  font-weight: bold;
+  text-align: center;
+  transition: .3s;
+  padding: 18px 30px;   
+  border: none;
+  border-radius: 40px;
+  cursor: pointer;
+  font-size: 18px;      
+}
+
+.btn-voltar-urna:hover {
+  transform: translateY(-2px);
+  background: #444;     
+}
+
+
 .urna {
   display: flex;
   background: #e6e6e6;

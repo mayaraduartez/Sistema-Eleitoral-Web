@@ -2,7 +2,7 @@ const Sequelize = require("sequelize");
 const sequelizeconnect = new Sequelize(
     "db_sistemaeleitoral",
     "postgres",
-    "adminn",
+    "postgres",
     {
         host: "localhost",
         port: "5432",
